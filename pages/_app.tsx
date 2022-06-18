@@ -1,3 +1,4 @@
+import GlobalLayout from "layouts/GlobalLayout";
 import type { AppProps } from "next/app";
 import { useState } from "react";
 import { ThemeProvider } from "styled-components";
@@ -11,10 +12,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
       <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
         <GlobalStyle />
-        <Component {...pageProps} />
-        <button type="button" onClick={() => setIsDarkMode(!isDarkMode)}>
-          {isDarkMode ? "라이트" : "다크"} 모드로 변경
-        </button>
+        <GlobalLayout>
+          <Component {...pageProps} />
+        </GlobalLayout>
       </ThemeProvider>
     </>
   );

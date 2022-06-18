@@ -22,6 +22,16 @@ const GlobalStyle = createGlobalStyle`
     h3{
         font-size:${({ theme }) => theme.fontSizes[20]};
     }
+
+    a{
+        color:${({ theme }) => theme.colors.gray11};
+        text-decoration:none;
+        cursor:pointer;
+
+        &:hover{
+            color:${({ theme }) => theme.colors.gray12};
+        }
+    }
 `;
 
 export default GlobalStyle;
