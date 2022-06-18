@@ -1,22 +1,26 @@
 import Link from "next/link";
 import styled from "styled-components";
+import { flexRow } from "styles/utils/flex";
 
 function GlobalHeader() {
   return (
     <HeaderWrapper>
       <Header>
-        <Link href="/">
-          <a>Home</a>
-        </Link>
-        <Link href="/tech">
-          <a>Tech</a>
-        </Link>
-        <Link href="/personal">
-          <a>Personal</a>
-        </Link>
-        <Link href="/snippets">
-          <a>Snippets</a>
-        </Link>
+        <Links>
+          <Link href="/">
+            <a>Home</a>
+          </Link>
+          <Link href="/tech">
+            <a>Tech</a>
+          </Link>
+          <Link href="/personal">
+            <a>Personal</a>
+          </Link>
+          <Link href="/snippets">
+            <a>Snippets</a>
+          </Link>
+        </Links>
+        <DarkModeSwitch type="button">1</DarkModeSwitch>
       </Header>
     </HeaderWrapper>
   );
@@ -33,16 +37,22 @@ const HeaderWrapper = styled.div`
 `;
 
 const Header = styled.header`
-  display: flex;
-  gap: ${({ theme }) => theme.spacers[16]};
+  ${flexRow("space-between", "center")};
   max-width: 1000px;
   width: 100%;
   margin: auto;
   padding: 0 ${({ theme }) => theme.spacers[24]};
+`;
+
+const Links = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacers[16]};
 
   a {
     font-size: ${({ theme }) => theme.fontSizes[14]};
   }
 `;
+
+const DarkModeSwitch = styled.button``;
 
 export default GlobalHeader;
