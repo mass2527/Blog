@@ -1,28 +1,24 @@
 import Link from "next/link";
-import { ReactNode } from "react";
 import styled from "styled-components";
 
-function GlobalLayout({ children }: { children: ReactNode }) {
+function GlobalHeader() {
   return (
-    <div>
-      <HeaderWrapper>
-        <Header>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-          <Link href="/tech">
-            <a>Tech</a>
-          </Link>
-          <Link href="/personal">
-            <a>Personal</a>
-          </Link>
-          <Link href="/snippets">
-            <a>Snippets</a>
-          </Link>
-        </Header>
-      </HeaderWrapper>
-      {children}
-    </div>
+    <HeaderWrapper>
+      <Header>
+        <Link href="/">
+          <a>Home</a>
+        </Link>
+        <Link href="/tech">
+          <a>Tech</a>
+        </Link>
+        <Link href="/personal">
+          <a>Personal</a>
+        </Link>
+        <Link href="/snippets">
+          <a>Snippets</a>
+        </Link>
+      </Header>
+    </HeaderWrapper>
   );
 }
 
@@ -49,4 +45,4 @@ const Header = styled.header`
   }
 `;
 
-export default GlobalLayout;
+export default GlobalHeader;
