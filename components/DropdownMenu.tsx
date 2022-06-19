@@ -40,7 +40,8 @@ function DropdownMenu({
 
 const StyledContent = styled(Content)`
   min-width: max-content;
-  background-color: ${({ theme }) => theme.colors.black1};
+  background-color: ${({ theme }) => theme.colors.gray3};
+  color: ${({ theme }) => theme.colors.black12};
   border-radius: ${({ theme }) => theme.radiuses[6]};
   padding: ${({ theme }) => theme.spacers[4]};
   box-shadow: hsl(206 22% 7% / 35%) 0px 10px 38px -10px,
