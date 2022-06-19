@@ -2,8 +2,8 @@ import { ButtonHTMLAttributes } from "react";
 import styled, { css } from "styled-components";
 
 type ButtonSize = "small" | "medium" | "large";
-type ButtonColor = "crimson" | "red" | "teal" | "yellow" | "blue";
-type ButtonVariant = "primary" | "outline" | "link";
+type ButtonColor = "crimson" | "red" | "teal" | "yellow" | "blue" | "gray";
+type ButtonVariant = "primary" | "outline" | "ghost";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
@@ -37,6 +37,7 @@ const StyledButton = styled.button<{
   $color: ButtonColor;
   $variant: ButtonVariant;
 }>`
+  color: ${({ theme: { colors }, $color }) => colors[`${$color}11`]};
   padding: 0 ${({ theme }) => theme.spacers[16]};
   font-weight: ${({ theme }) => theme.fontWeights[500]};
   word-break: keep-all;
@@ -61,7 +62,6 @@ const StyledButton = styled.button<{
     ({
       primary: css`
         background-color: ${colors[`${$color}4`]};
-        color: ${colors[`${$color}11`]};
 
         &:hover {
           background-color: ${colors[`${$color}5`]};
@@ -77,7 +77,6 @@ const StyledButton = styled.button<{
       outline: css`
         background-color: ${colors[`${$color}1`]};
         border: 1px solid ${colors[`${$color}7`]};
-        color: ${colors[`${$color}11`]};
 
         &:hover {
           border: 1px solid ${colors[`${$color}8`]};
@@ -91,8 +90,7 @@ const StyledButton = styled.button<{
           color: ${colors.gray11};
         }
       `,
-      link: css`
-        color: ${({ theme }) => theme.colors.gray11};
+      ghost: css`
         &:hover {
           color: ${({ theme }) => theme.colors.gray12};
         }
