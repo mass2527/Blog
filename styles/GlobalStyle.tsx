@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import normalize from "styled-normalize";
+import { center } from "./utils/center";
 
 const GlobalStyle = createGlobalStyle`
     ${normalize};
@@ -30,6 +31,18 @@ const GlobalStyle = createGlobalStyle`
 
         &:hover{
             color:${({ theme }) => theme.colors.gray12};
+        }
+    }
+
+    button{
+        ${center};
+        cursor:pointer;
+        background-color:transparent;
+        border-color:transparent;
+        border-radius:${({ theme }) => theme.radiuses[4]};
+
+        &:disabled{
+            cursor:not-allowed;
         }
     }
 `;
