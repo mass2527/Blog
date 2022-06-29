@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import useIsFirstRender from "./useIsFirstRender";
+import { useIsFirstRender } from "./useIsFirstRender";
 
 const getMatches = (mediaQueryString: string) =>
   typeof window === "undefined"
     ? false
     : window.matchMedia(mediaQueryString).matches;
 
-function useMediaQuery(mediaQueryString: string) {
+export function useMediaQuery(mediaQueryString: string) {
   const [matches, setMatches] = useState(() => getMatches(mediaQueryString));
   const isFirstRender = useIsFirstRender();
 
@@ -30,5 +30,3 @@ function useMediaQuery(mediaQueryString: string) {
 
   return matches;
 }
-
-export default useMediaQuery;
