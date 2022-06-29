@@ -20,7 +20,6 @@ function GlobalHeader() {
             <a>Snippets</a>
           </Link>
         </Links>
-        <DarkModeSwitch type="button">1</DarkModeSwitch>
       </Header>
     </HeaderWrapper>
   );
@@ -31,9 +30,6 @@ const HeaderWrapper = styled.div`
   top: 0;
   display: flex;
   height: 64px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.gray6};
-  /* backdrop-filter: saturate(180%) blur(20px);
-  background-color: rgba(0, 0, 0, 0.5); */
 `;
 
 const Header = styled.header`
@@ -42,17 +38,12 @@ const Header = styled.header`
   width: 100%;
   margin: auto;
   padding: 0 ${({ theme }) => theme.spacers[24]};
+  font-size: ${({ theme }) => theme.fontSizes[14]};
 `;
 
 const Links = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacers[16]};
-
-  a {
-    font-size: ${({ theme }) => theme.fontSizes[14]};
-  }
 `;
-
-const DarkModeSwitch = styled.button``;
 
 export default GlobalHeader;
