@@ -23,33 +23,43 @@ const blackDark = {
   black12: "#fff",
 };
 
+const spacers = {
+  4: "4px",
+  8: "8px",
+  16: "16px",
+  24: "24px",
+  32: "32px",
+  40: "40px",
+  48: "48px",
+} as const;
+
+const radiuses = {
+  4: "4px",
+  6: "6px",
+  8: "8px",
+  12: "12px",
+  "50%": "50%",
+} as const;
+
+const fontWeights = {
+  400: 400,
+  500: 500,
+  700: 700,
+} as const;
+
+const fontSizes = {
+  14: "14px",
+  16: "16px",
+  20: "20px",
+  24: "24px",
+  32: "32px",
+} as const;
+
 const commonTheme = {
-  spacers: {
-    4: "4px",
-    8: "8px",
-    16: "16px",
-    24: "24px",
-    32: "32px",
-  },
-  radiuses: {
-    4: "4px",
-    6: "6px",
-    8: "8px",
-    12: "12px",
-    "50%": "50%",
-  },
-  fontWeights: {
-    400: 400,
-    500: 500,
-    700: 700,
-  },
-  fontSizes: {
-    14: "14px",
-    16: "16px",
-    20: "20px",
-    24: "24px",
-    32: "32px",
-  },
+  spacers,
+  radiuses,
+  fontWeights,
+  fontSizes,
 } as const;
 
 export const lightTheme = {
