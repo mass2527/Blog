@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-function useIsFirstRender() {
+export function useIsFirstRender() {
   const isFirstRender = useRef(true);
 
   if (isFirstRender.current) {
@@ -11,5 +11,3 @@ function useIsFirstRender() {
 
   return isFirstRender.current;
 }
-
-export default useIsFirstRender;
