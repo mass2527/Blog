@@ -38,6 +38,7 @@ const GlobalStyle = createGlobalStyle`
         ${center};
         cursor:pointer;
         background-color:transparent;
+        color:inherit;
         border-color:transparent;
         border-radius:${({ theme }) => theme.radiuses[4]};
 
