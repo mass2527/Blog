@@ -1,5 +1,6 @@
-import { ButtonHTMLAttributes } from "react";
 import styled, { css } from "styled-components";
+
+import { ButtonHTMLAttributes } from "react";
 
 type ButtonSize = "small" | "medium" | "large";
 type ButtonColor = "crimson" | "red" | "teal" | "yellow" | "blue" | "gray";
