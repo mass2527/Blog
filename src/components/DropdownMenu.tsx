@@ -10,8 +10,8 @@ import {
   RadioItem,
 } from "@radix-ui/react-dropdown-menu";
 import styled from "styled-components";
-import { center } from "styles/utils/center";
-import { flexRow } from "styles/utils/flex";
+import { center } from "@/styles/utils/center";
+import { flexRow } from "@/styles/utils/flex";
 
 interface DropdownMenuProps {
   rootProps?: DropdownMenuRootProps;

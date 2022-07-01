@@ -1,10 +1,10 @@
-import { useMediaQuery } from "hooks";
-import GlobalLayout from "layouts/GlobalLayout";
 import type { AppProps } from "next/app";
 import { RecoilRoot } from "recoil";
 import { ThemeProvider } from "styled-components";
-import GlobalStyle from "styles/GlobalStyle";
-import { darkTheme, lightTheme } from "styles/theme";
+import GlobalStyle from "@/styles/GlobalStyle";
+import { darkTheme, lightTheme } from "@/styles/theme";
+import GlobalLayout from "@/layouts/GlobalLayout";
+import { useMediaQuery } from "@/hooks";
 
 function AppShell({ Component, pageProps }: AppProps) {
   return (

@@ -1,6 +1,6 @@
+import { flexRow } from "@/styles/utils/flex";
 import Link from "next/link";
 import styled from "styled-components";
-import { flexRow } from "styles/utils/flex";
 
 function GlobalHeader() {
   return (
