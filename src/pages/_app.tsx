@@ -8,16 +8,6 @@ import GlobalLayout from "@/layouts/GlobalLayout";
 import GlobalStyle from "@/styles/GlobalStyle";
 import { darkTheme, lightTheme } from "@/styles/theme";
 
-function AppShell({ Component, pageProps }: AppProps) {
-  return (
-    <>
-      <RecoilRoot>
-        <App Component={Component} {...pageProps} />
-      </RecoilRoot>
-    </>
-  );
-}
-
 function App({ Component, pageProps }: AppProps) {
   const isDarkModePreffered = useMediaQuery("(prefers-color-scheme: dark)");
 
@@ -28,6 +18,16 @@ function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       </GlobalLayout>
     </ThemeProvider>
+  );
+}
+
+function AppShell(props: AppProps) {
+  return (
+    <>
+      <RecoilRoot>
+        <App {...props} />
+      </RecoilRoot>
+    </>
   );
 }
 
