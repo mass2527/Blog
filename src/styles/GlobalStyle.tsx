@@ -1,5 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 import normalize from "styled-normalize";
+
 import { center } from "./utils/center";
 
 const GlobalStyle = createGlobalStyle`
@@ -22,6 +23,12 @@ const GlobalStyle = createGlobalStyle`
     }
     h3{
         font-size:${({ theme }) => theme.fontSizes[20]};
+    }
+
+    ul{
+        list-style:none;
+        margin:0;
+        padding:0;
     }
 
     a{
