@@ -23,6 +23,11 @@ const blackDark = {
   black12: "#fff",
 };
 
+const sizes = {
+  maxWidth: "650px",
+  headerHeight: "64px",
+};
+
 const spacers = {
   4: "4px",
   8: "8px",
@@ -41,13 +46,13 @@ const radiuses = {
   "50%": "50%",
 } as const;
 
-const fontWeights = {
+export const fontWeights = {
   400: 400,
   500: 500,
   700: 700,
 } as const;
 
-const fontSizes = {
+export const fontSizes = {
   14: "14px",
   16: "16px",
   20: "20px",
@@ -60,6 +65,7 @@ const commonTheme = {
   radiuses,
   fontWeights,
   fontSizes,
+  sizes,
 } as const;
 
 export const lightTheme = {
