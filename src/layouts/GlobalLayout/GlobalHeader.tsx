@@ -1,6 +1,8 @@
-import { flexRow } from "@/styles/utils/flex";
-import Link from "next/link";
 import styled from "styled-components";
+
+import Link from "next/link";
+
+import { flexRow } from "@/styles/utils/flex";
 
 function GlobalHeader() {
   return (
@@ -10,8 +12,8 @@ function GlobalHeader() {
           <Link href="/">
             <a>Home</a>
           </Link>
-          <Link href="/tech">
-            <a>Tech</a>
+          <Link href="/blog">
+            <a>Blog</a>
           </Link>
           <Link href="/personal">
             <a>Personal</a>
@@ -29,12 +31,12 @@ const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
   display: flex;
-  height: 64px;
+  height: ${({ theme }) => theme.sizes.headerHeight};
 `;
 
 const Header = styled.header`
   ${flexRow("space-between", "center")};
-  max-width: 1000px;
+  max-width: ${({ theme }) => theme.sizes.maxWidth};
   width: 100%;
   margin: auto;
   padding: 0 ${({ theme }) => theme.spacers[24]};
