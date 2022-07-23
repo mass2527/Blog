@@ -67,6 +67,7 @@ export const bundleMDXWithOptions = async (filePath: string) => {
 
 export interface Frontmatter {
   title: string;
+  category: string;
   // seoTitle?: string;
   // subtitle?: string;
   summary: string;
