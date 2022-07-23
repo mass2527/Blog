@@ -3,16 +3,13 @@ import { ThemeProvider } from "styled-components";
 
 import type { AppProps } from "next/app";
 
-import { useMediaQuery } from "@/hooks";
 import GlobalLayout from "@/layouts/GlobalLayout";
 import GlobalStyle from "@/styles/GlobalStyle";
-import { darkTheme, lightTheme } from "@/styles/theme";
+import { darkTheme } from "@/styles/theme";
 
 function App({ Component, pageProps }: AppProps) {
-  const isDarkModePreffered = useMediaQuery("(prefers-color-scheme: dark)");
-
   return (
-    <ThemeProvider theme={isDarkModePreffered ? darkTheme : lightTheme}>
+    <ThemeProvider theme={darkTheme}>
       <GlobalStyle />
       <GlobalLayout>
         <Component {...pageProps} />
