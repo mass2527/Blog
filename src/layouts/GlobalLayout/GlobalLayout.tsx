@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+
 import GlobalHeader from "./GlobalHeader";
 import GlobalMain from "./GlobalMain";
 
