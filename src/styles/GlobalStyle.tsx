@@ -7,12 +7,14 @@ const GlobalStyle = createGlobalStyle`
     ${normalize};
     
     html{
-        line-height:1.3;
+        line-height:1.5;
+        scroll-padding-top: ${({ theme }) => theme.sizes.headerHeight};
     }
 
     body{
         background-color:${({ theme }) => theme.colors.black1};
         color:${({ theme }) => theme.colors.black12};
+        font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
     }
 
     h1{
@@ -52,6 +54,12 @@ const GlobalStyle = createGlobalStyle`
         &:disabled{
             cursor:not-allowed;
         }
+    }
+    
+    time{
+        font-size:${({ theme }) => theme.fontSizes[14]};
+        font-weight:${({ theme }) => theme.fontWeights[400]};
+        color:${({ theme }) => theme.colors.gray11};
     }
 `;
 
