@@ -24,7 +24,7 @@ const blackDark = {
 };
 
 const sizes = {
-  maxWidth: "650px",
+  maxWidth: "776px",
   headerHeight: "64px",
 };
 
@@ -58,6 +58,7 @@ export const fontSizes = {
   20: "20px",
   24: "24px",
   32: "32px",
+  64: "64px",
 } as const;
 
 const commonTheme = {
