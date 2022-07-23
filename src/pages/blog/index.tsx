@@ -4,22 +4,24 @@ import type { InferGetStaticPropsType } from "next";
 import Link from "next/link";
 
 import { Heading, Text } from "@/components/Typography";
-import { blogFilePaths, bundleMDXWithOptions } from "@/utils/blog";
+import {
+  blogFilePaths,
+  BundleMDXResult,
+  bundleMDXWithOptions,
+} from "@/utils/blog";
 
 const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <ul>
-      {blogs.map(({ title, summary, publishedAt, slug }) => {
+      {blogs.map(({ frontmatter, slug }) => {
         return (
-          <li key={title}>
+          <li key={frontmatter.title}>
             <Link href={`/blog/${slug}`}>
               <StyledLink>
                 <article>
-                  <Heading color="blue11">{title}</Heading>
-                  <Text>{summary}</Text>
-                  <Text as="time" color="gray11" fontSize={14}>
-                    {publishedAt}
-                  </Text>
+                  <Heading color="blue11">{frontmatter.title}</Heading>
+                  <Text>{frontmatter.summary}</Text>
+                  <time>{frontmatter.publishedAt}</time>
                 </article>
               </StyledLink>
             </Link>
@@ -52,22 +54,21 @@ export async function getStaticProps() {
     await Promise.all(
       blogFilePaths.map(async (filePath) => {
         const { frontmatter, slug } = await bundleMDXWithOptions(filePath);
-        return { ...frontmatter, slug } as {
-          published: boolean;
-          publishedAt: string;
-          title: string;
-          summary: string;
-          slug: string;
-        };
+        return { frontmatter, slug } as Pick<
+          BundleMDXResult,
+          "frontmatter" | "slug"
+        >;
       })
     )
   )
     .filter(
-      ({ published }) => process.env.NODE_ENV === "development" || published
+      ({ frontmatter }) =>
+        process.env.NODE_ENV === "development" || frontmatter.published
     )
     .sort(
-      (a, b) =>
-        new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+      (current, next) =>
+        new Date(next.frontmatter.publishedAt).getTime() -
+        new Date(current.frontmatter.publishedAt).getTime()
     );
 
   return {
