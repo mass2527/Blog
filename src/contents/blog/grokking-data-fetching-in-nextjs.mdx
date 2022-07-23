@@ -1,0 +1,252 @@
+---
+title: Nextjs data Fetching 이해하기 (CSR, SSR, SSG, ISR)
+category: Next.js
+summary: Nextjs에서 서로 다른 웹 렌더링 방식을 사용해서 데이터를 가져올 때 어떻게 되는지, 어떤 차이가 있는지 알아봅니다.
+published: true
+publishedAt: "2022-03-27"
+---
+
+이 글은 [Theodorus Clarence](https://theodorusclarence.com)의
+[Understanding Next.js Data Fetching (CSR, SSR, SSG, ISR)](https://theodorusclarence.com/blog/nextjs-fetch-method) 포스트를 번역한 글입니다.
+
+## 개요
+
+제가 Next.js를 배우기 시작했을 때 비슷해 보이는 많은 용어(CSR, SSR, SSG, ISR)들에 압도되었고 각각이 무엇을 의미하는지, 서로 어떤 차이가 있는지에 대해 이해하지 못했습니다.
+Create React App을 사용했을 때만 해도 `useEffect`를 이용해서 데이터를 가져오는 방법밖에 없었기에 이는 너무 헷갈렸습니다.
+
+Next.js에서는 많은 방법을 통해 데이터를 가져올 수 있습니다. Next.js가 서버 사이드 렌더링 프레임워크라고 알려지긴 했지만 데이터를 가져올 수 있는 방법이 4가지(CSR, SSR, SSG, ISR)나 있습니다.
+본격적으로 시작하기 앞서 위에서 설명한 용어에 조금은 익숙해질 수 있도록 간략하게 설명해 드리겠습니다.
+
+- CSR - Client-Side Rendering, `useEffect`를 이용해 데이터를 가져오는 평범한 방법이며, 각 페이지 요청마다 **클라이언트측**에서 데이터를 가져옵니다
+  (페이지가 렌더링 된 후 데이터를 가져오는 함수가 실행됩니다).
+- SSR - Server-Side Rendering, 각 페이지 요청마다 **서버측**에서 데이터를 가져오는 **특별한 함수**를 실행합니다
+  (페이지가 로드되기 전에 특별한 함수가 먼저 실행되고 잠깐의 딜레이 후에 페이지가 렌더링됩니다).
+- SSG - Static Site Generation, 어플리케이션이 빌드될 때 **한 번** 데이터를 가져오기 위해 특별한 함수를 실행합니다.
+- ISR – Incremental Static Regeneration, 새로운 렌더링 방식으로 기본적으로 SSG이지만 **특정 시간과 특정 조건에**따라 해당 페이지만 리빌드하고 데이터를 가져오는 함수를 실행합니다.
+
+제가 앞으로 더 구체적으로 설명을 할 거기 때문에 위 내용을 정확하게 이해하지 못했더라도 걱정하실 필요는 없습니다. 여기서는 우선 단어에 익숙해지는 것만으로도 충분합니다.
+
+제가 이제 위에서 언급한 특별한 함수가 무엇인지 보여드릴테니 주의깊게 봐주세요.
+
+앞으로 보여드릴 코드 예시는 axios를 이용해서 날짜-시간 데이터를 가져온 후 페이지에 렌더링 할 것입니다. 날짜-시간 데이터를 유심히 관찰하면 언제 API가 호출되었는지 알 수 있을 것입니다.
+
+## Client-Side Rendering (CSR)
+
+특별한 함수: `useEffect`
+
+[데모 사이트](https://next-render.theodorusclarence.com/render/csr)
+
+### 코드 예시
+
+```tsx
+export default function CSRPage() {
+  const [dateTime, setDateTime] = React.useState<string>();
+
+  React.useEffect(() => {
+    axios
+      .get("https://worldtimeapi.org/api/ip")
+      .then((res) => {
+        setDateTime(res.data.datetime);
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
+  return (
+    <main>
+      <TimeSection dateTime={dateTime} />
+    </main>
+  );
+}
+```
+
+### 데모
+
+용어:
+
+- PT -> Preview Time, API를 통해 가져온 날짜-시간 데이터, 화면 중간에서 확인할 수 있습니다.
+- RT -> Real-Time, 매초마다 업데이트되는 현재 시간, 화면 오른쪽 아래 코너에서 확인할 수 있습니다.
+
+비디오 설명:
+
+1. RT가 15:46:03일 때 새로고침 되고 로딩 표시를 보여줍니다.
+2. 1초 후에 PT 15:46:04가 보여집니다.
+
+### 키포인트
+
+1. **useEffect 함수**, 이 함수는 해당 페이지에서 CSR을 사용하고 있음을 나타냅니다.
+2. **로딩 표시**, 페이지가 렌더링 된 후에 데이터를 가져오기 때문에 날짜-시간 데이터를 즉시 볼 수 없으며, 그동안 로딩 표시를 보여줍니다.
+3. **각 페이지 요청마다 데이터 Fetching**, 그렇기 때문에 새로고침을 할 때마다 다른 시간이 나오는 것을 확인할 수 있습니다.
+
+## Server Side Rendering (SSR)
+
+특별한 함수: `getServerSideProps`
+
+[데모 사이트](https://next-render.theodorusclarence.com/render/ssr)
+
+### 코드 예시
+
+```tsx
+export default function SSRPage({ dateTime }: SSRPageProps) {
+  return (
+    <main>
+      <TimeSection dateTime={dateTime} />
+    </main>
+  );
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const res = await axios.get("https://worldtimeapi.org/api/ip");
+
+  return {
+    props: { dateTime: res.data.datetime },
+  };
+};
+```
+
+비디오 설명:
+
+1. 16:32:38(RT)에 링크를 클릭하면 2초 정도 멈췄다가 16:02:40(PT)를 보여주면서 페이지가 로드됩니다.
+
+### 키포인트
+
+1. **getServerSideProps 함수**, 이 함수는 해당 페이지에서 SSR을 사용하고 있음을 나타냅니다.
+2. **선딜레이 그리고 사라진 로딩 표시**, 페이지가 렌더링 되기 전에 데이터를 가져오기 때문에 API가 호출되는 동안 잠깐의 딜레이가 있다가 로딩 표시 없이 바로 데이터와 함게 페이지를 보여줍니다.
+3. **각 페이지 요청마다 데이터 Fetching**, 그렇기 때문에 새로고침을 할 때마다 다른 시간이 나오는 것을 확인할 수 있습니다.
+
+## CSR vs SSR
+
+CSR 과 SSR의 차이점을 보여드리겠습니다. 딜레이와 로딩 표시에 주목해 주세요.
+
+비디오 설명:
+
+1. CSR을 클릭하면 딜레이 없이 Loading이라는 텍스트가 바로 보이며, 몇 초 뒤에 가져온 데이터가 표시됩니다.
+2. SSR을 클릭하면 잠깐의 딜레이 후에 가져온 데이터와 함께 페이지가 로드됩니다.
+
+### 키포인트
+
+1. CSR은 페이지가 로드된 후에 API를 호출합니다.
+2. SSR은 페이지가 로드되기 전에 API를 호출합니다.
+
+## Static Site Generation (SSG)
+
+특별한 함수: `getStaticProps`
+
+[데모 사이트](https://next-render.theodorusclarence.com/render/ssg)
+
+### 코드 예시
+
+```tsx
+export default function SSGPage({ dateTime }: SSGPageProps) {
+  return (
+    <main>
+      <TimeSection dateTime={dateTime} />
+    </main>
+  );
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res = await axios.get("https://worldtimeapi.org/api/ip");
+
+  return {
+    props: { dateTime: res.data.datetime },
+  };
+};
+```
+
+### 데모
+
+비디오 설명:
+
+1. PT는 13:39:36인데 RT는 16:16:59로 3시간이나 지연되어 나타나고 있습니다.
+2. 새로고침을 하거나 페이지를 재방문해도 아무런 변화가 일어나지 않고 있습니다.
+
+### 키포인트
+
+1. **getStaticProps 함수**, 이 함수는 해당 페이지에서 SSG을 사용하고 있음을 나타냅니다.
+2. **빌드 시 Fetching 함수 실행**, API는 오직 앱 빌드 시에만 호출됩니다. 그렇기 때문에 위와 같이 3시간의 차이(빌드한 후 3시간 뒤에 페이지 확인)가 나오게 됩니다. ([개발 환경에서는 getStaticProps가 매 요청시마다 실행됩니다.](https://nextjs.org/docs/basic-features/data-fetching/get-static-props#runs-on-every-request-in-development))
+3. **변하지 않는 데이터**, 그렇기 때문에 새로고침을 해도 같은 날짜-시간 데이터를 보게 됩니다.
+
+## Incremental Static Regeneration (ISR)
+
+특별한 함수: `getStaticProps` + `revalidate`
+
+[데모 사이트](https://next-render.theodorusclarence.com/render/isr-20)
+
+### 코드 예시
+
+```tsx
+export default function ISR20Page({ dateTime }: ISR20PageProps) {
+  return (
+    <main>
+      <TimeSection dateTime={dateTime} />
+    </main>
+  );
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res = await axios.get("https://worldtimeapi.org/api/ip");
+
+  return {
+    props: { dateTime: res.data.datetime },
+    revalidate: 20,
+  };
+};
+```
+
+### 데모
+
+안내 사항: `revalidate`가 20초로 설정되었습니다.
+
+비디오 설명:
+
+1. 첫 PT가 16:40:12, 16:40:25(RT), 16:40:29(RT) 두 번의 새로고침을 했지만 PT에는 변함이 없었습니다.
+2. 첫 PT 16:40:12로 부터 20초가 지난 뒤 16:40:36(RT)일 때 첫 번째 새로고침, 16:40:40(RT)일 때 두 번째 새로고침을 진행하였습니다.
+   두 번째 새로고침을 하였을 때 PT가 16:40:37로 업데이트 되었습니다.
+
+### 키포인트
+
+조금은 헷갈릴 수 있지만 주목하면 좋을 것 같은 키포인트는 다음과 같습니다.
+
+쿨다운 상태 - 어떤 기능을 이미 실행해서 특정 시간 동안 재실행을 할 수 없는 상태를 말합니다. 게임으로 치면 스킬 쿨타임(재사용 대기시간)이라고 생각할 수 있습니다. 스킬을 한 번 사용하면 몇 초 동안 해당 스킬은 다시 사용할 수 없습니다.
+여기서는 페이지가 이미 리빌드되어서 새로고침을 해도 빌드되지 않는 상태를 말하고 있습니다.
+
+1. **20초 동안 16:40:12(RT) ~ 16:40:32(RT)**, 새로고침을 해도 아무런 변화가 일어나지 않습니다. 16:40:12(PT)에 페이지 리빌드가 발생함에 따라 20초 동안 (`revalidate: 20`) 페이지가 쿨다운 상태에 들어갔기 때문입니다.
+2. **20초 지난 후 16:40:32(RT)~**, 2번의 새로고침을 진행했습니다.
+   1. 쿨 다운 상태 종료 후 첫 번째 새로고침 16:40:36(RT), 쿨다운 상태가 종료된 후 첫 방문은 페이지 리빌드를 야기합니다.
+      이때는 전체 페이지를 빌드하지 않고 해당 페이지만 빌드합니다. 내부적으로 API 호출이 진행되지만 화면에 보이는 PT에는 변함이 없습니다.
+   2. 쿨 다운 상태 종료 후 두 번째 새로고침 16:40:40(RT), 16:40:37(PT)으로 업데이트됩니다. 정확하게 페이지 리빌드 된 시간 - 첫 번째 새로고침 16:40:36(RT) 보다 1초 늦은 것으로 보아 리빌드하는데 1초정도 소요 됐다는 것을 알 수 있습니다.
+      이 두 번째 새로고침은 첫 번째 새로고침에 의해 리빌드된 페이지를 보여줍니다.
+
+### 페이지 재방문 vs 페이지 새로고침
+
+용어:
+
+1. 페이지 재방문 -> 다른 페이지 이동 후 다시 돌아오기
+2. 페이지 새로고침 -> 새로고침 또는 페이지 첫(재) 접속
+
+비디오 설명:
+
+1. 페이지 재방문은 - 18:38:45(RT) 페이지 리빌드를 야기하지만 홈 이동 후 다시 페이지 방문 시에도 PT가 업데이트되지 않습니다.
+2. 페이지 새로고침을 해야만 PT가 18:38:45로 업데이트됩니다.
+
+노트:
+
+1. **페이지 재방문 시에도 페이지 리빌드**, 쿨다운 상태가 아니라면 첫 번째 페이지 재방문은 페이지 리빌드를 야기합니다.
+2. **리빌드된 화면을 보려면 페이지를 새로고침 필요** 두 번째로 페이지 재방문을 해도 리빌드된 페이지를 볼 수 없습니다.
+
+여기서는 오직 한 명의 사람이 웹사이트를 사용할 것이라고 가정했지만 실제로는 모든 사람에 의해 페이지 새로고침이 됩니다.
+
+### 그러면 20초마다 리빌드가 진행될까요?
+
+**아닙니다.**
+
+쿨다운 상태가 종료되고 아무도 페이지를 방문하지 않으면 해당 페이지는 리빌드되지 않습니다.
+
+그러나 쿨다운 상태가 종료되고 방문자가 있으면 해당 페이지는 리빌드되고 그다음에 페이지 새로고침을 한 사람만이 새로운 페이지를 볼 수 있습니다.
+
+## 결론
+
+여기까지가 준비한 글의 전부입니다.
+
+여기까지의 내용을 이해했다면 [How to choose between them](https://theodorusclarence.com/blog/nextjs-fetch-usecase)도 읽어보세요.
+어떤 렌더링 방식을 사용할지 고려할 때 읽으면 좋은 글을 준비했습니다.
