@@ -14,7 +14,12 @@ const GlobalStyle = createGlobalStyle`
     body{
         background-color:${({ theme }) => theme.colors.black1};
         color:${({ theme }) => theme.colors.black12};
-        font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+        font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;     
+    }
+
+    *::selection{
+        background-color:${({ theme }) => theme.colors.crimson5};
+        color:${({ theme }) => theme.colors.black12};
     }
 
     h1{
