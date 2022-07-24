@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
+import ResponsiveIFrame from "@/components/ResponsiveIFrame";
 import {
   blogSlugs,
   BundleMDXResult,
@@ -26,7 +27,7 @@ const BlogPost = ({
         <h1>{frontmatter.title}</h1>
       </BlogHeader>
       <BlogContentWrapper>
-        <BlogMDXContent />
+        <BlogMDXContent components={{ ResponsiveIFrame }} />
       </BlogContentWrapper>
     </>
   );
@@ -49,6 +50,8 @@ const BlogHeader = styled.div`
 `;
 
 const BlogContentWrapper = styled.div`
+  padding-bottom: ${({ theme }) => theme.spacers[48]};
+
   h2 {
     margin-top: ${({ theme }) => theme.spacers[48]};
     margin-bottom: ${({ theme }) => theme.spacers[24]};
