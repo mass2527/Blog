@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 
-import ResponsiveIFrame from "@/components/ResponsiveIFrame";
+import { Heading } from "@/components/Typography";
 
 const Home: NextPage = () => {
   return (
@@ -12,10 +12,12 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <ResponsiveIFrame
-        src="https://www.youtube.com/embed/Ht4h6WxEbU0"
-        title="[온스테이지2.0] wave to earth - nouvelle vague"
-      />
+      <Heading as="h1">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis magnam,
+        unde dicta tenetur natus id, reiciendis perspiciatis, asperiores impedit
+        illum aliquid amet dolore ipsum dolorum nam aperiam delectus veritatis
+        ea!
+      </Heading>
     </div>
   );
 };
