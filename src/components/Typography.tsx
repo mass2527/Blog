@@ -1,17 +1,8 @@
 import styled from "styled-components";
-import { blue, crimson, gray, red, teal, yellow } from "@radix-ui/colors";
 
 import React, { ElementType } from "react";
 
-import { fontSizes, fontWeights } from "@/styles/theme";
-
-type Color =
-  | keyof typeof crimson
-  | keyof typeof gray
-  | keyof typeof red
-  | keyof typeof teal
-  | keyof typeof yellow
-  | keyof typeof blue;
+import { Color, fontSizes, fontWeights } from "@/styles/theme";
 
 interface TypographyProps {
   as?: ElementType;

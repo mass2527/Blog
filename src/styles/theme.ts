@@ -94,3 +94,7 @@ export const darkTheme = {
     ...blackDark,
   },
 } as const;
+
+export type Color =
+  | keyof typeof lightTheme.colors
+  | keyof typeof darkTheme.colors;
