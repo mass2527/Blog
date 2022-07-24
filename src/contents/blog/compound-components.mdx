@@ -1,0 +1,172 @@
+---
+title: "React Hooks: Compound Components"
+category: React
+summary: 2개 이상의 컴포넌트를 조합해서 한 가지 기능을 수행하는 컴포넌트를 만드는 기법에 대해 소개합니다.
+published: true
+publishedAt: "2022-03-09"
+---
+
+이 글은 [Kent C. Dodds](https://kentcdodds.com)의
+[React Hooks: Compound Components](https://kentcdodds.com/blog/compound-components-with-react-hooks) 포스트를 번역한 글입니다.
+
+몇 주 전에 저는 [DevTips with Kent](https://www.youtube.com/playlist?list=PLV5CVI1eNcJgCrPH_e6d57KRUTiDZgs0u)라는 라이브 방송을 진행하면서
+클래스 컴포넌트로 작성된 Compound 컴포넌트 패턴을 리액트 훅을 사용한 함수 컴포넌트로 리팩토링하는 것을 보여드렸습니다.
+
+<ResponsiveIFrame src="https://www.youtube.com/embed/415EfGPuhSo" />
+
+Compound 컴포넌트에 익숙하지 않다면 [egghead.io](https://egghead.io/courses/react-class-component-patterns)
+또는 [Frontend Masters](https://frontendmasters.com/courses/advanced-react-patterns)에 준비된 저의 고급 리액트 컴포넌트 패턴 강의를 확인해 보세요.
+
+의미 있는 기능을 수행하기 위해 2개 이상의 컴포넌트를 조합해서 제공하는 API를 Compound 컴포넌트라고 합니다.
+주로 한 컴포넌트는 부모로, 나머지 컴포넌트는 자식으로 이루어져 더 기가막히고 유연한 API를 제공합니다.
+
+`<select>` 와 `<option>` 태그의 관계를 한 번 생각해보세요.
+
+```html
+<select>
+  <option value="value1">key1</option>
+  <option value="value2">key2</option>
+  <option value="value3">key3</option>
+</select>
+```
+
+여기서 두가지 태그 중 하나를 제외하고 사용하려고 한다면 제대로 동작하지 않을겁니다.
+만약에 옵션 기능을 만들기위해 하나의 태그만 사용해야한다면 어떻게될까요?
+
+```html
+<select options="key1:value1;key2:value2;key3:value3"></select>
+```
+
+다른 방식으로도 표현할 수 있겠지만... 이러한 방식으로 API를 제공한다면 각각의 옵션에는 어떻게 disabled 속성을 부여할 수 있을까요?
+구현은 할 수 있겠지만 미친짓아닐까요?
+
+그래서 이러한 문제를 해결하기위해 Compound 컴포넌트가 등장하게 되고(물론 위 예시는 HTML태그입니다), 이는 컴포넌트의 관계를 표현할 수 있는 나이스한 API를 제공합니다.
+
+Compound 컴포넌트가 가진 다른 중요한 개념은 "암묵적 state" 입니다.
+`select`엘리먼트는 암묵적으로 어떠한 옵션이 선택되었는지에 대한 state를 저장하고 이를 자식(`option`엘리먼트)에게 공유합니다. 자식은 공유받은 state에 따라 스스로의 랜더링 여부를 결정하게 됩니다.
+그러나 첫번째 HTML 코드를 보면 알 수 있듯이 state에 접근하는 코드는 하나도 작성되어있지 않습니다. 이렇기 때문에 이를 "암묵적 state"라고 합니다.
+
+이제 여태까지 학습한 개념을 이해하기 위해 React로 작성된 Compound 컴포넌트를 살펴보겠습니다.
+여기 Compound 컴포넌트 API를 제공하는 [Reach UI의 `Menu` 컴포넌트](https://reach.tech/menu-button) 예시가 있습니다.
+
+```tsx
+function App() {
+  return (
+    <Menu>
+      <MenuButton>
+        Actions <span aria-hidden>▾</span>
+      </MenuButton>
+      <MenuList>
+        <MenuItem onSelect={() => alert("Download")}>Download</MenuItem>
+        <MenuItem onSelect={() => alert("Copy")}>Create a Copy</MenuItem>
+        <MenuItem onSelect={() => alert("Delete")}>Delete</MenuItem>
+      </MenuList>
+    </Menu>
+  );
+}
+```
+
+예시에서 `Menu` 컴포넌트는 "암묵적 state"를 자식에게 전달합니다.
+그러면 `<MenuButton>`, `<MenuList>` 그리고 `<MenuItem>` 컴포넌트는 암묵적으로 공유받은 state를 필요에따라 가공을 한 후 사용하게 됩니다.
+"암묵적 state" 공유의 결과물로 인상적인 API가 탄생하게됩니다.
+
+어떻게 가능했을까요? [저의 강의](https://egghead.io/courses/react-class-component-patterns)를 봤다면 아시겠지만 2가지 방법이 있습니다.
+`React.cloneElement`를 사용하는 방법과 React Context를 사용하는 방법입니다. (제 강의에 아직 훅을 사용하는 방법은 업데이트 되어있지 않습니다.)
+여기에서는 Context를 사용해 간단한 Compound 컴포넌트를 만드는 것을 보여드리겠습니다.
+
+저는 새로운 컨셉을 가르칠 때 먼저 간단한 예시를 사용하는 것을 선호합니다. 그래서 제가 가장 좋아하는 `<Toggle>` 컴포넌트를 예시로 보여드리겠습니다.
+
+먼저 `<Toggle>` 컴포넌트가 어떻게 사용될지를 보여드리겠습니다.
+
+```tsx
+function App() {
+  return (
+    <Toggle onToggle={(on) => console.log(on)}>
+      <Toggle.On>The button is on</Toggle.On>
+      <Toggle.Off>The button is off</Toggle.Off>
+      <Toggle.Button />
+    </Toggle>
+  );
+}
+```
+
+아마 컴포넌트 이름에 .이 들어간 것을 눈치채셨을텐데요. 이는 자식 컴포넌트가 `<Toggle>` 컴포넌트의 static properties로 추가되었기 때문입니다.
+주의하실 점은 이게 Compound 컴포넌트의 필수 조건이 아니라는 것입니다. (위의 `<Menu>` 컴포넌트는 이를 사용하지 않았습니다.)
+저는 Compound 컴포넌트라는 것을 한 눈에 알 수 있도록 컴포넌트 사이의 관계를 명시적으로 표현하는 것을 좋아하기 때문에 이렇게 했습니다.
+
+드디어 기다리고 기다다던 순간입니다. Context와 Hook을 이용해서 어떻게 Compound 컴포넌트를 구현했는지 보여드리겠습니다.
+
+```tsx
+import * as React from "react";
+// this switch implements a checkbox input and is not relevant for this example
+import { Switch } from "../switch";
+
+const ToggleContext = React.createContext();
+
+function useEffectAfterMount(cb, dependencies) {
+  const justMounted = React.useRef(true);
+  React.useEffect(() => {
+    if (!justMounted.current) {
+      return cb();
+    }
+    justMounted.current = false;
+  }, dependencies);
+}
+
+function Toggle(props) {
+  const [on, setOn] = React.useState(false);
+  const toggle = React.useCallback(() => setOn((oldOn) => !oldOn), []);
+  useEffectAfterMount(() => {
+    props.onToggle(on);
+  }, [on]);
+  const value = React.useMemo(() => ({ on, toggle }), [on]);
+  return (
+    <ToggleContext.Provider value={value}>
+      {props.children}
+    </ToggleContext.Provider>
+  );
+}
+
+function useToggleContext() {
+  const context = React.useContext(ToggleContext);
+  if (!context) {
+    throw new Error(
+      `Toggle compound components cannot be rendered outside the Toggle component`
+    );
+  }
+  return context;
+}
+
+function On({ children }) {
+  const { on } = useToggleContext();
+  return on ? children : null;
+}
+
+function Off({ children }) {
+  const { on } = useToggleContext();
+  return on ? null : children;
+}
+
+function Button(props) {
+  const { on, toggle } = useToggleContext();
+  return <Switch on={on} onClick={toggle} {...props} />;
+}
+
+// for convenience, but totally not required...
+Toggle.On = On;
+Toggle.Off = Off;
+Toggle.Button = Button;
+```
+
+실제 동작을 확인해보세요.
+
+<ResponsiveIFrame src="https://codesandbox.io/embed/9yp5p2z7yr?fontsize=14&hidenavigation=0&theme=dark" />
+
+React Context를 생성해 state와 state 변경 메커니즘을 저장하고
+`<Toggle>` 컴포넌트는 Context 값을 자식에게 공유하고 있습니다.
+
+저의 다음 React 컴포넌트 패턴 강의에서 이에 대해 다루고 설명할 예정이니 지켜봐주세요.
+
+이 글이 유용한 컴포넌트를 만들 수 있도록 많은 도움을 주었으면 좋겠습니다. 행운을 빕니다!
+
+관련 글인 [Inversion of Control](https://kentcdodds.com/blog/inversion-of-control)에 대해서도 읽어보세요!
