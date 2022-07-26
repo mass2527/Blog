@@ -12,12 +12,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Heading as="h1">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis magnam,
-        unde dicta tenetur natus id, reiciendis perspiciatis, asperiores impedit
-        illum aliquid amet dolore ipsum dolorum nam aperiam delectus veritatis
-        ea!
-      </Heading>
+      <Heading as="h1">Hello.</Heading>
     </div>
   );
 };
