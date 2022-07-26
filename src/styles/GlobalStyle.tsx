@@ -8,7 +8,8 @@ const GlobalStyle = createGlobalStyle`
     
     html{
         line-height:1.5;
-        scroll-padding-top: ${({ theme }) => theme.sizes.headerHeight};
+        scroll-padding-top: ${({ theme: { sizes, spacers } }) =>
+          `calc(${sizes.headerHeight} + ${spacers[16]})`};        
     }
 
     body{
