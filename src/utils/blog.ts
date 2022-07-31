@@ -6,8 +6,9 @@ import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import remarkToc from "remark-toc";
-import { getHighlighter } from "shiki";
-import remarkShiki from "@stefanprobst/remark-shiki";
+
+import rehypeHighlightCode from "./rehype-highlight-code";
+import rehypeMetaAttribute from "./rehype-meta-attribute";
 
 export const BLOG_PATH = path.join(process.cwd(), "src", "contents", "blog");
 
@@ -23,7 +24,6 @@ export const blogSlugs = blogFilePaths.map(MDXToSLug);
 export const bundleMDXWithOptions = async (filePath: string) => {
   const mdxSource = fs.readFileSync(path.join(BLOG_PATH, filePath), "utf8");
   const slug = MDXToSLug(filePath);
-  const highlighter = await getHighlighter({ theme: "github-dark" });
 
   const result = await bundleMDX({
     source: mdxSource,
@@ -31,12 +31,13 @@ export const bundleMDXWithOptions = async (filePath: string) => {
     mdxOptions(options, _frontmatter) {
       options.remarkPlugins = [
         ...(options.remarkPlugins ?? []),
-        [remarkShiki, { highlighter }], // Highlight code blocks in markdown with shiki
         [remarkGfm], // Support GFM (autolink literals, footnotes, strikethrough, tables, tasklists)
         [remarkToc, { tight: false }], // Generate a table of contents
       ];
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
+        [rehypeMetaAttribute],
+        [rehypeHighlightCode],
         [rehypeSlug], // Add ids to headings.
         [rehypeAutolinkHeadings, { behavior: "wrap" }], // Add links to headings with ids
         [
