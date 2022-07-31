@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
+import Pre from "@/components/Pre";
 import ResponsiveIFrame from "@/components/ResponsiveIFrame";
 import {
   blogSlugs,
@@ -27,7 +28,7 @@ const BlogPost = ({
         <h1>{frontmatter.title}</h1>
       </BlogHeader>
       <BlogContentWrapper>
-        <BlogMDXContent components={{ ResponsiveIFrame }} />
+        <BlogMDXContent components={{ ResponsiveIFrame, pre: Pre }} />
       </BlogContentWrapper>
     </>
   );
@@ -97,15 +98,6 @@ const BlogContentWrapper = styled.div`
   }
   ol > li {
     list-style: decimal;
-  }
-
-  pre {
-    padding: ${({ theme }) => theme.spacers[24]};
-    border-radius: ${({ theme }) => theme.radiuses[4]};
-    overflow-x: auto;
-
-    background-color: transparent !important;
-    border: 1px solid ${({ theme }) => theme.colors.gray6};
   }
 
   p > code {
