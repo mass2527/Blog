@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import React, { ReactNode } from "react";
 
-function Pre({ children }: { children: ReactNode }) {
+function Pre({ children }: { children?: ReactNode }) {
   return <Wrapper>{children}</Wrapper>;
 }
 
