@@ -24,10 +24,6 @@ const PRE_STYLES: Record<PreThemes, ReturnType<typeof css>> = {
     background-color: ${({ theme }) => theme.colors.gray2};
     color: ${({ theme }) => theme.colors.gray12};
 
-    .highlight-word {
-      background-color: ${({ theme }) => theme.colors.blue5};
-    }
-
     .token.parameter {
       color: ${({ theme }) => theme.colors.gray12};
     }
@@ -79,10 +75,6 @@ const PRE_STYLES: Record<PreThemes, ReturnType<typeof css>> = {
   pink: css`
     background-color: ${({ theme }) => theme.colors.pink2};
     color: ${({ theme }) => theme.colors.pink11};
-
-    .highlight-word {
-      background-color: ${({ theme }) => theme.colors.pink5};
-    }
 
     .token.parameter {
       color: ${({ theme }) => theme.colors.gray12};
@@ -152,9 +144,16 @@ const Wrapper = styled.pre<{ $theme: PreThemes }>`
 
   ${({ $theme }) => PRE_STYLES[$theme]};
 
-  .highlight-word {
-    padding: ${({ theme }) => theme.spacers[4]};
-    border-radius: ${({ theme }) => theme.radiuses[4]};
+  .highlight-word,
+  .highlight-word * {
+    border-radius: ${({ theme }) => theme.radiuses[2]};
+    background-color: ${({ theme }) => theme.colors.violet4};
+    color: ${({ theme }) => theme.colors.violet11} !important;
+    display: inline-block;
+
+    &.on {
+      background-color: ${({ theme }) => theme.colors.violet5};
+    }
   }
 
   .highlight-line[data-highlighted="false"],
