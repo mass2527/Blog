@@ -1,7 +1,8 @@
 import { getMDXComponent } from "mdx-bundler/client";
+import rangeParser from "parse-numeric-range";
 import styled from "styled-components";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
@@ -28,7 +29,47 @@ const BlogPost = ({
         <h1>{frontmatter.title}</h1>
       </BlogHeader>
       <BlogContentWrapper>
-        <BlogMDXContent components={{ ResponsiveIFrame, pre: Pre }} />
+        <BlogMDXContent
+          components={{
+            ResponsiveIFrame,
+            pre: Pre,
+            H: ({ id, index, ...props }) => {
+              const triggerRef = useRef<HTMLElement>(null);
+
+              useEffect(() => {
+                const trigger = triggerRef.current;
+
+                const codeBlock = document.getElementById(id);
+                if (!codeBlock) return;
+
+                const allHighlightWords =
+                  codeBlock.querySelectorAll(".highlight-word");
+                const targetIndex = rangeParser(index).map((i) => i - 1);
+                if (Math.max(...targetIndex) >= allHighlightWords.length)
+                  return;
+
+                const addClass = () =>
+                  targetIndex.forEach((i) =>
+                    allHighlightWords[i].classList.add("on")
+                  );
+                const removeClass = () =>
+                  targetIndex.forEach((i) =>
+                    allHighlightWords[i].classList.remove("on")
+                  );
+
+                trigger?.addEventListener("mouseenter", addClass);
+                trigger?.addEventListener("mouseleave", removeClass);
+
+                return () => {
+                  trigger?.removeEventListener("mouseenter", addClass);
+                  trigger?.removeEventListener("mouseleave", removeClass);
+                };
+              }, []);
+
+              return <code ref={triggerRef} {...props} />;
+            },
+          }}
+        />
       </BlogContentWrapper>
     </>
   );

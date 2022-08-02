@@ -5,10 +5,16 @@ import {
   crimsonDark,
   gray,
   grayDark,
+  pink,
+  pinkDark,
   red,
   redDark,
+  slate,
+  slateDark,
   teal,
   tealDark,
+  violet,
+  violetDark,
   yellow,
   yellowDark,
 } from "@radix-ui/colors";
@@ -39,6 +45,7 @@ const spacers = {
 } as const;
 
 const radiuses = {
+  2: "2px",
   4: "4px",
   6: "6px",
   8: "8px",
@@ -79,6 +86,9 @@ export const lightTheme = {
     ...yellow,
     ...blue,
     ...black,
+    ...pink,
+    ...violet,
+    ...slate,
   },
 } as const;
 
@@ -92,6 +102,9 @@ export const darkTheme = {
     ...yellowDark,
     ...blueDark,
     ...blackDark,
+    ...pinkDark,
+    ...violetDark,
+    ...slateDark,
   },
 } as const;
 
