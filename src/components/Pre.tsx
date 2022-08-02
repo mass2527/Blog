@@ -144,6 +144,11 @@ const Wrapper = styled.pre<{ $theme: PreThemes }>`
 
   ${({ $theme }) => PRE_STYLES[$theme]};
 
+  .highlight-line[data-highlighted="false"],
+  .highlight-line[data-highlighted="false"] * {
+    color: ${({ theme }) => theme.colors.gray10};
+  }
+
   .token.atapply .token:not(.rule):not(.important) {
     color: "inherit";
   }
