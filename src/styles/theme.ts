@@ -45,6 +45,7 @@ const spacers = {
 } as const;
 
 const radiuses = {
+  2: "2px",
   4: "4px",
   6: "6px",
   8: "8px",
