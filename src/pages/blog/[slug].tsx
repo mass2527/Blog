@@ -75,7 +75,7 @@ const BlogPost = ({
                   trigger?.removeEventListener("mouseenter", addClass);
                   trigger?.removeEventListener("mouseleave", removeClass);
                 };
-              }, []);
+              }, [id, index]);
 
               return <code ref={triggerRef} {...props} />;
             },
@@ -101,7 +101,7 @@ const BlogPost = ({
                       : {}),
                   })
                 );
-              }, []);
+              }, [id, index, href, isExternal]);
 
               return null;
             },
