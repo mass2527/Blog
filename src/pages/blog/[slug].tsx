@@ -2,7 +2,7 @@ import { getMDXComponent } from "mdx-bundler/client";
 import rangeParser from "parse-numeric-range";
 import styled from "styled-components";
 
-import { useEffect, useMemo, useRef } from "react";
+import { ReactNode, useEffect, useMemo, useRef } from "react";
 
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
@@ -14,7 +14,6 @@ import {
   blogSlugs,
   BundleMDXResult,
   bundleMDXWithOptions,
-  slugToMDX,
 } from "@/utils/blog";
 
 const BlogPost = ({
@@ -35,7 +34,15 @@ const BlogPost = ({
           components={{
             ResponsiveIFrame,
             pre: Pre,
-            code: ({ children, id, collapsible }) => {
+            code: ({
+              children,
+              id,
+              collapsible,
+            }: {
+              children?: ReactNode;
+              id?: string;
+              collapsible?: boolean;
+            }) => {
               const isCollapsible = typeof collapsible !== "undefined";
               const content = <code id={id}>{children}</code>;
 
