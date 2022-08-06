@@ -34,7 +34,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     ul{
-        list-style:none;
+        list-style-type: circle;
         margin:0;
         padding:0;
     }

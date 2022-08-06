@@ -105,26 +105,15 @@ const BlogContentWrapper = styled.div`
       }
     }
   }
-  ul > li {
-    &:before {
-      content: "-";
-    }
-  }
   ol > li {
     list-style: decimal;
   }
 
   p > code {
-    font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-      DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-    color: ${({ theme }) => theme.colors.crimson11};
-
-    &:before {
-      content: "\`";
-    }
-    &:after {
-      content: "\`";
-    }
+    font-family: Söhne Mono, menlo, monospace;
+    padding: 0px 3px 2px;
+    background-color: ${({ theme }) => theme.colors.violet3};
+    color: ${({ theme }) => theme.colors.violet11};
   }
 `;
 
