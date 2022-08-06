@@ -7,7 +7,7 @@ interface HighlightProps {
   index: string;
 }
 
-export function Highlight({ id, index, ...props }: HighlightProps) {
+function Highlight({ id, index, ...props }: HighlightProps) {
   const triggerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -36,3 +36,5 @@ export function Highlight({ id, index, ...props }: HighlightProps) {
 
   return <code ref={triggerRef} {...props} />;
 }
+
+export default Highlight;
