@@ -6,7 +6,6 @@ import { useMemo } from "react";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
 import Pre from "@/pages/blog/components/Pre";
-import { Preview } from "@/pages/blog/components/Preview";
 import ResponsiveIFrame from "@/pages/blog/components/ResponsiveIFrame";
 import {
   blogFilePaths,
@@ -16,7 +15,8 @@ import {
 } from "@/utils/blog";
 
 import Code from "./components/Code";
-import { Highlight } from "./components/Highlight";
+import Highlight from "./components/Highlight";
+import Preview from "./components/Preview";
 import RegisterLink from "./components/RegisterLink";
 
 const BlogPost = ({
