@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
 import Pre from "@/components/Pre";
+import { Preview } from "@/components/Preview";
 import ResponsiveIFrame from "@/components/ResponsiveIFrame";
 import {
   blogFilePaths,
@@ -105,6 +106,7 @@ const BlogPost = ({
 
               return null;
             },
+            Preview,
           }}
         />
       </BlogContentWrapper>
