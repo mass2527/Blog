@@ -12,9 +12,7 @@ import rehypeMetaAttribute from "./rehype-meta-attribute";
 
 export const BLOG_PATH = path.join(process.cwd(), "src", "contents", "blog");
 
-export const blogFilePaths = fs
-  .readdirSync(BLOG_PATH)
-  .filter((file) => file.endsWith(".mdx"));
+export const blogFilePaths = fs.readdirSync(BLOG_PATH);
 
 const MDXToSLug = (mdxFilePath: string) => mdxFilePath.replace(".mdx", "");
 export const slugToMDX = (slug: string) => slug + ".mdx";
@@ -22,7 +20,15 @@ export const slugToMDX = (slug: string) => slug + ".mdx";
 export const blogSlugs = blogFilePaths.map(MDXToSLug);
 
 export const bundleMDXWithOptions = async (filePath: string) => {
-  const mdxSource = fs.readFileSync(path.join(BLOG_PATH, filePath), "utf8");
+  const mdxSource = fs.readFileSync(
+    path.join(
+      BLOG_PATH,
+      filePath.endsWith(".mdx")
+        ? filePath
+        : `${filePath.replace(".mdx", "")}/index.mdx`
+    ),
+    "utf8"
+  );
   const slug = MDXToSLug(filePath);
 
   const result = await bundleMDX({

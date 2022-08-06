@@ -9,6 +9,7 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 import Pre from "@/components/Pre";
 import ResponsiveIFrame from "@/components/ResponsiveIFrame";
 import {
+  blogFilePaths,
   blogSlugs,
   BundleMDXResult,
   bundleMDXWithOptions,
@@ -204,7 +205,7 @@ export async function getStaticProps({
 }: // TODO: find getStaticProps type
 GetStaticPropsContext<{ slug: string }>) {
   const { frontmatter, code } = await bundleMDXWithOptions(
-    slugToMDX(params?.slug!)
+    blogFilePaths.find((path) => path.startsWith(params?.slug!))!
   );
 
   return {
