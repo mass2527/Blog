@@ -1,20 +1,23 @@
 import { getMDXComponent } from "mdx-bundler/client";
-import rangeParser from "parse-numeric-range";
 import styled from "styled-components";
 
-import { ReactNode, useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
-import Pre from "@/components/Pre";
-import { Preview } from "@/components/Preview";
-import ResponsiveIFrame from "@/components/ResponsiveIFrame";
+import Pre from "@/pages/blog/components/Pre";
+import { Preview } from "@/pages/blog/components/Preview";
+import ResponsiveIFrame from "@/pages/blog/components/ResponsiveIFrame";
 import {
   blogFilePaths,
   blogSlugs,
   BundleMDXResult,
   bundleMDXWithOptions,
 } from "@/utils/blog";
+
+import Code from "./components/Code";
+import { Highlight } from "./components/Highlight";
+import RegisterLink from "./components/RegisterLink";
 
 const BlogPost = ({
   frontmatter,
@@ -34,85 +37,9 @@ const BlogPost = ({
           components={{
             ResponsiveIFrame,
             pre: Pre,
-            code: ({
-              children,
-              id,
-              collapsible,
-            }: {
-              children?: ReactNode;
-              id?: string;
-              collapsible?: boolean;
-            }) => {
-              const isCollapsible = typeof collapsible !== "undefined";
-              const content = <code id={id}>{children}</code>;
-
-              if (isCollapsible) {
-                return <details>{content}</details>;
-              }
-
-              return content;
-            },
-            H: ({ id, index, ...props }) => {
-              const triggerRef = useRef<HTMLElement>(null);
-
-              useEffect(() => {
-                const trigger = triggerRef.current;
-
-                const codeBlock = document.getElementById(id);
-                if (!codeBlock) return;
-
-                const allHighlightWords =
-                  codeBlock.querySelectorAll(".highlight-word");
-                const targetIndex = rangeParser(index).map((i) => i - 1);
-                if (Math.max(...targetIndex) >= allHighlightWords.length)
-                  return;
-
-                const addClass = () =>
-                  targetIndex.forEach((i) =>
-                    allHighlightWords[i].classList.add("on")
-                  );
-                const removeClass = () =>
-                  targetIndex.forEach((i) =>
-                    allHighlightWords[i].classList.remove("on")
-                  );
-
-                trigger?.addEventListener("mouseenter", addClass);
-                trigger?.addEventListener("mouseleave", removeClass);
-
-                return () => {
-                  trigger?.removeEventListener("mouseenter", addClass);
-                  trigger?.removeEventListener("mouseleave", removeClass);
-                };
-              }, [id, index]);
-
-              return <code ref={triggerRef} {...props} />;
-            },
-            RegisterLink: ({ id, index, href }) => {
-              const isExternal = href.startsWith("http");
-
-              useEffect(() => {
-                const codeBlock = document.getElementById(id);
-                if (!codeBlock) return;
-
-                const allHighlightWords =
-                  codeBlock.querySelectorAll(".highlight-word");
-                const target = allHighlightWords[index - 1];
-                if (!target) return;
-
-                target.replaceWith(
-                  Object.assign(document.createElement("a"), {
-                    href,
-                    innerHTML: target.innerHTML,
-                    className: target.className,
-                    ...(isExternal
-                      ? { target: "_blank", rel: "noopener" }
-                      : {}),
-                  })
-                );
-              }, [id, index, href, isExternal]);
-
-              return null;
-            },
+            code: Code,
+            Highlight,
+            RegisterLink,
             Preview,
           }}
         />
