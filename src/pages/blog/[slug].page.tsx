@@ -77,7 +77,7 @@ const BlogContentWrapper = styled.div`
   }
 
   a {
-    color: ${({ theme }) => theme.colors.gray11};
+    color: ${({ theme }) => theme.colors.mauve11};
     :hover {
       text-decoration-line: underline;
       text-decoration-thickness: 0.1px;
@@ -85,46 +85,34 @@ const BlogContentWrapper = styled.div`
     }
   }
   h2 > a {
-    color: ${({ theme }) => theme.colors.gray12};
+    color: ${({ theme }) => theme.colors.mauve12};
   }
   p > a {
     color: ${({ theme }) => theme.colors.blue11};
   }
 
+  ul {
+    list-style-type: circle;
+  }
+
   ul,
   ol {
     margin: ${({ theme }) => theme.spacers[16]};
-    margin-left: ${({ theme }) => theme.spacers[24]};
 
     > li {
       margin-bottom: ${({ theme }) => theme.spacers[8]};
-      &:before {
-        position: absolute;
-        margin-left: -15px;
-        color: ${({ theme }) => theme.colors.gray11};
-      }
     }
   }
-  ul > li {
-    &:before {
-      content: "-";
-    }
-  }
+
   ol > li {
     list-style: decimal;
   }
 
   p > code {
-    font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-      DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-    color: ${({ theme }) => theme.colors.crimson11};
-
-    &:before {
-      content: "\`";
-    }
-    &:after {
-      content: "\`";
-    }
+    font-family: Söhne Mono, menlo, monospace;
+    padding: 0px 3px 2px;
+    background-color: ${({ theme }) => theme.colors.violet3};
+    color: ${({ theme }) => theme.colors.violet11};
   }
 `;
 
