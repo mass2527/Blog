@@ -3,11 +3,11 @@ import { useEffect } from "react";
 interface RegisterLinkProps {
   id: string;
   index: string;
-  href: string;
+  href?: string;
 }
 
 function RegisterLink({ id, index, href }: RegisterLinkProps) {
-  const isExternal = href.startsWith("http");
+  const isExternal = href?.startsWith("http");
 
   useEffect(() => {
     const codeBlock = document.getElementById(id);

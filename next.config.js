@@ -6,6 +6,7 @@ const nextConfig = {
     // ssr and displayName are configured by default
     styledComponents: true,
   },
+  pageExtensions: ["page.tsx"],
 };
 
 module.exports = nextConfig;
