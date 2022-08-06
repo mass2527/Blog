@@ -1,19 +1,23 @@
 import { getMDXComponent } from "mdx-bundler/client";
-import rangeParser from "parse-numeric-range";
 import styled from "styled-components";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
-import Pre from "@/components/Pre";
-import ResponsiveIFrame from "@/components/ResponsiveIFrame";
+import Pre from "@/pages/blog/components/Pre";
+import ResponsiveIFrame from "@/pages/blog/components/ResponsiveIFrame";
 import {
+  blogFilePaths,
   blogSlugs,
   BundleMDXResult,
   bundleMDXWithOptions,
-  slugToMDX,
 } from "@/utils/blog";
+
+import Code from "./components/Code";
+import Highlight from "./components/Highlight";
+import Preview from "./components/Preview";
+import RegisterLink from "./components/RegisterLink";
 
 const BlogPost = ({
   frontmatter,
@@ -33,41 +37,10 @@ const BlogPost = ({
           components={{
             ResponsiveIFrame,
             pre: Pre,
-            H: ({ id, index, ...props }) => {
-              const triggerRef = useRef<HTMLElement>(null);
-
-              useEffect(() => {
-                const trigger = triggerRef.current;
-
-                const codeBlock = document.getElementById(id);
-                if (!codeBlock) return;
-
-                const allHighlightWords =
-                  codeBlock.querySelectorAll(".highlight-word");
-                const targetIndex = rangeParser(index).map((i) => i - 1);
-                if (Math.max(...targetIndex) >= allHighlightWords.length)
-                  return;
-
-                const addClass = () =>
-                  targetIndex.forEach((i) =>
-                    allHighlightWords[i].classList.add("on")
-                  );
-                const removeClass = () =>
-                  targetIndex.forEach((i) =>
-                    allHighlightWords[i].classList.remove("on")
-                  );
-
-                trigger?.addEventListener("mouseenter", addClass);
-                trigger?.addEventListener("mouseleave", removeClass);
-
-                return () => {
-                  trigger?.removeEventListener("mouseenter", addClass);
-                  trigger?.removeEventListener("mouseleave", removeClass);
-                };
-              }, []);
-
-              return <code ref={triggerRef} {...props} />;
-            },
+            code: Code,
+            Highlight,
+            RegisterLink,
+            Preview,
           }}
         />
       </BlogContentWrapper>
@@ -168,7 +141,7 @@ export async function getStaticProps({
 }: // TODO: find getStaticProps type
 GetStaticPropsContext<{ slug: string }>) {
   const { frontmatter, code } = await bundleMDXWithOptions(
-    slugToMDX(params?.slug!)
+    blogFilePaths.find((path) => path.startsWith(params?.slug!))!
   );
 
   return {

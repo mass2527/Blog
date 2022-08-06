@@ -1,4 +1,4 @@
-import styled, { css, FlattenSimpleInterpolation } from "styled-components";
+import styled, { css } from "styled-components";
 
 import React, { ReactNode } from "react";
 
