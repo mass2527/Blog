@@ -33,6 +33,16 @@ const BlogPost = ({
           components={{
             ResponsiveIFrame,
             pre: Pre,
+            code: ({ children, id, collapsible }) => {
+              const isCollapsible = typeof collapsible !== "undefined";
+              const content = <code id={id}>{children}</code>;
+
+              if (isCollapsible) {
+                return <details>{content}</details>;
+              }
+
+              return content;
+            },
             H: ({ id, index, ...props }) => {
               const triggerRef = useRef<HTMLElement>(null);
 
