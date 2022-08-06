@@ -17,13 +17,13 @@ const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
         return (
           <li key={frontmatter.title}>
             <Link href={`/blog/${slug}`}>
-              <StyledLink>
+              <a>
                 <article>
-                  <Heading color="blue11">{frontmatter.title}</Heading>
+                  <Heading>{frontmatter.title}</Heading>
                   <Text>{frontmatter.summary}</Text>
                   <time>{frontmatter.publishedAt}</time>
                 </article>
-              </StyledLink>
+              </a>
             </Link>
           </li>
         );
@@ -31,23 +31,6 @@ const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
     </ul>
   );
 };
-
-const StyledLink = styled.a`
-  &:hover {
-    h2 {
-      background: linear-gradient(
-        90deg,
-        ${({ theme }) => theme.colors.blue11} 0%,
-        ${({ theme }) => theme.colors.crimson11} 100%
-      );
-      background-clip: text;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-  }
-`;
-`
-`;
 
 export async function getStaticProps() {
   const blogs = (

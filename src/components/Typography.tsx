@@ -16,7 +16,7 @@ function Typography({
   as,
   fontSize = 16,
   fontWeight = 400,
-  color = "gray12",
+  color = "mauve12",
   children,
 }: TypographyProps) {
   return (

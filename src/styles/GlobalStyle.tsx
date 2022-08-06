@@ -13,14 +13,27 @@ const GlobalStyle = createGlobalStyle`
     }
 
     body{
-        background-color:${({ theme }) => theme.colors.black1};
-        color:${({ theme }) => theme.colors.black12};
-        font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif;     
+        color:${({ theme }) => theme.colors.mauve12};
+        font-family:Untitled Sans, -apple-system, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+
+         background: radial-gradient(
+            ellipse at 100% 100%,
+            hsl(254 100% 6% / 0.07),
+            ${({ theme }) => theme.colors.violet1},
+            transparent),
+            linear-gradient(
+                to bottom right,
+                ${({ theme }) => theme.colors.mint2},
+                ${({ theme }) => theme.colors.indigo2},
+                ${({ theme }) => theme.colors.pink3},
+                ${({ theme }) => theme.colors.cyan3}
+            );
     }
 
     *::selection{
-        background-color:${({ theme }) => theme.colors.crimson5};
-        color:${({ theme }) => theme.colors.black12};
+        background-color:${({ theme }) => theme.colors.violet5};
+        color:${({ theme }) => theme.colors.violet12};
     }
 
     h1{
@@ -33,19 +46,19 @@ const GlobalStyle = createGlobalStyle`
         font-size:${({ theme }) => theme.fontSizes[20]};
     }
 
-    ul{
-        list-style-type: circle;
+    ul,ol{
+        list-style:none;
         margin:0;
         padding:0;
     }
 
     a{
-        color:${({ theme }) => theme.colors.gray11};
+        color:${({ theme }) => theme.colors.mauve11};
         text-decoration:none;
         cursor:pointer;
 
         &:hover{
-            color:${({ theme }) => theme.colors.gray12};
+            color:${({ theme }) => theme.colors.mauve12};
         }
     }
 
@@ -65,7 +78,7 @@ const GlobalStyle = createGlobalStyle`
     time{
         font-size:${({ theme }) => theme.fontSizes[14]};
         font-weight:${({ theme }) => theme.fontWeights[400]};
-        color:${({ theme }) => theme.colors.gray11};
+        color:${({ theme }) => theme.colors.mauve11};
     }
 `;
 

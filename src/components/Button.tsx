@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { ButtonHTMLAttributes } from "react";
 
 type ButtonSize = "small" | "medium" | "large";
-type ButtonColor = "crimson" | "red" | "teal" | "yellow" | "blue" | "gray";
+type ButtonColor = "crimson" | "red" | "cyan" | "yellow" | "blue" | "mauve";
 type ButtonVariant = "primary" | "outline" | "ghost";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -71,8 +71,8 @@ const StyledButton = styled.button<{
           background-color: ${colors[`${$color}6`]};
         }
         &:disabled {
-          background-color: ${colors.gray4};
-          color: ${colors.gray11};
+          background-color: ${colors.mauve4};
+          color: ${colors.mauve11};
         }
       `,
       outline: css`
@@ -86,14 +86,14 @@ const StyledButton = styled.button<{
           border: 1px solid ${colors[`${$color}9`]};
         }
         &:disabled {
-          background-color: ${colors.gray1};
-          border: 1px solid ${colors.gray7};
-          color: ${colors.gray11};
+          background-color: ${colors.mauve1};
+          border: 1px solid ${colors.mauve7};
+          color: ${colors.mauve11};
         }
       `,
       ghost: css`
         &:hover {
-          color: ${({ theme }) => theme.colors.gray12};
+          color: ${({ theme }) => theme.colors.mauve12};
         }
       `,
     }[$variant])};

@@ -3,31 +3,23 @@ import {
   blueDark,
   crimson,
   crimsonDark,
-  gray,
-  grayDark,
+  cyan,
+  cyanDark,
+  indigo,
+  indigoDark,
+  mauve,
+  mauveDark,
+  mint,
+  mintDark,
   pink,
   pinkDark,
   red,
   redDark,
-  slate,
-  slateDark,
-  teal,
-  tealDark,
   violet,
   violetDark,
   yellow,
   yellowDark,
 } from "@radix-ui/colors";
-
-const black = {
-  black1: "#fff",
-  black12: "#000",
-};
-
-const blackDark = {
-  black1: "#000",
-  black12: "#fff",
-};
 
 const sizes = {
   maxWidth: "776px",
@@ -80,15 +72,15 @@ export const lightTheme = {
   ...commonTheme,
   colors: {
     ...crimson,
-    ...gray,
     ...red,
-    ...teal,
     ...yellow,
     ...blue,
-    ...black,
     ...pink,
     ...violet,
-    ...slate,
+    ...cyan,
+    ...mauve,
+    ...mint,
+    ...indigo,
   },
 } as const;
 
@@ -96,15 +88,15 @@ export const darkTheme = {
   ...commonTheme,
   colors: {
     ...crimsonDark,
-    ...grayDark,
     ...redDark,
-    ...tealDark,
     ...yellowDark,
     ...blueDark,
-    ...blackDark,
     ...pinkDark,
     ...violetDark,
-    ...slateDark,
+    ...cyanDark,
+    ...mauveDark,
+    ...mintDark,
+    ...indigoDark,
   },
 } as const;
 
