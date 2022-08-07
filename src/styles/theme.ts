@@ -11,8 +11,12 @@ import {
   mauveDark,
   mint,
   mintDark,
+  orange,
+  orangeDark,
   pink,
   pinkDark,
+  plum,
+  plumDark,
   red,
   redDark,
   violet,
@@ -81,6 +85,8 @@ export const lightTheme = {
     ...mauve,
     ...mint,
     ...indigo,
+    ...orange,
+    ...plum,
   },
 } as const;
 
@@ -97,6 +103,8 @@ export const darkTheme = {
     ...mauveDark,
     ...mintDark,
     ...indigoDark,
+    ...orangeDark,
+    ...plumDark,
   },
 } as const;
 
