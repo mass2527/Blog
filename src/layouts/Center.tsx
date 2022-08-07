@@ -1,8 +1,7 @@
 import styled from "styled-components";
 
-import { Flex } from "./Flex";
+import { center } from "@/styles/utils/center";
 
-export const Center = styled(Flex)`
-  justify-content: center;
-  align-items: center;
+export const Center = styled.div`
+  ${center}
 `;
