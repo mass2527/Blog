@@ -9,7 +9,8 @@ const GlobalStyle = createGlobalStyle`
     html{
         line-height:1.5;
         scroll-padding-top: ${({ theme: { sizes, spacers } }) =>
-          `calc(${sizes.headerHeight} + ${spacers[16]})`};        
+          `calc(${sizes.headerHeight} + ${spacers[16]})`};
+        background-color:${({ theme }) => theme.colors.mauve1};
     }
 
     body{
