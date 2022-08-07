@@ -87,8 +87,12 @@ const BlogContentWrapper = styled.div`
   h2 > a {
     color: ${({ theme }) => theme.colors.mauve12};
   }
-  p > a {
-    color: ${({ theme }) => theme.colors.blue11};
+
+  li,
+  p {
+    > a {
+      color: ${({ theme }) => theme.colors.blue11};
+    }
   }
 
   ul {
