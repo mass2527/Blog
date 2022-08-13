@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://blog-mass2527.vercel.app/sitemap.xml
