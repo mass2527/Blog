@@ -34,6 +34,7 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          {/* https://realfavicongenerator.net/ */}
           <link
             rel="apple-touch-icon"
             sizes="180x180"
