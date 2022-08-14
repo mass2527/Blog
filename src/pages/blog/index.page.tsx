@@ -1,5 +1,3 @@
-import styled from "styled-components";
-
 import type { InferGetStaticPropsType } from "next";
 import Link from "next/link";
 
