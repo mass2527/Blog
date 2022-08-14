@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 
 interface SEOProps {
   title: string;
+  subTitle?: string;
   description: string;
   image?: string;
 }
@@ -10,13 +11,16 @@ interface SEOProps {
 export default function SEO({
   title,
   description,
+  subTitle = "필리",
   image = "https://images.unsplash.com/photo-1618312776768-c5926372a2f5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTl8fHBoaWxseXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1200&q=60",
 }: SEOProps) {
   const router = useRouter();
 
   return (
     <Head>
-      <title>{title}</title>
+      <title>
+        {title} {subTitle && `- ${subTitle}`}
+      </title>
       <meta name="description" content={description} />
       {/* Open Graph */}
       <meta property="og:type" content="website" />

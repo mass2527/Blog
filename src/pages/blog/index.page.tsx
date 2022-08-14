@@ -13,7 +13,7 @@ const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <div>
       <SEO
-        title="Blog - 필리"
+        title="Blog"
         description="프론트엔드와 관련된 다양한 지식을 공유합니다."
       />
       <ul>
