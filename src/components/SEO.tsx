@@ -18,9 +18,7 @@ export default function SEO({
 
   return (
     <Head>
-      <title>
-        {title} {subTitle && `- ${subTitle}`}
-      </title>
+      <title>{subTitle ? `${title} - ${subTitle}` : title}</title>
       <meta name="description" content={description} />
       {/* Open Graph */}
       <meta property="og:type" content="website" />
