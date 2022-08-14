@@ -1,6 +1,7 @@
 import type { InferGetStaticPropsType } from "next";
 import Link from "next/link";
 
+import SEO from "@/components/SEO";
 import { Heading, Text } from "@/components/Typography";
 import {
   blogFilePaths,
@@ -10,23 +11,29 @@ import {
 
 const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <ul>
-      {blogs.map(({ frontmatter, slug }) => {
-        return (
-          <li key={frontmatter.title}>
-            <Link href={`/blog/${slug}`}>
-              <a>
-                <article>
-                  <Heading>{frontmatter.title}</Heading>
-                  <Text>{frontmatter.summary}</Text>
-                  <time>{frontmatter.publishedAt}</time>
-                </article>
-              </a>
-            </Link>
-          </li>
-        );
-      })}
-    </ul>
+    <div>
+      <SEO
+        title="Blog - 필리"
+        description="프론트엔드와 관련된 다양한 지식을 공유합니다."
+      />
+      <ul>
+        {blogs.map(({ frontmatter, slug }) => {
+          return (
+            <li key={frontmatter.title}>
+              <Link href={`/blog/${slug}`}>
+                <a>
+                  <article>
+                    <Heading>{frontmatter.title}</Heading>
+                    <Text>{frontmatter.summary}</Text>
+                    <time>{frontmatter.publishedAt}</time>
+                  </article>
+                </a>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
 
