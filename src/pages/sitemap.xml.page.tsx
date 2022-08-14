@@ -9,7 +9,7 @@ function generateSiteMap(slugs: string[]) {
        .map((slug) => {
          return `
        <url>
-           <loc>https://blog-mass2527.vercel.app/${slug}</loc>
+           <loc>https://philly.im/${slug}</loc>
        </url>
      `;
        })

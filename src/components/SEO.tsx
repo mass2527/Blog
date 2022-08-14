@@ -28,23 +28,14 @@ export default function SEO({
       <meta property="og:title" content={title} />
       <meta property="og:image" content={image} />
       <meta property="og:description" content={description} />
-      <meta
-        property="og:url"
-        content={`https://blog-mass2527.vercel.app${router.asPath}`}
-      />
-      <link
-        rel="canonical"
-        href={`https://blog-mass2527.vercel.app${router.asPath}`}
-      />
+      <meta property="og:url" content={`https://philly.im${router.asPath}`} />
+      <link rel="canonical" href={`https://philly.im${router.asPath}`} />
       {/* Twitter Card */}
       <meta property="twitter:card" content="summary" />
       <meta property="twitter:title" content={title} />
       <meta property="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
-      <meta
-        name="twitter:url "
-        content={`https://blog-mass2527.vercel.app${router.asPath}`}
-      />
+      <meta name="twitter:url " content={`https://philly.im${router.asPath}`} />
     </Head>
   );
 }
