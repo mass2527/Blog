@@ -5,6 +5,7 @@ import { useMemo } from "react";
 
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
+import SEO from "@/components/SEO";
 import Pre from "@/pages/blog/components/Pre";
 import ResponsiveIFrame from "@/pages/blog/components/ResponsiveIFrame";
 import {
@@ -27,6 +28,7 @@ const BlogPost = ({
 
   return (
     <>
+      <SEO title={frontmatter.title} description={frontmatter.summary} />
       <BlogHeader>
         {/* TODO: add category */}
         <time>{frontmatter.publishedAt}</time>
