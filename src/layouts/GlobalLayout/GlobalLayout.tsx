@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 
+import GlobalFooter from "./GlobalFooter";
 import GlobalHeader from "./GlobalHeader";
 import GlobalMain from "./GlobalMain";
 
@@ -8,6 +9,7 @@ function GlobalLayout({ children }: { children: ReactNode }) {
     <div>
       <GlobalHeader />
       <GlobalMain>{children}</GlobalMain>
+      <GlobalFooter />
     </div>
   );
 }
