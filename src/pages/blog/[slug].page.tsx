@@ -17,6 +17,7 @@ import {
 
 import Code from "./components/Code";
 import Highlight from "./components/Highlight";
+import Live from "./components/Live";
 import Preview from "./components/Preview";
 import RegisterLink from "./components/RegisterLink";
 
@@ -39,6 +40,7 @@ const BlogPost = ({
           components={{
             ResponsiveIFrame,
             pre: Pre,
+            Live,
             code: Code,
             Highlight,
             RegisterLink,

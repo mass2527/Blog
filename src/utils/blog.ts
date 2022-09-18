@@ -33,7 +33,7 @@ export const bundleMDXWithOptions = async (filePath: string) => {
 
   const result = await bundleMDX({
     source: mdxSource,
-    // cwd: path.dirname(filePath),
+    cwd: filePath.endsWith(".mdx") ? BLOG_PATH : path.join(BLOG_PATH, filePath),
     mdxOptions(options, _frontmatter) {
       options.remarkPlugins = [
         ...(options.remarkPlugins ?? []),
