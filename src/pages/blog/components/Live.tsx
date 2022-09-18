@@ -11,7 +11,7 @@ import React from "react";
 import Pre from "./Pre";
 import Preview from "./Preview";
 
-const DEFAULT_THEME = { plain: {}, styles: [] };
+const DEFAULT_THEME: LiveProviderProps["theme"] = { plain: {}, styles: [] };
 
 function Live({
   code,
