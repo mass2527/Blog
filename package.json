@@ -20,6 +20,7 @@
     "parse-numeric-range": "^1.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-live": "^2.4.1",
     "recoil": "^0.7.3",
     "refractor": "^4.7.0",
     "rehype-autolink-headings": "^6.1.1",
