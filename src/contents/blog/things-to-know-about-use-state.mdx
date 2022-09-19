@@ -1,0 +1,227 @@
+---
+title: useState에 대해 알아야 할 것들
+category: React
+summary: 매일 유용하게 써먹을 수 있는 5가지 useState 팁을 소개합니다.
+published: true
+publishedAt: "2022-09-20"
+---
+
+이 글은 [TkDodo](https://tkdodo.eu)의
+[Things to know about useState](https://tkdodo.eu/blog/things-to-know-about-use-state) 포스트를 번역한 글입니다.
+
+[React.useState](https://ko.reactjs.org/docs/hooks-reference.html#usestate)는 매우 사용하기에 직관적입니다.
+초기값을 전달하면 값과 그 값을 갱신하는 함수를 반환합니다.
+어떤 보석 같은 정보가 여기 숨어 있을까요?
+매일 유용하게 써먹을 수 있는 5가지 팁을 소개하겠습니다.
+
+## 1: 함수적 갱신
+
+react 클래스 컴포넌트에서의 *setState*가 그렇듯 *useState* 또한 [함수적 갱신](https://ko.reactjs.org/docs/hooks-reference.html#functional-updates)이 가능합니다.
+*useState*가 반환한 갱신 함수에는 새로운 값을 전달하는 대신 함수를 전달할 수 있습니다.
+react는 이전 값으로 새로운 값을 계산할 수 있도록 이전 값을 받아 갱신된 값을 반환하는 함수를 호출할 것입니다.
+
+```jsx
+const [count, setCount] = React.useState(0)
+
+// 🚨 다음 값을 계산하기위해 현재의 count에 의존
+<button onClick={() => setCount(count + 1)}>Increment</button>
+
+// ✅ 다음 값을 계산하기위해 previousCount 사용
+<button onClick={() => setCount(previousCount => previousCount + 1)}>Increment</button>
+```
+
+어떤 방식이든 큰 차이가 없는 것처럼 보이지만 일부 상황에서는 미묘한 버그가 발생할 수 있습니다.
+
+## 갱신 함수 여러 번 호출하기
+
+<Live code={`
+function App() {
+  const [count, setCount] = React.useState(0)
+
+  return (
+    <button
+      onClick={() => {
+        setCount(count + 1)
+        setCount(count + 1)
+      }}
+    >
+      🚨 예상되로 동작하지 않음, count: {count}
+    </button>
+  )
+}
+
+render(<App />)
+`} />
+
+두 *setCount* 모두 같은 값(*count*)을 바라보고 있기 때문에 각각의 클릭이 숫자를 하나씩만 증가시킬 것입니다.
+*setCount*는 *count*를 즉시 갱신하지 않음을 아는 것은 매우 중요합니다.
+*useState*의 갱신 함수는 단지 갱신을 계획합니다.
+react에게 이렇게 말합니다:
+
+> 이 값을 새 값으로 갱신해 줘, 언젠가
+
+위 예시에서는 react에게 같은 말을 두 번 했습니다:
+> count를 2로 갱신해 줘<br/>
+> count를 2로 갱신해 줘
+
+위는 말하고자 의도했던 바가 아닙니다. 표현하고자 했던 바는 다음과 같습니다.
+> 현재 값을 증가시켜줘<br/>
+> 현재 값을 증가시켜줘(다시)
+
+함수적 갱신은 이를 보장해 줍니다.
+
+<Live
+code={`
+function App() {
+  const [count, setCount] = React.useState(0)
+
+  return (
+    <button
+      onClick={() => {
+        setCount((previousCount) => previousCount + 1)
+        setCount((previousCount) => previousCount + 1)
+      }}
+    >
+      ✅ 2씩 증가, count: {count}
+    </button>
+  )
+}
+
+render(<App />)
+`}
+/>
+
+## 비동기 액션이 포함되었을 때
+
+Kent C. Dodds이 이에 대한 긴 포스트를 [여기](https://kentcdodds.com/blog/use-state-lazy-initialization-and-function-updates) 작성했습니다.
+그리고 결론은 다음과 같습니다:
+> 새로운 state를 이전 state를 기반으로 계산해야 할 때마다 함수적 갱신을 사용합니다.
+
+<p style={{paddingLeft: '38px', marginTop: '-8px'}}>— Kent C. Dodds</p>
+
+위의 결론에 동의하며 해당 포스트를 자세히 읽어보는 것을 추천합니다.
+
+## 보너스: 의존성 피하기
+
+함수적 갱신을 잘 이용하면 *useEffect*, *useMemo*, *useCallback*의 의존성 배열을 입력하지 않아도 됩니다.
+메모이제이션된 자식 컴포넌트에 증가함수를 전달하려 한다고 생각해 보세요.
+*useCallback*을 사용해 함수가 너무 자주 재생성되지 않도록 할 수는 있지만 여전히 count가 변할 때마다 새로운 참조 값을 갖는 함수를 재생성할 것입니다.
+함수적 갱신을 이용하면 이 문제를 해결할 수 있습니다.
+
+```jsx
+function Counter({ incrementBy = 1 }) {
+  const [count, setCount] = React.useState(0)
+
+  // 🚨 count가 갱신될 때마다 새로운 함수를 생성
+  const increment = React.useCallback(() => setCount(count + incrementBy), [
+    incrementBy,
+    count,
+  ])
+
+  // ✅ count를 사용하지 않음으로써 위 문제 해결
+  const increment = React.useCallback(
+    () => setCount((previousCount) => previousCount + incrementBy),
+    [incrementBy]
+  )
+```
+
+## 보너스 2: useReducer로 state 토글 하기
+
+이전에 한두 번쯤은 boolean state를 토글 해봤을 겁니다.
+
+```jsx
+const [value, setValue] = React.useState(true)
+
+<button onClick={() => setValue(previousValue => !previousValue)}>Toggle</button>
+```
+
+단순히 state 토글을 하려고 한다면 *useReducer*가 더 나은 선택이 될 수 있습니다. 왜냐면:
+- 토글 로직을 hook을 호출하는 곳으로 옮길 수 있고
+- 토글 함수의 이름을 직접 정할 수 있고(그저 값을 갱신하는 함수가 아닙니다)
+- 토글 함수를 여러 번 사용한다면 반복적인 코드를 줄여줍니다.
+
+```jsx
+const [value, toggleValue] = React.useReducer(previous => !previous, true)
+
+<button onClick={toggleValue}>Toggle</button>
+```
+
+이 예시는 *useReducer*가 "복잡한" state를 다룰 때만 좋은 것은 아니라는 것과 굳이 이벤트를 dispatch 않아도 됨을 보여준다고 생각합니다.
+
+## 2: 지연 초기화
+
+*useState*에 초기값을 전달할 때 해당 값은 항상 생성되지만 react는 첫 번째 렌더에만 그 값을 사용합니다.
+예를 들어 문자열을 초기값으로 전달할 때와 같이 대부분의 경우에는 이것이 문제가 되지 않습니다.
+그러나 때로는 state를 복잡한 값으로 초기화할 필요가 있습니다.
+그런 상황에서는 *useState*의 초기값 자리에 함수를 전달할 수 있습니다.
+그러면 react는 컴포넌트가 마운트 됐을 때만 함수를 호출합니다.
+
+```jsx
+// 🚨 매 렌더마다 불필요하게 계산
+const [value, setValue] = React.useState(
+  calculateExpensiveInitialValue(props)
+)
+
+// ✅ 아주 조금 달라보이지만 함수가 오직 마운트 됐을 때 한 번만 호출됨
+const [value, setValue] = React.useState(() =>
+  calculateExpensiveInitialValue(props)
+)
+```
+
+## 3: 갱신되지 않는 경우
+
+값을 갱신하는 함수를 호출한다고 항상 react가 컴포넌트를 리렌더하지는 않습니다.
+현재 state와 같은 값으로 갱신을 하려는 경우 렌더링 되지 않습니다.
+react는 값이 다른지 확인하기 위해 [Object.is](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#description)를 사용합니다.
+라이브 예시로 확인해 보세요.
+
+<Live 
+code={`
+function App() {
+  const [name, setName] = React.useState('Elias')
+
+  // 🤯 이 버튼을 클릭해도 컴포넌트가 리렌더되지 않습니다.
+  return (
+    <button onClick={() => setName('Elias')}>
+      Name is: {name}, Date is: {new Date().getTime()}
+    </button>
+  )
+}
+
+render(<App />)
+`}
+/>
+
+## 4. 편리한 오버로드
+
+이번에는 Typescript 사용자를 팁입니다. *useState*는 보통 타입 추론을 잘 지원하지만
+*undefined* 또는 *null*로 초기화하려는 경우 명시적으로 제네릭 파라미터를 입력해야 합니다.
+그렇지 않으면 Typescript는 제대로 동작하기 위한 충분한 정보를 알 수 없습니다.
+
+```tsx
+// 🚨 age는 `undefined`로 추론될 것이며 이는 쓸모없습니다.
+const [age, setAge] = React.useState(undefined)
+
+// 🆗 짧지 않지만...
+const [age, setAge] = React.useState<number | null>(null)
+```
+
+*useState*에는 초기값을 완전히 생략하면 전달한 타입에 *undefined*를 추가해 주는 [편리한 오버로드](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/7a0d9c019f2b48b36b88691247870e6885b97a02/types/react/v16/index.d.ts#L921-L928)가 있습니다.
+파라미터를 전달하지 않으면 *undefined*를 명시적으로 전달하는 것과 동일하므로 런타임에 *undefined*가 될 것입니다.
+
+```tsx
+// ✅ age는 `number | undefined`
+const [age, setAge] = React.useState<number>()
+```
+
+물론 *null*로 초기화할 경우에는 편리한 오버로드가 없으므로 긴 버전을 사용해야 합니다.
+
+## 5: 세부 구현사항
+
+*useState*는 *useReducer*로 구현되어 있습니다. react [소스 코드](https://github.com/facebook/react/blob/1a7472624661270008011fd77f097d71e6249de9/packages/react-reconciler/src/ReactFiberHooks.new.js#L1242-L1246)에서 확인해 볼 수 있습니다.
+또한 Kent C. Dodds가 [어떻게 useReducer로 useState를 구현하는지](https://kentcdodds.com/blog/how-to-implement-usestate-with-usereducer)에 대해 작성한 좋을 글이 있습니다.
+
+## 결론
+
+5개의 팁 중 처음부터 3개는 글의 도입부에 링크된 react 공식 문서의 Hooks API Reference에 언급되어 있습니다.
+이전까지는 이 팁들에 대해 모르고 있었다면 - 이제는 알고 있습니다!
