@@ -1,19 +1,12 @@
 import styled from "styled-components";
 
-import React, { ReactNode } from "react";
-
-function Pre({ children }: { children?: ReactNode }) {
-  return <Wrapper>{children}</Wrapper>;
-}
-
-const Wrapper = styled.pre`
+const Pre = styled.pre`
   box-sizing: border-box;
   overflow: auto;
   white-space: pre;
 
   box-shadow: inset 0 0 0 1px ${({ theme }) => theme.colors.mauve6};
   border-radius: ${({ theme }) => theme.radiuses[8]};
-  padding: ${({ theme }) => theme.spacers[24]};
 
   font-family: Söhne Mono, menlo, monospace;
   font-size: ${({ theme }) => theme.fontSizes[14]};
@@ -21,6 +14,12 @@ const Wrapper = styled.pre`
 
   & > code {
     display: block;
+    margin: ${({ theme }) => theme.spacers[24]};
+  }
+
+  textarea {
+    border-radius: ${({ theme }) => theme.radiuses[8]};
+    outline-color: ${({ theme }) => theme.colors.blue8};
   }
 
   background-color: transparent;
