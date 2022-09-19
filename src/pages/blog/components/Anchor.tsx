@@ -1,9 +1,9 @@
 import React, { ReactNode } from "react";
 
 function Anchor({ children, href }: { children?: ReactNode; href?: string }) {
-  const hasHash = href?.startsWith("#");
-  const attributes = hasHash
-    ? { target: "_self" }
+  const isInternalLink = href?.startsWith("#");
+  const attributes = isInternalLink
+    ? undefined
     : { target: "_blank", rel: "noreferrer" };
 
   return (
