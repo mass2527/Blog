@@ -1,12 +1,6 @@
 import styled from "styled-components";
 
-import React, { ReactNode } from "react";
-
-function Pre({ children }: { children?: ReactNode }) {
-  return <Wrapper>{children}</Wrapper>;
-}
-
-const Wrapper = styled.pre`
+const Pre = styled.pre`
   box-sizing: border-box;
   overflow: auto;
   white-space: pre;
