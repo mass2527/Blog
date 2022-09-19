@@ -15,6 +15,7 @@ import {
   bundleMDXWithOptions,
 } from "@/utils/blog";
 
+import BlockQuote from "./components/BlockQuote";
 import Code from "./components/Code";
 import Highlight from "./components/Highlight";
 import Live from "./components/Live";
@@ -45,6 +46,7 @@ const BlogPost = ({
             Highlight,
             RegisterLink,
             Preview,
+            blockquote: BlockQuote,
           }}
         />
       </BlogContentWrapper>
