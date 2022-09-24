@@ -81,7 +81,7 @@ const Component = () => {
 이를 위한 해결 방법은 결국 state입니다.
 state는 갱신 함수를 호출했을 때만 변경되는 것이 보장됩니다.
 해야 할 일은 단순히 갱신 함수를 호출하지 않는 것이고 이는 *useState* 반환 값의 두 번째 인자이므로 이를 구조 분해 할당하지 않으면 됩니다.
-*resource* 생성자가 마운트 시에만 호출되는 것을 보장하기 위해 [지연 초기화](./blog/things-to-know-about-use-state#2-지연-초기화)를 같이 사용할 수도 있습니다.
+*resource* 생성자가 마운트 시에만 호출되는 것을 보장하기 위해 [지연 초기화](things-to-know-about-use-state#2-지연-초기화)를 같이 사용할 수도 있습니다.
 
 ```jsx
 const Component = () => {
