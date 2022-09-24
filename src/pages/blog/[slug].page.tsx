@@ -101,13 +101,6 @@ const BlogContentWrapper = styled.div`
   ol > li {
     list-style: decimal;
   }
-
-  p > code {
-    font-family: Söhne Mono, menlo, monospace;
-    padding: 0px 3px 2px;
-    background-color: ${({ theme }) => theme.colors.violet3};
-    color: ${({ theme }) => theme.colors.violet11};
-  }
 `;
 
 export async function getStaticPaths() {
