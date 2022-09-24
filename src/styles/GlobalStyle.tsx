@@ -82,6 +82,12 @@ const GlobalStyle = createGlobalStyle`
         font-weight:${({ theme }) => theme.fontWeights[400]};
         color:${({ theme }) => theme.colors.mauve11};
     }
+
+    hr{
+        border:0;
+        height:1px;
+        background-color:${({ theme }) => theme.colors.mauve6};
+    }
 `;
 
 export default GlobalStyle;

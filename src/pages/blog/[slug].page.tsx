@@ -79,28 +79,10 @@ const BlogContentWrapper = styled.div`
     margin-top: ${({ theme }) => theme.spacers[48]};
     margin-bottom: ${({ theme }) => theme.spacers[24]};
   }
+
   h3 {
     margin-top: ${({ theme }) => theme.spacers[32]};
     margin-bottom: ${({ theme }) => theme.spacers[16]};
-  }
-
-  a {
-    color: ${({ theme }) => theme.colors.mauve11};
-    :hover {
-      text-decoration-line: underline;
-      text-decoration-thickness: 0.1px;
-      text-underline-position: under;
-    }
-  }
-  h2 > a {
-    color: ${({ theme }) => theme.colors.mauve12};
-  }
-
-  li,
-  p {
-    > a {
-      color: ${({ theme }) => theme.colors.blue11};
-    }
   }
 
   ul {
@@ -118,13 +100,6 @@ const BlogContentWrapper = styled.div`
 
   ol > li {
     list-style: decimal;
-  }
-
-  p > code {
-    font-family: Söhne Mono, menlo, monospace;
-    padding: 0px 3px 2px;
-    background-color: ${({ theme }) => theme.colors.violet3};
-    color: ${({ theme }) => theme.colors.violet11};
   }
 `;
 
