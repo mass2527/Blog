@@ -4,16 +4,18 @@ import {
   PlayIcon,
   SpeakerLoudIcon,
   SpeakerOffIcon,
+  TrackNextIcon,
 } from "@radix-ui/react-icons";
 
 import React, { useEffect, useRef, useState } from "react";
 
 import { Text } from "@/components/Typography";
+import { useUpdateEffect } from "@/hooks/useUpdateEffect";
 import { flexRow } from "@/styles/utils/flex";
 
 const formatAsMSS = (timeInSeconds: number) => {
   const minutes = Math.floor(timeInSeconds / 60);
-  const seconds = Math.floor(timeInSeconds % 60);
+  const seconds = Math.ceil(timeInSeconds % 60);
   return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
 };
 
@@ -21,26 +23,28 @@ function AudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
+  const [trackList, setTrackList] = useState<string[]>([]);
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLProgressElement>(null);
 
-  const progressRate = audioRef.current
+  const [track] = trackList.length ? trackList[trackIndex].split(" - ") : [];
+
+  const trackPath = trackList.length
+    ? `/tracks/${trackList[trackIndex]}.mp3`
+    : undefined;
+
+  const progressRate = audioRef.current?.duration
     ? currentTime / audioRef.current.duration
     : 0;
 
   useEffect(() => {
-    if (audioRef.current === null) return;
-
-    const audioElement = audioRef.current;
-    const handleTimeUpdate = (event: Event) => {
-      const { currentTime } = event.target as HTMLAudioElement;
-      setCurrentTime(currentTime);
-    };
-    audioElement.addEventListener("timeupdate", handleTimeUpdate);
-
-    return () => {
-      audioElement.removeEventListener("timeupdate", handleTimeUpdate);
-    };
+    function getTrackList() {
+      fetch("/api/tracks")
+        .then((res) => res.json())
+        .then(({ data }) => setTrackList(data));
+    }
+    getTrackList();
   }, []);
 
   useEffect(() => {
@@ -59,6 +63,28 @@ function AudioPlayer() {
   useEffect(() => {
     if (audioRef.current === null) return;
 
+    const audioElement = audioRef.current;
+    const handleTimeUpdate = (event: Event) => {
+      const { currentTime } = event.target as HTMLAudioElement;
+      setCurrentTime(currentTime);
+    };
+    const updateTrackIndex = () => {
+      setTrackIndex(
+        (previousTrackIndex) => (previousTrackIndex + 1) % trackList.length
+      );
+    };
+
+    audioElement.addEventListener("timeupdate", handleTimeUpdate);
+    audioElement.addEventListener("ended", updateTrackIndex);
+    return () => {
+      audioElement.removeEventListener("timeupdate", handleTimeUpdate);
+      audioElement.removeEventListener("ended", updateTrackIndex);
+    };
+  }, [trackList]);
+
+  useEffect(() => {
+    if (audioRef.current === null) return;
+
     const method = isPlaying ? "play" : "pause";
     audioRef.current[method]();
   }, [isPlaying]);
@@ -70,10 +96,25 @@ function AudioPlayer() {
     audioRef.current.volume = volume;
   }, [isMuted]);
 
+  useUpdateEffect(() => {
+    if (audioRef.current === null) return;
+
+    audioRef.current.play();
+  }, [trackIndex]);
+
+  const playNextTrack = () => {
+    setTrackIndex(
+      (previousTrackIndex) => (previousTrackIndex + 1) % trackList.length
+    );
+    if (!isPlaying) {
+      setIsPlaying(true);
+    }
+  };
+
   return (
     <Wrapper>
-      <figcaption>Gatinha</figcaption>
-      <Audio ref={audioRef} controls src="/ES_Gatinha - Cornelio.mp3">
+      <figcaption>{track}</figcaption>
+      <Audio ref={audioRef} controls src={trackPath}>
         오디오 기능이 제공되지 않는 브라우저입니다.
       </Audio>
 
@@ -83,6 +124,9 @@ function AudioPlayer() {
         aria-label={isPlaying ? "중지" : "재생"}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
+      </button>
+      <button type="button" aria-label="다음 트랙 재생" onClick={playNextTrack}>
+        <TrackNextIcon />
       </button>
       <button
         type="button"
@@ -108,6 +152,10 @@ function AudioPlayer() {
 const Wrapper = styled.figure`
   ${flexRow("normal", "center")};
   margin: 0;
+
+  figcaption {
+    width: 100px;
+  }
 `;
 
 const Audio = styled.audio`

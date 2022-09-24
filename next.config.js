@@ -43,7 +43,7 @@ const nextConfig = {
       cssProp: true,
     },
   },
-  pageExtensions: ["page.tsx"],
+  pageExtensions: ["page.tsx", "page.ts"],
   // https://nextjs.org/docs/advanced-features/security-headers
   async headers() {
     return [
