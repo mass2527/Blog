@@ -9,6 +9,15 @@ publishedAt: "2022-09-24"
 이 글은 [TkDodo](https://tkdodo.eu)의
 [useState for one-time initializations](https://tkdodo.eu/blog/use-state-for-one-time-initializations) 포스트를 번역한 글입니다.
 
+## useState의 함정
+
+- [#1: useState를 남용하지 마세요](/blog/dont-over-use-state)
+- [#2: props를 useState에 넣기](/blog/putting-props-to-use-state)
+- [#3: useState에 대해 알아야 할 것들](/blog/things-to-know-about-use-state)
+- <b>#4: 일회성 초기화를 위한 useState</b>
+
+---
+
 메모이제이션과 참조 값 안정성(렌더 시 함수, 객체 등이 변하지 않았다면 동일한 참조 값을 유지하는 것)에 대해 얘기할 때 가장 먼저 떠오르는 생각은 보통 *useMemo*입니다.
 오늘은 많은 글을 쓰고 싶은 기분이 아니라서 바로 본론으로 넘어가서 이번 주에 제가 경험한 문제를 예시로 보여드리겠습니다.
 
@@ -81,7 +90,7 @@ const Component = () => {
 이를 위한 해결 방법은 결국 state입니다.
 state는 갱신 함수를 호출했을 때만 변경되는 것이 보장됩니다.
 해야 할 일은 단순히 갱신 함수를 호출하지 않는 것이고 이는 *useState* 반환 값의 두 번째 인자이므로 이를 구조 분해 할당하지 않으면 됩니다.
-*resource* 생성자가 마운트 시에만 호출되는 것을 보장하기 위해 [지연 초기화](things-to-know-about-use-state#2-지연-초기화)를 같이 사용할 수도 있습니다.
+*resource* 생성자가 마운트 시에만 호출되는 것을 보장하기 위해 [지연 초기화](/blog/things-to-know-about-use-state#2-지연-초기화)를 같이 사용할 수도 있습니다.
 
 ```jsx
 const Component = () => {
