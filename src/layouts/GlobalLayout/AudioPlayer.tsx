@@ -39,12 +39,12 @@ function AudioPlayer() {
     : 0;
 
   useEffect(() => {
-    function readTrackList() {
+    function getTrackList() {
       fetch("/api/tracks")
         .then((res) => res.json())
         .then(({ data }) => setTrackList(data));
     }
-    readTrackList();
+    getTrackList();
   }, []);
 
   useEffect(() => {
