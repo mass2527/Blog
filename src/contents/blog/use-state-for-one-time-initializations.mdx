@@ -1,0 +1,121 @@
+---
+title: 일회성 초기화를 위한 useState
+category: React
+summary: 앱이 실행되고 종료될 때까지 단 한 번만 초기화하고 싶은 값이 있을 때 어떤 방법이 좋을지 알아봅니다.
+published: true
+publishedAt: "2022-09-24"
+---
+
+이 글은 [TkDodo](https://tkdodo.eu)의
+[useState for one-time initializations](https://tkdodo.eu/blog/use-state-for-one-time-initializations) 포스트를 번역한 글입니다.
+
+메모이제이션과 참조 값 안정성(렌더 시 함수, 객체 등이 변하지 않았다면 동일한 참조 값을 유지하는 것)에 대해 얘기할 때 가장 먼저 떠오르는 생각은 보통 *useMemo*입니다.
+오늘은 많은 글을 쓰고 싶은 기분이 아니라서 바로 본론으로 넘어가서 이번 주에 제가 경험한 문제를 예시로 보여드리겠습니다.
+
+## 예시
+
+앱이 실행되고 단 한 번만 초기화하고 싶은 *resource*가 있다고 가정해 봅시다.
+권장되는 패턴은 보통 *Component* 외부에 인스턴스를 생성하는 것입니다.
+
+```jsx
+// ✅ 정적 인스턴스가 단 한 번 생성됩니다.
+const resource = new Resource()
+
+const Component = () => (
+  <ResourceProvider resource={resource}>
+    <App />
+  </ResourceProvider>
+)
+```
+
+상수 *resource*는 자바스크립트 번들이 평가될 때 단 한 번 생성되며 *ResourceProvider*에 의해 *App* 내부에서 접근할 수 있습니다.
+이것은 보통 [리덕스 스토어](https://react-redux.js.org/api/provider#example-usage)처럼 앱에서 단 하나인 *resource*에 대해 잘 동작합니다.
+
+그러나 [마이크로 프론트엔드](https://micro-frontends.org/)의 경우 *Component*를 여러 번 마운트하며
+각각 고유한 *resource*를 필요로합니다. 동일한 *resource*를 공유한다면 문제가 되므로 이를 *Component* 내부로 이동시켜야만 합니다.
+
+```jsx
+const Component = () => {
+  // 🚨 유의: 매 렌더 시 새로운 인스턴스가 생성됩니다.
+  const resource = new Resource()
+  return (
+    <ResourceProvider resource={new Resource()}>
+      <App />
+    </ResourceProvider>
+  )
+}
+```
+
+확실히 좋은 방법은 아니라고 생각합니다. 렌더 함수가 이제는 새로운 *resource*를 매 렌더 시 생성하니까요!
+*Component*를 한 번 렌더 하는 경우에는 동작하겠지만 좋은 방법은 아닙니다. 
+언젠가는 리렌더가 발생할 수 있으므로 이에 준비해야 합니다.
+
+머릿속에 가장 먼저 떠오른 해결 방법은 *useMemo*입니다.
+*useMemo*는 의존성이 변경되었을 때만 다시 계산되고 여기서는 의존성을 가질 필요가 없으니 다음과 같이 우아하게 작성해 볼 수 있습니다.
+
+```jsx
+const Component = () => {
+  // 🚨 여전히 불안정적
+  const resource = React.useMemo(() => new Resource(), [])
+  return (
+    <ResourceProvider resource={resource}>
+      <App />
+    </ResourceProvider>
+  )
+}
+```
+
+때로는 잘 동작할 수 있지만 [react 공식 문서](https://ko.reactjs.org/docs/hooks-reference.html#usememo)에서 *useMemo*에 대해 어떻게 말하는지 인용해 보겠습니다:
+
+> **useMemo는 성능 최적화를 위해 사용할 수는 있지만 의미상으로 보장이 있다고 생각하지는 마세요.**<br/>
+> 가까운 미래에 React에서는, 이전 메모이제이션된 값들의 일부를 “잊어버리고” 다음 렌더링 시에 그것들을 재계산하는 방향을 택할지도 모르겠습니다.
+> 예를 들면, 오프스크린 컴포넌트의 메모리를 해제하는 등이 있을 수 있습니다.
+> useMemo를 사용하지 않고도 동작할 수 있도록 코드를 작성하고 그것을 추가하여 성능을 최적화하세요
+
+*useMemo*를 사용하지 않고도 동작할 수 있도록 코드를 작성해야 한다면 사용한다고 해서 더 좋은 코드를 작성한 것이 아닙니다.
+우리는 참조 값 유지를 원하는 것이지 퍼포먼스에 관심이 있는 것이 아닙니다.
+그러기 위해서는 무엇이 최선의 방법일까요?
+
+## 우리를 구출해줄 state
+
+이를 위한 해결 방법은 결국 state입니다.
+state는 갱신 함수를 호출했을 때만 변경되는 것이 보장됩니다.
+해야 할 일은 단순히 갱신 함수를 호출하지 않는 것이고 이는 *useState* 반환 값의 두 번째 인자이므로 이를 구조 분해 할당하지 않으면 됩니다.
+*resource* 생성자가 마운트 시에만 호출되는 것을 보장하기 위해 [지연 초기화](./blog/things-to-know-about-use-state#2-지연-초기화)를 같이 사용할 수도 있습니다.
+
+```jsx
+const Component = () => {
+  // ✅ 완전히 안정적
+  const [resource] = React.useState(() => new Resource())
+  return (
+    <ResourceProvider resource={resource}>
+      <App />
+    </ResourceProvider>
+  )
+}
+```
+
+이 방법을 사용하면 *resource*가 단 한 번만 생성되는 것을 보장할 수 있습니다.
+
+## ref를 사용하는 건 어떤가요?
+
+[useRef](https://ko.reactjs.org/docs/hooks-reference.html#useref)를 사용해도 동일한 목적을 달성할 수 있다고 생각합니다.
+그리고 [React의 규칙](https://gist.github.com/sebmarkbage/75f0838967cd003cd7f9ab938eb1958f)에 따르면 이 방법이 렌더 함수의 순수성을 파괴하는 것도 아닙니다.
+
+```jsx
+const Component = () => {
+  // ✅ 여전히 동작합니다. 그런데 음...
+  const resource = React.useRef(null)
+  if (!resource.current) {
+    resource.current = new Resource()
+  }
+  return (
+    <ResourceProvider resource={resource.current}>
+      <App />
+    </ResourceProvider>
+  )
+}
+```
+
+하지만 솔직히 말하자면 이렇게 사용해야 할 이유가 없습니다. - 이건 복잡해 보이기도 하고 *resource.current*가 null 일 수 있으니 타입스크립트가 좋아하지 않을 것 같습니다.
+그래서 저는 단순히 *useState*를 사용하는 것을 선호합니다.
