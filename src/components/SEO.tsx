@@ -27,7 +27,6 @@ export default function SEO({
       <meta property="og:image" content={image} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={`https://philly.im${router.asPath}`} />
-      <link rel="canonical" href={`https://philly.im${router.asPath}`} />
       {/* Twitter Card */}
       <meta property="twitter:card" content="summary" />
       <meta property="twitter:title" content={title} />
