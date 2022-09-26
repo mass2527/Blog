@@ -1,4 +1,4 @@
-import calculateReadingTime from "reading-time";
+import calculateReadingTime from "reading-time/lib/reading-time";
 
 import React from "react";
 
