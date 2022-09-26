@@ -1,4 +1,5 @@
-import calculateReadingTime from "reading-time";
+// @ts-ignore
+import calculateReadingTime from "reading-time/lib/reading-time";
 
 import React from "react";
 
