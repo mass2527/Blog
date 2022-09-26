@@ -1,3 +1,5 @@
+import calculateReadingTime from "reading-time";
+
 import type { InferGetStaticPropsType } from "next";
 import Link from "next/link";
 
@@ -17,7 +19,10 @@ const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
         description="프론트엔드와 관련된 다양한 지식을 공유합니다."
       />
       <ul>
-        {blogs.map(({ frontmatter, slug }) => {
+        {blogs.map(({ frontmatter, slug, matter }) => {
+          const { minutes } = calculateReadingTime(matter.content);
+          const readingTime = Math.round(minutes);
+
           return (
             <li key={frontmatter.title}>
               <Link href={`/blog/${slug}`}>
@@ -25,7 +30,11 @@ const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
                   <article>
                     <Heading>{frontmatter.title}</Heading>
                     <Text>{frontmatter.summary}</Text>
-                    <time>{frontmatter.publishedAt}</time>
+                    <time>{frontmatter.publishedAt.replace(/-/g, ". ")} —</time>
+                    <Text as="span" fontSize={14} color="mauve11">
+                      {" "}
+                      {readingTime}분
+                    </Text>
                   </article>
                 </a>
               </Link>
@@ -41,10 +50,13 @@ export async function getStaticProps() {
   const blogs = (
     await Promise.all(
       blogFilePaths.map(async (filePath) => {
-        const { frontmatter, slug } = await bundleMDXWithOptions(filePath);
-        return { frontmatter, slug } as Pick<
+        const { frontmatter, slug, matter } = await bundleMDXWithOptions(
+          filePath
+        );
+
+        return { frontmatter, slug, matter } as Pick<
           BundleMDXResult,
-          "frontmatter" | "slug"
+          "frontmatter" | "slug" | "matter"
         >;
       })
     )
