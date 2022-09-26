@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
 
 import SEO from "@/components/SEO";
+import TimeInfo from "@/components/TimeInfo";
 import Pre from "@/pages/blog/components/Pre";
 import ResponsiveIFrame from "@/pages/blog/components/ResponsiveIFrame";
 import {
@@ -26,6 +27,7 @@ import RegisterLink from "./components/RegisterLink";
 const BlogPost = ({
   frontmatter,
   code,
+  matter,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const BlogMDXContent = useMemo(() => getMDXComponent(code), [code]);
 
@@ -34,7 +36,10 @@ const BlogPost = ({
       <SEO title={frontmatter.title} description={frontmatter.summary} />
       <BlogHeader>
         {/* TODO: add category */}
-        <time>{frontmatter.publishedAt}</time>
+        <TimeInfo
+          publishedAt={frontmatter.publishedAt}
+          content={matter.content}
+        />
         <h1>{frontmatter.title}</h1>
       </BlogHeader>
       <BlogContentWrapper>
@@ -115,7 +120,7 @@ export async function getStaticProps({
   params,
 }: // TODO: find getStaticProps type
 GetStaticPropsContext<{ slug: string }>) {
-  const { frontmatter, code } = await bundleMDXWithOptions(
+  const { frontmatter, code, matter } = await bundleMDXWithOptions(
     blogFilePaths.find((path) => path.startsWith(params?.slug!))!
   );
 
@@ -123,7 +128,8 @@ GetStaticPropsContext<{ slug: string }>) {
     props: {
       frontmatter,
       code,
-    } as Pick<BundleMDXResult, "frontmatter" | "code">,
+      matter,
+    } as Pick<BundleMDXResult, "frontmatter" | "code" | "matter">,
   };
 }
 

@@ -21,6 +21,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-live": "^2.4.1",
+    "reading-time": "^1.5.0",
     "recoil": "^0.7.3",
     "refractor": "^4.7.0",
     "rehype-autolink-headings": "^6.1.1",
