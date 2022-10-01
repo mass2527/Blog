@@ -21,6 +21,7 @@ import BlockQuote from "./components/BlockQuote";
 import Code from "./components/Code";
 import Highlight from "./components/Highlight";
 import Live from "./components/Live";
+import Mark from "./components/Mark";
 import Preview from "./components/Preview";
 import RegisterLink from "./components/RegisterLink";
 
@@ -54,6 +55,7 @@ const BlogPost = ({
             Preview,
             blockquote: BlockQuote,
             a: Anchor,
+            Mark,
           }}
         />
       </BlogContentWrapper>
