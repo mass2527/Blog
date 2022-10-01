@@ -21,6 +21,7 @@ import {
   redDark,
   violet,
   violetDark,
+  whiteA,
   yellow,
   yellowDark,
 } from "@radix-ui/colors";
@@ -88,6 +89,7 @@ export const lightTheme = {
     ...indigo,
     ...orange,
     ...plum,
+    ...whiteA,
   },
 } as const;
 
@@ -106,6 +108,7 @@ export const darkTheme = {
     ...indigoDark,
     ...orangeDark,
     ...plumDark,
+    ...whiteA,
   },
 } as const;
 
