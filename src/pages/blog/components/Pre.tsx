@@ -1,6 +1,44 @@
 import styled from "styled-components";
+import { CheckIcon, ClipboardIcon } from "@radix-ui/react-icons";
 
-const Pre = styled.pre`
+import { ReactNode, useRef } from "react";
+
+import useClipboard from "@/hooks/useClipboard";
+
+function Pre({ children }: { children?: ReactNode }) {
+  const [isCopied, copy] = useClipboard();
+  const preRef = useRef<HTMLPreElement>(null);
+
+  const copyToClipboard = () => {
+    if (preRef.current === null) return;
+
+    const codeElement =
+      preRef.current.querySelector("code") ||
+      preRef.current.querySelector("div[code]");
+    if (codeElement === null) return;
+
+    const code = codeElement.innerText.replace(/\n{2}/g, "\n");
+    copy(code);
+  };
+
+  return (
+    <StyledPre ref={preRef}>
+      {children}
+
+      <CopyButton
+        type="button"
+        aria-label={isCopied ? "복사 완료" : "코드를 클립보드에 복사"}
+        onClick={copyToClipboard}
+        isCopied={isCopied}
+      >
+        {isCopied ? <CheckIcon /> : <ClipboardIcon />}
+      </CopyButton>
+    </StyledPre>
+  );
+}
+
+const StyledPre = styled.pre`
+  position: relative;
   box-sizing: border-box;
   overflow: auto;
   white-space: pre;
@@ -110,6 +148,34 @@ const Pre = styled.pre`
   .token.deleted.prefix,
   .token.inserted.prefix {
     user-select: none;
+  }
+`;
+
+const CopyButton = styled.button<{ isCopied: boolean }>`
+  position: absolute;
+  top: ${({ theme }) => theme.spacers[16]};
+  right: ${({ theme }) => theme.spacers[16]};
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  opacity: 0;
+  border: none;
+  cursor: ${({ isCopied }) => isCopied && "not-allowed"};
+
+  ${StyledPre}:hover & {
+    opacity: 1;
+    transition: all 150ms linear 0s;
+  }
+
+  &:hover {
+    background-color: ${({ isCopied, theme: { colors } }) =>
+      isCopied ? colors.whiteA5 : colors.whiteA4};
+  }
+
+  &:focus {
+    opacity: 1;
+    box-shadow: inset 0 0 0 1px ${({ theme }) => theme.colors.whiteA8},
+      0 0 0 1px ${({ theme }) => theme.colors.whiteA8};
   }
 `;
 
