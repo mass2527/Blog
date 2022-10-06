@@ -22,23 +22,24 @@ function Pre({ children }: { children?: ReactNode }) {
   };
 
   return (
-    <StyledPre ref={preRef}>
-      {children}
+    <div style={{ position: "relative" }}>
+      <StyledPre ref={preRef}>
+        {children}
 
-      <CopyButton
-        type="button"
-        aria-label={isCopied ? "복사 완료" : "코드를 클립보드에 복사"}
-        onClick={copyToClipboard}
-        isCopied={isCopied}
-      >
-        {isCopied ? <CheckIcon /> : <ClipboardIcon />}
-      </CopyButton>
-    </StyledPre>
+        <CopyButton
+          type="button"
+          aria-label={isCopied ? "복사 완료" : "코드를 클립보드에 복사"}
+          onClick={copyToClipboard}
+          isCopied={isCopied}
+        >
+          {isCopied ? <CheckIcon /> : <ClipboardIcon />}
+        </CopyButton>
+      </StyledPre>
+    </div>
   );
 }
 
 const StyledPre = styled.pre`
-  position: relative;
   box-sizing: border-box;
   overflow: auto;
   white-space: pre;
