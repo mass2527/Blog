@@ -28,6 +28,9 @@ function GlobalHeader() {
 }
 
 const HeaderWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  backdrop-filter: saturate(180%) blur(20px);
   display: flex;
   height: ${({ theme }) => theme.sizes.headerHeight};
   border-bottom: 1px solid ${({ theme }) => theme.colors.mauve6};
