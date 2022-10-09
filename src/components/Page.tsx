@@ -23,7 +23,7 @@ function Page({
 }
 
 const PageLayout = styled.div`
-  padding: ${({ theme }) => theme.spacers[48]} 0;
+  padding: ${({ theme }) => theme.spacers[32]} 0;
 `;
 
 export default Page;
