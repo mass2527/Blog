@@ -24,10 +24,10 @@ function Typography({
   return (
     <StyledTypography
       as={as}
-      $fontSize={fontSize}
-      $fontWeight={fontWeight}
-      $color={color}
-      $textAlign={textAlign}
+      fontSize={fontSize}
+      fontWeight={fontWeight}
+      color={color}
+      textAlign={textAlign}
     >
       {children}
     </StyledTypography>
@@ -35,15 +35,15 @@ function Typography({
 }
 
 const StyledTypography = styled.p<{
-  $fontSize: keyof typeof fontSizes;
-  $fontWeight: keyof typeof fontWeights;
-  $color: Color;
-  $textAlign: CSSProperties["textAlign"];
+  fontSize: keyof typeof fontSizes;
+  fontWeight: keyof typeof fontWeights;
+  color: Color;
+  textAlign: CSSProperties["textAlign"];
 }>`
-  font-size: ${({ $fontSize }) => fontSizes[$fontSize]};
-  font-weight: ${({ $fontWeight }) => fontWeights[$fontWeight]};
-  color: ${({ theme, $color }) => theme.colors[$color]};
-  text-align: ${({ $textAlign }) => $textAlign};
+  font-size: ${({ fontSize }) => fontSizes[fontSize]};
+  font-weight: ${({ fontWeight }) => fontWeights[fontWeight]};
+  color: ${({ theme, color }) => theme.colors[color]};
+  text-align: ${({ textAlign }) => textAlign};
 `;
 
 interface TextProps extends TypographyProps {

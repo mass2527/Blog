@@ -23,9 +23,9 @@ function Button({
   return (
     <StyledButton
       type={type}
-      $size={size}
-      $color={color}
-      $variant={variant}
+      size={size}
+      color={color}
+      variant={variant}
       {...props}
     >
       {children}
@@ -34,16 +34,16 @@ function Button({
 }
 
 const StyledButton = styled.button<{
-  $size: ButtonSize;
-  $color: ButtonColor;
-  $variant: ButtonVariant;
+  size: ButtonSize;
+  color: ButtonColor;
+  variant: ButtonVariant;
 }>`
-  color: ${({ theme: { colors }, $color }) => colors[`${$color}11`]};
+  color: ${({ theme: { colors }, color }) => colors[`${color}11`]};
   padding: 0 ${({ theme }) => theme.spacers[16]};
   font-weight: ${({ theme }) => theme.fontWeights[500]};
   word-break: keep-all;
 
-  ${({ theme: { spacers, fontSizes }, $size }) =>
+  ${({ theme: { spacers, fontSizes }, size }) =>
     ({
       small: css`
         height: ${spacers[32]};
@@ -57,18 +57,18 @@ const StyledButton = styled.button<{
         height: ${spacers[48]};
         font-size: ${fontSizes[16]};
       `,
-    }[$size])};
+    }[size])};
 
-  ${({ theme: { colors }, $color, $variant }) =>
+  ${({ theme: { colors }, color, variant }) =>
     ({
       primary: css`
-        background-color: ${colors[`${$color}4`]};
+        background-color: ${colors[`${color}4`]};
 
         &:hover {
-          background-color: ${colors[`${$color}5`]};
+          background-color: ${colors[`${color}5`]};
         }
         &:active {
-          background-color: ${colors[`${$color}6`]};
+          background-color: ${colors[`${color}6`]};
         }
         &:disabled {
           background-color: ${colors.mauve4};
@@ -76,14 +76,14 @@ const StyledButton = styled.button<{
         }
       `,
       outline: css`
-        background-color: ${colors[`${$color}1`]};
-        border: 1px solid ${colors[`${$color}7`]};
+        background-color: ${colors[`${color}1`]};
+        border: 1px solid ${colors[`${color}7`]};
 
         &:hover {
-          border: 1px solid ${colors[`${$color}8`]};
+          border: 1px solid ${colors[`${color}8`]};
         }
         &:active {
-          border: 1px solid ${colors[`${$color}9`]};
+          border: 1px solid ${colors[`${color}9`]};
         }
         &:disabled {
           background-color: ${colors.mauve1};
@@ -96,7 +96,7 @@ const StyledButton = styled.button<{
           color: ${({ theme }) => theme.colors.mauve12};
         }
       `,
-    }[$variant])};
+    }[variant])};
 `;
 
 export default Button;
