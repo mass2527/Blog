@@ -31,7 +31,7 @@ const sizes = {
   headerHeight: "64px",
 };
 
-const spacers = {
+export const spacers = {
   4: "4px",
   8: "8px",
   16: "16px",

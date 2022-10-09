@@ -1,21 +1,12 @@
 import type { NextPage } from "next";
 
-import SEO from "@/components/SEO";
-import { Heading } from "@/components/Typography";
+import Page from "@/components/Page";
 
 const Home: NextPage = () => {
   return (
-    <div>
-      <SEO
-        title="필리 - 프론트엔드 엔지니어"
-        subTitle=""
-        description="프론드엔드 기술과 기억하고 싶은 것들에 대해 기록합니다."
-      />
-      <Heading as="h1" fontSize={20}>
-        필리
-      </Heading>
-      <Heading fontSize={16}>프론트엔드 엔지니어</Heading>
-    </div>
+    <Page title="Home" description="나는 왜 일을 하는가?">
+      {/*  */}
+    </Page>
   );
 };
 
