@@ -1,6 +1,6 @@
-import React, { ReactNode } from "react";
+import styled from "styled-components";
 
-import PageLayout from "@/layouts/PageLayout";
+import React, { ReactNode } from "react";
 
 import PageHeading from "./PageHeading";
 import SEO, { SEOProps } from "./SEO";
@@ -21,5 +21,9 @@ function Page({
     </PageLayout>
   );
 }
+
+const PageLayout = styled.div`
+  padding: ${({ theme }) => theme.spacers[48]} 0;
+`;
 
 export default Page;
