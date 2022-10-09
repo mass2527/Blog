@@ -6,6 +6,10 @@ const Card = styled.div`
   backdrop-filter: blur(8px);
   border-radius: ${({ theme }) => theme.radiuses[8]};
   padding: ${({ theme }) => theme.spacers[16]};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.whiteA4};
+  }
 `;
 
 export default Card;
