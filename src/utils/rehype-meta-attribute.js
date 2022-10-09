@@ -2,7 +2,7 @@ import { visit } from "unist-util-visit";
 
 var re = /\b([-\w]+)(?:=(?:"([^"]*)"|'([^']*)'|([^"'\s]+)))?/g;
 
-export default function rehypeMetaAttribute(options = {}) {
+export default function rehypeMetaAttribute() {
   return (tree) => {
     visit(tree, "element", visitor);
   };

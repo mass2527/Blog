@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { useIsFirstRender } from "./useIsFirstRender";
 
 const getMatches = (mediaQueryString: string) =>

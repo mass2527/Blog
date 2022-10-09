@@ -9,7 +9,7 @@ import highlightWord from "./rehype-highlight-word";
 
 refractor.register(tsx);
 
-export default function rehypeHighlightCode(options = {}) {
+export default function rehypeHighlightCode() {
   return (tree) => {
     visit(tree, "element", visitor);
   };
