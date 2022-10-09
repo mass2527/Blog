@@ -38,16 +38,6 @@ const GlobalStyle = createGlobalStyle`
         color:${({ theme }) => theme.colors.violet12};
     }
 
-    h1{
-        font-size:${({ theme }) => theme.fontSizes[32]};
-    }
-    h2{
-        font-size:${({ theme }) => theme.fontSizes[24]};
-    }
-    h3{
-        font-size:${({ theme }) => theme.fontSizes[20]};
-    }
-
     ul,ol{
         list-style:none;
         margin:0;
@@ -75,18 +65,6 @@ const GlobalStyle = createGlobalStyle`
         &:disabled{
             cursor:not-allowed;
         }
-    }
-    
-    time{
-        font-size:${({ theme }) => theme.fontSizes[14]};
-        font-weight:${({ theme }) => theme.fontWeights[400]};
-        color:${({ theme }) => theme.colors.mauve11};
-    }
-
-    hr{
-        border:0;
-        height:1px;
-        background-color:${({ theme }) => theme.colors.mauve6};
     }
 `;
 
