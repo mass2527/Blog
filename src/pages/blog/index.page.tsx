@@ -1,58 +1,45 @@
 import type { InferGetStaticPropsType } from "next";
-import Link from "next/link";
 
-import SEO from "@/components/SEO";
+import ContentCard from "@/components/ContentCard";
+import Page from "@/components/Page";
 import TimeInfo from "@/components/TimeInfo";
-import { Heading, Text } from "@/components/Typography";
-import {
-  blogFilePaths,
-  BundleMDXResult,
-  bundleMDXWithOptions,
-} from "@/utils/blog";
+import { Flex } from "@/layouts/Flex";
+import { bundleMDXWithOptions } from "@/utils/bundle";
+import { blogFiles, BlogFrontmatter } from "@/utils/contents";
 
 const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <div>
-      <SEO
-        title="Blog"
-        description="프론트엔드와 관련된 다양한 지식을 공유합니다."
-      />
-      <ul>
+    <Page title="Blog" description="프론트엔드 엔지니어링 지식">
+      <Flex as="ul" flexDirection="column" gap={32}>
         {blogs.map(({ frontmatter, slug, matter }) => {
           return (
-            <li key={frontmatter.title}>
-              <Link href={`/blog/${slug}`}>
-                <a>
-                  <article>
-                    <Heading>{frontmatter.title}</Heading>
-                    <Text>{frontmatter.summary}</Text>
-                    <TimeInfo
-                      publishedAt={frontmatter.publishedAt}
-                      content={matter.content}
-                    />
-                  </article>
-                </a>
-              </Link>
-            </li>
+            <ContentCard
+              key={frontmatter.title}
+              href={`/blog/${slug}`}
+              title={frontmatter.title}
+              description={frontmatter.summary}
+              footer={
+                <TimeInfo
+                  publishedAt={frontmatter.publishedAt}
+                  content={matter.content}
+                />
+              }
+            />
           );
         })}
-      </ul>
-    </div>
+      </Flex>
+    </Page>
   );
 };
 
 export async function getStaticProps() {
   const blogs = (
     await Promise.all(
-      blogFilePaths.map(async (filePath) => {
-        const { frontmatter, slug, matter } = await bundleMDXWithOptions(
-          filePath
-        );
+      blogFiles.map(async (fileName) => {
+        const { frontmatter, slug, matter } =
+          await bundleMDXWithOptions<BlogFrontmatter>("blog", fileName);
 
-        return { frontmatter, slug, matter } as Pick<
-          BundleMDXResult,
-          "frontmatter" | "slug" | "matter"
-        >;
+        return { frontmatter, slug, matter };
       })
     )
   )

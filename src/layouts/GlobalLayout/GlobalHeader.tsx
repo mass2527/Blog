@@ -18,8 +18,8 @@ function GlobalHeader() {
           <Link href="/personal">
             <a>Personal</a>
           </Link>
-          <Link href="/snippets">
-            <a>Snippets</a>
+          <Link href="/snippet">
+            <a>Snippet</a>
           </Link>
         </Links>
       </Header>
