@@ -1,4 +1,4 @@
-import styled, { CSSProperties } from "styled-components";
+import styled, { css, CSSProperties } from "styled-components";
 
 import React, { ReactNode } from "react";
 
@@ -48,7 +48,15 @@ interface TextProps extends TypographyProps {
     | "time";
 }
 export function Text({ as = "p", ...props }: TextProps) {
-  return <Typography as={as} {...props} />;
+  return (
+    <Typography
+      css={css`
+        margin-top: 0;
+      `}
+      as={as}
+      {...props}
+    />
+  );
 }
 
 interface HeadingProps extends TypographyProps {
@@ -56,12 +64,15 @@ interface HeadingProps extends TypographyProps {
 }
 export function Heading({
   as = "h2",
-  fontSize = 32,
+  fontSize = 24,
   fontWeight = 700,
   ...props
 }: HeadingProps) {
   return (
     <Typography
+      css={css`
+        margin: 0 0 0.5em;
+      `}
       as={as}
       fontSize={fontSize}
       fontWeight={fontWeight}
