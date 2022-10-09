@@ -22,7 +22,11 @@ function ContentCard({
     <Card as="li">
       <Link href={href}>
         <a>
-          <article>
+          <article
+            css={css`
+              padding: ${({ theme }) => theme.spacers[16]};
+            `}
+          >
             <Heading
               css={css`
                 @media screen and (min-width: 960px) {
