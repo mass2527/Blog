@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 
 import { Text } from "@/components/Typography";
-import { useUpdateEffect } from "@/hooks/useUpdateEffect";
+import { useIsFirstRender } from "@/hooks";
 import { flexRow } from "@/styles/utils/flex";
 
 const formatAsMSS = (timeInSeconds: number) => {
@@ -25,6 +25,7 @@ function AudioPlayer() {
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const [trackList, setTrackList] = useState<string[]>([]);
+  const isFirst = useIsFirstRender();
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLProgressElement>(null);
 
@@ -96,11 +97,11 @@ function AudioPlayer() {
     audioRef.current.volume = volume;
   }, [isMuted]);
 
-  useUpdateEffect(() => {
-    if (audioRef.current === null) return;
+  useEffect(() => {
+    if (audioRef.current === null || isFirst) return;
 
     audioRef.current.play();
-  }, [trackIndex]);
+  }, [trackIndex, isFirst]);
 
   const playNextTrack = () => {
     setTrackIndex(
