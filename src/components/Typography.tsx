@@ -1,11 +1,10 @@
 import styled, { CSSProperties } from "styled-components";
 
-import React, { ElementType, ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 import { Color, fontSizes, fontWeights } from "@/styles/theme";
 
 interface TypographyProps {
-  as?: ElementType;
   fontSize?: keyof typeof fontSizes;
   fontWeight?: keyof typeof fontWeights;
   color?: Color;
@@ -13,38 +12,20 @@ interface TypographyProps {
   children: ReactNode;
 }
 
-function Typography({
-  as,
-  fontSize = 16,
-  fontWeight = 400,
-  color = "mauve12",
-  textAlign = "start",
-  children,
-}: TypographyProps) {
-  return (
-    <StyledTypography
-      as={as}
-      fontSize={fontSize}
-      fontWeight={fontWeight}
-      color={color}
-      textAlign={textAlign}
-    >
-      {children}
-    </StyledTypography>
-  );
-}
-
-const StyledTypography = styled.p<{
-  fontSize: keyof typeof fontSizes;
-  fontWeight: keyof typeof fontWeights;
-  color: Color;
-  textAlign: CSSProperties["textAlign"];
-}>`
-  font-size: ${({ fontSize }) => fontSizes[fontSize]};
-  font-weight: ${({ fontWeight }) => fontWeights[fontWeight]};
-  color: ${({ theme, color }) => theme.colors[color]};
-  text-align: ${({ textAlign }) => textAlign};
-`;
+const Typography = styled.p<TypographyProps>(
+  ({
+    fontSize = 16,
+    fontWeight = 400,
+    color = "mauve12",
+    textAlign = "start",
+    theme,
+  }) => `
+    font-size: ${fontSizes[fontSize]};
+    font-weight: ${fontWeights[fontWeight]};
+    color: ${theme.colors[color]};
+    text-align: ${textAlign};
+`
+);
 
 interface TextProps extends TypographyProps {
   as?:
@@ -77,7 +58,6 @@ export function Heading({
   as = "h2",
   fontSize = 32,
   fontWeight = 700,
-
   ...props
 }: HeadingProps) {
   return (
