@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-interface SEOProps {
+export interface SEOProps {
   title: string;
   subTitle?: string;
   description: string;
