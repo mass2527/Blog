@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import Link from "next/link";
 
-import { flexRow } from "@/styles/utils/flex";
+import { flexRow } from "@/styles/utils";
 
 function GlobalHeader() {
   return (

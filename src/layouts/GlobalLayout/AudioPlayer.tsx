@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { Text } from "@/components/Typography";
 import { useIsFirstRender } from "@/hooks";
-import { flexRow } from "@/styles/utils/flex";
+import { flexRow } from "@/styles/utils";
 
 const formatAsMSS = (timeInSeconds: number) => {
   const minutes = Math.floor(timeInSeconds / 60);

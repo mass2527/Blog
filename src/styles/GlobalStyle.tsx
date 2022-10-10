@@ -1,7 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 import normalize from "styled-normalize";
 
-import { center } from "./utils/center";
+import { center } from "./utils";
 
 const GlobalStyle = createGlobalStyle`
     ${normalize};
