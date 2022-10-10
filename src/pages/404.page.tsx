@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { Heading, Text } from "@/components/Typography";
 import { Center } from "@/layouts/Center";
-import { flexColumn, flexRow } from "@/styles/utils/flex";
+import { flexColumn, flexRow } from "@/styles/utils";
 
 export default function Custom404() {
   return (

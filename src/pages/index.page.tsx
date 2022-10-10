@@ -4,8 +4,8 @@ import Page from "@/components/Page";
 
 const Home: NextPage = () => {
   return (
-    <Page title="Home" description="나는 왜 일을 하는가?">
-      {/*  */}
+    <Page title="Home" description="기록, 공유">
+      🙃
     </Page>
   );
 };

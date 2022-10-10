@@ -12,8 +12,7 @@ import {
 
 import { ReactNode } from "react";
 
-import { center } from "@/styles/utils/center";
-import { flexRow } from "@/styles/utils/flex";
+import { center, flexRow } from "@/styles/utils";
 
 interface DropdownMenuProps {
   rootProps?: DropdownMenuRootProps;

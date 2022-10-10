@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { center } from "@/styles/utils/center";
+import { center } from "@/styles/utils";
 
 import { Box } from "./Box";
 
