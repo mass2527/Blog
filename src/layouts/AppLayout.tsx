@@ -7,6 +7,8 @@ import Link from "next/link";
 import AudioPlayer from "@/components/AudioPlayer";
 import { flexRow } from "@/styles/utils";
 
+import { Flex } from "./Flex";
+
 const LINKS = [
   { path: "/", name: "Home" },
   { path: "/blog", name: "Blog" },
@@ -29,9 +31,11 @@ function AppLayout({ children }: { children: ReactNode }) {
         </Header>
       </HeaderWrapper>
       <Main>{children}</Main>
-      <Footer>
-        <AudioPlayer />
-      </Footer>
+      <Flex>
+        <Footer>
+          <AudioPlayer />
+        </Footer>
+      </Flex>
     </>
   );
 }
