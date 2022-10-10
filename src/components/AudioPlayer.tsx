@@ -29,8 +29,6 @@ function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLProgressElement>(null);
 
-  const [track] = trackList.length ? trackList[trackIndex].split(" - ") : [];
-
   const trackPath = trackList.length
     ? `/tracks/${trackList[trackIndex]}.mp3`
     : undefined;
@@ -114,7 +112,7 @@ function AudioPlayer() {
 
   return (
     <Wrapper>
-      <figcaption>{track}</figcaption>
+      <figcaption>Epidemic</figcaption>
       <Audio ref={audioRef} controls src={trackPath}>
         오디오 기능이 제공되지 않는 브라우저입니다.
       </Audio>
