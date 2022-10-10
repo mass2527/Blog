@@ -5,25 +5,29 @@ export const center = css`
   place-items: center;
 `;
 
-const flex = (
+function flex(
   flexDirection: CSSProperties["flexDirection"],
   justifyContent: CSSProperties["justifyContent"] = "normal",
   alignItems: CSSProperties["alignItems"] = "normal"
-) => {
+) {
   return css`
     display: flex;
     flex-direction: ${flexDirection};
     justify-content: ${justifyContent};
     align-items: ${alignItems};
   `;
-};
+}
 
-export const flexRow = (
+export function flexRow(
   justifyContent?: CSSProperties["justifyContent"],
   alignItems?: CSSProperties["alignItems"]
-) => flex("row", justifyContent, alignItems);
+) {
+  return flex("row", justifyContent, alignItems);
+}
 
-export const flexColumn = (
+export function flexColumn(
   justifyContent?: CSSProperties["justifyContent"],
   alignItems?: CSSProperties["alignItems"]
-) => flex("column", justifyContent, alignItems);
+) {
+  return flex("column", justifyContent, alignItems);
+}
