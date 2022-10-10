@@ -4,23 +4,23 @@ import Link from "next/link";
 
 import { flexRow } from "@/styles/utils";
 
+const LINKS = [
+  { path: "/", name: "Home" },
+  { path: "/blog", name: "Blog" },
+  { path: "/personal", name: "Personal" },
+  { path: "/snippet", name: "Snippet" },
+];
+
 function GlobalHeader() {
   return (
     <HeaderWrapper>
       <Header>
         <Links>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-          <Link href="/blog">
-            <a>Blog</a>
-          </Link>
-          <Link href="/personal">
-            <a>Personal</a>
-          </Link>
-          <Link href="/snippet">
-            <a>Snippet</a>
-          </Link>
+          {LINKS.map(({ path, name }) => (
+            <Link key={name} href={path}>
+              <a>{name}</a>
+            </Link>
+          ))}
         </Links>
       </Header>
     </HeaderWrapper>
