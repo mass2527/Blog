@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-export default function useClipboard(successDuration: number = 1500) {
+export function useClipboard(successDuration: number = 1500) {
   const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {

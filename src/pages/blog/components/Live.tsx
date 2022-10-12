@@ -3,6 +3,7 @@ import {
   LiveError,
   LivePreview,
   LiveProvider,
+  // eslint-disable-next-line import/named
   LiveProviderProps,
 } from "react-live";
 

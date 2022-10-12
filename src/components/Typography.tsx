@@ -1,6 +1,6 @@
-import styled, { css, CSSProperties } from "styled-components";
+import styled, { css } from "styled-components";
 
-import React, { ReactNode } from "react";
+import React, { CSSProperties, ReactNode } from "react";
 
 import { Color, fontSizes, fontWeights } from "@/styles/theme";
 
