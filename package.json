@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@radix-ui/colors": "^0.1.8",
-    "@radix-ui/react-dropdown-menu": "^0.1.6",
     "@radix-ui/react-icons": "^1.1.1",
     "esbuild": "^0.14.48",
     "hast-util-to-html": "^8.0.3",
@@ -37,7 +36,6 @@
     "unist-util-visit": "^4.1.0"
   },
   "devDependencies": {
-    "@next/eslint-plugin-next": "^12.3.1",
     "@types/lodash": "^4.14.186",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",

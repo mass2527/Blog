@@ -1,4 +1,6 @@
-import { css, CSSProperties } from "styled-components";
+import { css } from "styled-components";
+
+import { CSSProperties } from "react";
 
 export const center = css`
   display: grid;
