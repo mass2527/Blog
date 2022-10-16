@@ -44,24 +44,26 @@ const [count, setCount] = React.useState(0)
 
 ## 갱신 함수 여러 번 호출하기
 
-<Live code={`
+<Sandpack 
+  files={{'/App.js':`import React from 'react';
+
 function App() {
-  const [count, setCount] = React.useState(0)
+  const [count, setCount] = React.useState(0);
 
   return (
     <button
       onClick={() => {
-        setCount(count + 1)
-        setCount(count + 1)
+        setCount(count + 1);
+        setCount(count + 1);
       }}
     >
       🚨 예상대로 동작하지 않음, count: {count}
     </button>
-  )
+  );
 }
 
-render(<App />)
-`} />
+export default App;`}}
+/>
 
 두 *setCount* 모두 같은 값(*count*)을 바라보고 있기 때문에 각각의 클릭이 숫자를 하나씩만 증가시킬 것입니다.
 *setCount*는 *count*를 즉시 갱신하지 않음을 아는 것은 매우 중요합니다.
@@ -80,25 +82,25 @@ react에게 이렇게 말합니다:
 
 함수적 갱신은 이를 보장해 줍니다.
 
-<Live
-code={`
+<Sandpack
+  files={{'/App.js':`import React from 'react';
+
 function App() {
-  const [count, setCount] = React.useState(0)
+  const [count, setCount] = React.useState(0);
 
   return (
     <button
       onClick={() => {
-        setCount((previousCount) => previousCount + 1)
-        setCount((previousCount) => previousCount + 1)
+        setCount((previousCount) => previousCount + 1);
+        setCount((previousCount) => previousCount + 1);
       }}
     >
       ✅ 2씩 증가, count: {count}
     </button>
-  )
+  );
 }
 
-render(<App />)
-`}
+export default App;`}}
 />
 
 ## 비동기 액션이 포함되었을 때
@@ -185,21 +187,21 @@ const [value, setValue] = React.useState(() =>
 react는 값이 다른지 확인하기 위해 [Object.is](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#description)를 사용합니다.
 라이브 예시로 확인해 보세요.
 
-<Live 
-code={`
+<Sandpack 
+  files={{'/App.js':`import React from 'react';
+
 function App() {
-  const [name, setName] = React.useState('Elias')
+  const [name, setName] = React.useState("Elias");
 
   // 🤯 이 버튼을 클릭해도 컴포넌트가 리렌더되지 않습니다.
   return (
-    <button onClick={() => setName('Elias')}>
+    <button onClick={() => setName("Elias")}>
       Name is: {name}, Date is: {new Date().getTime()}
     </button>
-  )
+  );
 }
 
-render(<App />)
-`}
+export default App;`}}
 />
 
 ## 4. 편리한 오버로드

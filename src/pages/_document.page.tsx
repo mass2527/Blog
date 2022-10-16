@@ -1,4 +1,5 @@
 import { ServerStyleSheet } from "styled-components";
+import { getSandpackCssText } from "@codesandbox/sandpack-react";
 
 import Document, {
   DocumentContext,
@@ -34,6 +35,11 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          {/* https://sandpack.codesandbox.io/docs/getting-started/ssr#nextjs */}
+          <style
+            dangerouslySetInnerHTML={{ __html: getSandpackCssText() }}
+            id="sandpack"
+          />
           {/* https://realfavicongenerator.net/ */}
           <link
             rel="apple-touch-icon"
