@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 import React from "react";
 
+import Sandpack from "@/components/Sandpack";
+
 import Anchor from "./Anchor";
 import BlockQuote from "./BlockQuote";
 import Code from "./Code";
@@ -33,6 +35,7 @@ function MDXContent({ code }: { code: string }) {
           a: Anchor,
           Mark,
           hr: HorizontalLine,
+          Sandpack,
         }}
       />
     </MDXComponentWrapper>
