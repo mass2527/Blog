@@ -30,22 +30,25 @@ useState의 함정 시리즈의 [첫 번째 파트](/blog/dont-over-use-state)�
 
 인터렉티브한 예시이니 마음껏 클릭해 보세요(코드를 변경할 수도 있습니다🚀)
 
-<Live code={`
+<Sandpack
+  files={{'/App.js':`import React from 'react';
+import DetailView from './DetailView';
+
 const persons = [
   {
     id: 1,
-    name: 'Dominik',
-    email: 'dominik@dorfmeister.cc',
+    name: "Dominik",
+    email: "dominik@dorfmeister.cc",
   },
   {
     id: 2,
-    name: 'John',
-    email: 'john@doe.com',
+    name: "John",
+    email: "john@doe.com",
   },
-]
+];
 
 function App() {
-  const [selected, setSelected] = React.useState(persons[0])
+  const [selected, setSelected] = React.useState(persons[0]);
 
   return (
     <div>
@@ -55,18 +58,20 @@ function App() {
           key={person.id}
           onClick={() => setSelected(person)}
         >
-          {person.id === selected.id
-            ? person.name.toUpperCase()
-            : person.name}
+          {person.id === selected.id ? person.name.toUpperCase() : person.name}
         </button>
       ))}
       <DetailView initialEmail={selected.email} />
     </div>
-  )
+  );
 }
 
+export default App;
+`,
+"/DetailView.js":`import React from 'react';
+
 function DetailView({ initialEmail }) {
-  const [email, setEmail] = React.useState(initialEmail)
+  const [email, setEmail] = React.useState(initialEmail);
 
   return (
     <div>
@@ -79,11 +84,12 @@ function DetailView({ initialEmail }) {
         Apply
       </button>
     </div>
-  )
+  );
 }
 
-render(<App />)
-`} />
+export default DetailView;
+`}}
+/>
 
 ## useState 초기값
 
@@ -112,24 +118,27 @@ John을 클릭하면 Modal과 DetailView가 마운트 되면서 useState 초기�
 
 어떻게 그렇게 할 수 있을지 보여드리겠습니다. 
 
-<Live code={`
+<Sandpack
+  files={{'/App.js':`import React from 'react';
+import DetailView from './DetailView';
+
 const persons = [
   {
     id: 1,
-    name: 'Dominik',
-    email: 'dominik@dorfmeister.cc',
+    name: "Dominik",
+    email: "dominik@dorfmeister.cc",
   },
   {
     id: 2,
-    name: 'John',
-    email: 'john@doe.com',
+    name: "John",
+    email: "john@doe.com",
   },
-]
+];
 
 function App() {
-  const [selected, setSelected] = React.useState()
+  const [selected, setSelected] = React.useState();
 
-  const close = () => setSelected(undefined)
+  const close = () => setSelected(undefined);
 
   return (
     <div>
@@ -145,38 +154,42 @@ function App() {
       {selected && (
         <div
           style={{
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            paddingTop: '100px',
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.4)',
+            position: "fixed",
+            top: "0",
+            left: "0",
+            paddingTop: "100px",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.4)",
           }}
         >
           <div
             style={{
-              display: 'flex',
-              justifyContent: 'center',
-              width: '80%',
-              height: '50vh',
-              margin: 'auto',
-              backgroundColor: 'white',
+              display: "flex",
+              justifyContent: "center",
+              width: "80%",
+              height: "50vh",
+              margin: "auto",
+              backgroundColor: "white",
             }}
           >
             <DetailView initialEmail={selected.email} close={close} />
-            <span style={{ cursor: 'pointer', color: 'black' }} onClick={close}>
+            <span style={{ cursor: "pointer", color: "black" }} onClick={close}>
               &times;
             </span>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }
 
+export default App;
+`,
+"/DetailView.js":`import React from 'react';
+
 function DetailView({ initialEmail, close }) {
-  const [email, setEmail] = React.useState(initialEmail)
+  const [email, setEmail] = React.useState(initialEmail);
 
   return (
     <div>
@@ -187,22 +200,22 @@ function DetailView({ initialEmail, close }) {
       />
       <button
         style={{
-              color: 'black',
-            }}
+          color: "black",
+        }}
         type="button"
         onClick={() => {
-          alert(email)
-          close()
+          alert(email);
+          close();
         }}
       >
         Apply
       </button>
     </div>
-  )
+  );
 }
 
-render(<App />)
-`}
+export default DetailView;
+`}}
 />
 
 css는 양해 부탁드립니다. 웹 개발에서 가장 약한 부분입니다. 😅
@@ -219,23 +232,26 @@ css는 양해 부탁드립니다. 웹 개발에서 가장 약한 부분입니다
 이 예시에서는 DetailView에 있던 초안(draft) state를 App으로 끌어올려서 DetailView를 완전히 [제어 컴포넌트](https://ko.reactjs.org/docs/forms.html#controlled-components)로 만듭니다.
 DetailView는 이제 지역 state가 필요하지 않기 때문에 더 이상 props를 state에 넣어서 문제가 생길 일이 없습니다.
 
-<Live code={`
+<Sandpack
+  files={{'/App.js':`import React from 'react';
+import DetailView from './DetailView';
+
 const persons = [
   {
     id: 1,
-    name: 'Dominik',
-    email: 'dominik@dorfmeister.cc',
+    name: "Dominik",
+    email: "dominik@dorfmeister.cc",
   },
   {
     id: 2,
-    name: 'John',
-    email: 'john@doe.com',
+    name: "John",
+    email: "john@doe.com",
   },
-]
+];
 
 function App() {
-  const [selected, setSelected] = React.useState(persons[0])
-  const [email, setEmail] = React.useState(selected.email)
+  const [selected, setSelected] = React.useState(persons[0]);
+  const [email, setEmail] = React.useState(selected.email);
 
   return (
     <div>
@@ -244,19 +260,21 @@ function App() {
           type="button"
           key={person.id}
           onClick={() => {
-            setSelected(person)
-            setEmail(person.email)
+            setSelected(person);
+            setEmail(person.email);
           }}
         >
-          {person.id === selected.id
-            ? person.name.toUpperCase()
-            : person.name}
+          {person.id === selected.id ? person.name.toUpperCase() : person.name}
         </button>
       ))}
       <DetailView email={email} setEmail={setEmail} />
     </div>
-  )
+  );
 }
+
+export default App;
+`,
+"/DetailView.js":`import React from 'react';
 
 function DetailView({ email, setEmail }) {
   return (
@@ -270,11 +288,11 @@ function DetailView({ email, setEmail }) {
         Apply
       </button>
     </div>
-  )
-}
+  );
+};
 
-render(<App />)
-`}
+export default DetailView;
+`}}
 />
 
 이제 App은 모든 state를 제어할 수 있으며 DetailView는 이제 멍청한 컴포넌트(보여주기만 할 수 있는 컴포넌트)입니다.
@@ -292,23 +310,25 @@ render(<App />)
 
 ## 3. key 속성을 이용한 완전히 제어되지 않는 컴포넌트
 
-<Live
-code={`
+<Sandpack
+  files={{'/App.js':`import React from 'react';
+import DetailView from './DetailView';
+
 const persons = [
   {
     id: 1,
-    name: 'Dominik',
-    email: 'dominik@dorfmeister.cc',
+    name: "Dominik",
+    email: "dominik@dorfmeister.cc",
   },
   {
     id: 2,
-    name: 'John',
-    email: 'john@doe.com',
+    name: "John",
+    email: "john@doe.com",
   },
-]
+];
 
 function App() {
-  const [selected, setSelected] = React.useState(persons[0])
+  const [selected, setSelected] = React.useState(persons[0]);
 
   return (
     <div>
@@ -318,18 +338,20 @@ function App() {
           key={person.id}
           onClick={() => setSelected(person)}
         >
-          {person.id === selected.id
-            ? person.name.toUpperCase()
-            : person.name}
+          {person.id === selected.id ? person.name.toUpperCase() : person.name}
         </button>
       ))}
       <DetailView key={selected.id} initialEmail={selected.email} />
     </div>
-  )
+  );
 }
 
+export default App;
+`,
+"/DetailView.js":`import React from 'react';
+
 function DetailView({ initialEmail }) {
-  const [email, setEmail] = React.useState(initialEmail)
+  const [email, setEmail] = React.useState(initialEmail);
 
   return (
     <div>
@@ -342,11 +364,11 @@ function DetailView({ initialEmail }) {
         Apply
       </button>
     </div>
-  )
-}
+  );
+};
 
-render(<App />)
-`}
+export default DetailView;
+`}}
 />
 
 이 예시는 다음 한 줄만 제외하면 첫 번째 예시와 완전히 같은 코드입니다.
