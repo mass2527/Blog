@@ -9,7 +9,7 @@ import { blogFiles, BlogFrontmatter } from "@/utils/contents";
 
 const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <Page title="Blog" description="프론트엔드 엔지니어링 지식">
+    <Page title="Blog" description="프론트엔드 엔지니어링">
       <Flex as="ul" flexDirection="column" gap={32}>
         {blogs.map(({ frontmatter, slug, matter }) => {
           return (
