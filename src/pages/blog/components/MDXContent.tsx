@@ -1,21 +1,20 @@
-import { getMDXComponent } from "mdx-bundler/client";
-import styled from "styled-components";
+import { getMDXComponent } from 'mdx-bundler/client';
+import styled from 'styled-components';
 
-import React from "react";
+import React from 'react';
 
-import Sandpack from "@/components/Sandpack";
+import Sandpack from '@/components/Sandpack';
 
-import Anchor from "./Anchor";
-import BlockQuote from "./BlockQuote";
-import Code from "./Code";
-import Highlight from "./Highlight";
-import HorizontalLine from "./HorizontalLine";
-import Live from "./Live";
-import Mark from "./Mark";
-import Pre from "./Pre";
-import Preview from "./Preview";
-import RegisterLink from "./RegisterLink";
-import ResponsiveIFrame from "./ResponsiveIFrame";
+import Anchor from './Anchor';
+import BlockQuote from './BlockQuote';
+import Code from './Code';
+import Highlight from './Highlight';
+import HorizontalLine from './HorizontalLine';
+import Mark from './Mark';
+import Pre from './Pre';
+import Preview from './Preview';
+import RegisterLink from './RegisterLink';
+import ResponsiveIFrame from './ResponsiveIFrame';
 
 function MDXContent({ code }: { code: string }) {
   const MDXComponent = getMDXComponent(code);
@@ -26,7 +25,6 @@ function MDXContent({ code }: { code: string }) {
         components={{
           ResponsiveIFrame,
           pre: Pre,
-          Live,
           code: Code,
           Highlight,
           RegisterLink,
