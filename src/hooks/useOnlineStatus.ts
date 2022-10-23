@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 
-const subscribe = (callback: (event: Event) => void) => {
+const subscribe = (callback: () => void) => {
   window.addEventListener("online", callback);
   window.addEventListener("offline", callback);
 
