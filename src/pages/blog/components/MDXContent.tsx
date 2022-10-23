@@ -6,6 +6,7 @@ import React from 'react';
 import Sandpack from '@/components/Sandpack';
 
 import Anchor from './Anchor';
+import Author from './Author';
 import BlockQuote from './BlockQuote';
 import Code from './Code';
 import Highlight from './Highlight';
@@ -34,6 +35,7 @@ function MDXContent({ code }: { code: string }) {
           Mark,
           hr: HorizontalLine,
           Sandpack,
+          Author,
         }}
       />
     </MDXComponentWrapper>
