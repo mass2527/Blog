@@ -12,7 +12,7 @@ export default function SEO({
   title,
   description,
   subTitle = '필리',
-  image = 'https://images.unsplash.com/photo-1618312776768-c5926372a2f5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTl8fHBoaWxseXxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=1200&q=60',
+  image = 'https://images.unsplash.com/photo-1557683311-eac922347aa1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NDR8fGNvbG9yfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=1200&q=60',
 }: SEOProps) {
   const router = useRouter();
 
