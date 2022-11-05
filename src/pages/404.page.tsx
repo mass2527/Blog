@@ -1,11 +1,11 @@
-import styled from "styled-components";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
+import styled from 'styled-components';
+import { ArrowRightIcon } from '@radix-ui/react-icons';
 
-import Link from "next/link";
+import Link from 'next/link';
 
-import { Heading, Text } from "@/components/Typography";
-import { Center } from "@/layouts/Center";
-import { flexColumn, flexRow } from "@/styles/utils";
+import { Heading, Text } from '@/components/Typography';
+import { Center } from '@/layouts/Center';
+import { flexColumn, flexRow } from '@/styles/utils';
 
 export default function Custom404() {
   return (
@@ -33,7 +33,7 @@ export default function Custom404() {
 
 const Wrapper = styled(Center)`
   > div {
-    ${flexColumn("normal", "center")};
+    ${flexColumn('normal', 'center')};
 
     h1 {
       margin: 0;
@@ -45,10 +45,9 @@ const Wrapper = styled(Center)`
     }
 
     a {
-      ${flexRow("normal", "center")};
+      ${flexRow('normal', 'center')};
       box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.plum3},
-        -15px 0 30px -15px ${({ theme }) => theme.colors.orange8},
-        0 0 30px -15px ${({ theme }) => theme.colors.pink8},
+        -15px 0 30px -15px ${({ theme }) => theme.colors.orange8}, 0 0 30px -15px ${({ theme }) => theme.colors.pink8},
         15px 0 30px -15px ${({ theme }) => theme.colors.violet8};
       background-color: hsl(0 0% 6%);
       color: ${({ theme }) => theme.colors.mauve12};

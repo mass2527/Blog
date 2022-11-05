@@ -1,24 +1,17 @@
-import { css } from "styled-components";
+import { css } from 'styled-components';
 
-import React from "react";
+import React from 'react';
 
-import { GetStaticPropsContext, InferGetStaticPropsType } from "next";
+import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 
-import SEO from "@/components/SEO";
-import { Heading } from "@/components/Typography";
-import { bundleMDXWithOptions } from "@/utils/bundle";
-import {
-  getFormattedCategory,
-  snippetFiles,
-  SnippetFrontmatter,
-} from "@/utils/contents";
+import SEO from '@/components/SEO';
+import { Heading } from '@/components/Typography';
+import { bundleMDXWithOptions } from '@/utils/bundle';
+import { getFormattedCategory, snippetFiles, SnippetFrontmatter } from '@/utils/contents';
 
-import MDXContent from "../blog/components/MDXContent";
+import MDXContent from '../blog/components/MDXContent';
 
-function SnippetDetailPage({
-  frontmatter,
-  code,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+function SnippetDetailPage({ frontmatter, code }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
       <SEO title={frontmatter.title} description={frontmatter.description} />
@@ -28,13 +21,7 @@ function SnippetDetailPage({
             padding-top: ${({ theme }) => theme.spacers[16]};
           `}
         >
-          <Heading
-            as="h1"
-            textAlign="center"
-            fontSize={16}
-            color="crimson11"
-            fontWeight={500}
-          >
+          <Heading as="h1" textAlign="center" fontSize={16} color="crimson11" fontWeight={500}>
             SNIPPET
           </Heading>
           <Heading
@@ -54,9 +41,8 @@ function SnippetDetailPage({
 
 export async function getStaticPaths() {
   const snippets = await Promise.all(
-    snippetFiles.map(async (fileName) => {
-      const { frontmatter, slug } =
-        await bundleMDXWithOptions<SnippetFrontmatter>("snippet", fileName);
+    snippetFiles.map(async fileName => {
+      const { frontmatter, slug } = await bundleMDXWithOptions<SnippetFrontmatter>('snippet', fileName);
 
       return { frontmatter, slug };
     })
@@ -76,16 +62,11 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({
-  params,
-}: GetStaticPropsContext<{ slugs: string[] }>) {
+export async function getStaticProps({ params }: GetStaticPropsContext<{ slugs: string[] }>) {
   const slugs = params?.slugs ?? [];
-  const snippetFile = snippetFiles.find((fileName) =>
-    fileName.includes(slugs[1])
-  )!;
+  const snippetFile = snippetFiles.find(fileName => fileName.includes(slugs[1]))!;
 
-  const { frontmatter, code, matter } =
-    await bundleMDXWithOptions<SnippetFrontmatter>("snippet", snippetFile);
+  const { frontmatter, code, matter } = await bundleMDXWithOptions<SnippetFrontmatter>('snippet', snippetFile);
 
   return {
     props: { frontmatter, code, matter },

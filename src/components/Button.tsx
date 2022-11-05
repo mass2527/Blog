@@ -1,10 +1,10 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes } from 'react';
 
-type ButtonSize = "small" | "medium" | "large";
-type ButtonColor = "crimson" | "red" | "cyan" | "yellow" | "blue" | "mauve";
-type ButtonVariant = "primary" | "outline" | "ghost";
+type ButtonSize = 'small' | 'medium' | 'large';
+type ButtonColor = 'crimson' | 'red' | 'cyan' | 'yellow' | 'blue' | 'mauve';
+type ButtonVariant = 'primary' | 'outline' | 'ghost';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
@@ -13,21 +13,15 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 function Button({
-  type = "button",
-  size = "medium",
-  color = "crimson",
-  variant = "primary",
+  type = 'button',
+  size = 'medium',
+  color = 'crimson',
+  variant = 'primary',
   children,
   ...props
 }: ButtonProps) {
   return (
-    <StyledButton
-      type={type}
-      size={size}
-      color={color}
-      variant={variant}
-      {...props}
-    >
+    <StyledButton type={type} size={size} color={color} variant={variant} {...props}>
       {children}
     </StyledButton>
   );

@@ -1,6 +1,6 @@
-import { css } from "styled-components";
+import { css } from 'styled-components';
 
-import { CSSProperties } from "react";
+import { CSSProperties } from 'react';
 
 export const center = css`
   display: grid;
@@ -8,9 +8,9 @@ export const center = css`
 `;
 
 function flex(
-  flexDirection: CSSProperties["flexDirection"],
-  justifyContent: CSSProperties["justifyContent"] = "normal",
-  alignItems: CSSProperties["alignItems"] = "normal"
+  flexDirection: CSSProperties['flexDirection'],
+  justifyContent: CSSProperties['justifyContent'] = 'normal',
+  alignItems: CSSProperties['alignItems'] = 'normal'
 ) {
   return css`
     display: flex;
@@ -20,16 +20,10 @@ function flex(
   `;
 }
 
-export function flexRow(
-  justifyContent?: CSSProperties["justifyContent"],
-  alignItems?: CSSProperties["alignItems"]
-) {
-  return flex("row", justifyContent, alignItems);
+export function flexRow(justifyContent?: CSSProperties['justifyContent'], alignItems?: CSSProperties['alignItems']) {
+  return flex('row', justifyContent, alignItems);
 }
 
-export function flexColumn(
-  justifyContent?: CSSProperties["justifyContent"],
-  alignItems?: CSSProperties["alignItems"]
-) {
-  return flex("column", justifyContent, alignItems);
+export function flexColumn(justifyContent?: CSSProperties['justifyContent'], alignItems?: CSSProperties['alignItems']) {
+  return flex('column', justifyContent, alignItems);
 }

@@ -1,14 +1,11 @@
-import debounce from "lodash/debounce";
+import debounce from 'lodash/debounce';
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from 'react';
 
-import { usePreservedCallback } from "./usePreservedCallback";
+import { usePreservedCallback } from './usePreservedCallback';
 
 // eslint-disable-next-line no-unused-vars
-export function useDebounce<Callback extends (...args: unknown[]) => unknown>(
-  callback: Callback,
-  wait: number
-) {
+export function useDebounce<Callback extends (...args: unknown[]) => unknown>(callback: Callback, wait: number) {
   const preservedCallback = usePreservedCallback(callback);
 
   const debouncedCallback = useMemo(() => {

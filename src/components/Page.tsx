@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import PageHeading from "./PageHeading";
-import SEO, { SEOProps } from "./SEO";
+import PageHeading from './PageHeading';
+import SEO, { SEOProps } from './SEO';
 
 function Page({
   title,

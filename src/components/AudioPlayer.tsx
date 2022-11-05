@@ -1,17 +1,11 @@
-import styled from "styled-components";
-import {
-  PauseIcon,
-  PlayIcon,
-  SpeakerLoudIcon,
-  SpeakerOffIcon,
-  TrackNextIcon,
-} from "@radix-ui/react-icons";
+import styled from 'styled-components';
+import { PauseIcon, PlayIcon, SpeakerLoudIcon, SpeakerOffIcon, TrackNextIcon } from '@radix-ui/react-icons';
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 
-import { Text } from "@/components/Typography";
-import { useIsFirstRender } from "@/hooks";
-import { flexRow } from "@/styles/utils";
+import { Text } from '@/components/Typography';
+import { useIsFirstRender } from '@/hooks';
+import { flexRow } from '@/styles/utils';
 
 const formatAsMSS = (timeInSeconds: number) => {
   const minutes = Math.floor(timeInSeconds / 60);
@@ -29,13 +23,9 @@ function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLProgressElement>(null);
 
-  const trackPath = trackList.length
-    ? `/tracks/${trackList[trackIndex]}.mp3`
-    : undefined;
+  const trackPath = trackList.length ? `/tracks/${trackList[trackIndex]}.mp3` : undefined;
 
-  const progressRate = audioRef.current?.duration
-    ? currentTime / audioRef.current.duration
-    : 0;
+  const progressRate = audioRef.current?.duration ? currentTime / audioRef.current.duration : 0;
 
   useEffect(() => {
     if (audioRef.current === null || isFirstRender) return;
@@ -45,8 +35,8 @@ function AudioPlayer() {
 
   useEffect(() => {
     function getTrackList() {
-      fetch("/api/tracks")
-        .then((res) => res.json())
+      fetch('/api/tracks')
+        .then(res => res.json())
         .then(({ data }) => setTrackList(data));
     }
     getTrackList();
@@ -55,13 +45,11 @@ function AudioPlayer() {
   useEffect(() => {
     if (progressRef.current === null) return;
 
-    progressRef.current.addEventListener("click", (event) => {
+    progressRef.current.addEventListener('click', event => {
       if (progressRef.current === null || audioRef.current === null) return;
 
-      const updatedProgressRate =
-        event.offsetX / progressRef.current.offsetWidth;
-      audioRef.current.currentTime =
-        audioRef.current.duration * updatedProgressRate;
+      const updatedProgressRate = event.offsetX / progressRef.current.offsetWidth;
+      audioRef.current.currentTime = audioRef.current.duration * updatedProgressRate;
     });
   }, []);
 
@@ -74,23 +62,21 @@ function AudioPlayer() {
       setCurrentTime(currentTime);
     };
     const updateTrackIndex = () => {
-      setTrackIndex(
-        (previousTrackIndex) => (previousTrackIndex + 1) % trackList.length
-      );
+      setTrackIndex(previousTrackIndex => (previousTrackIndex + 1) % trackList.length);
     };
 
-    audioElement.addEventListener("timeupdate", handleTimeUpdate);
-    audioElement.addEventListener("ended", updateTrackIndex);
+    audioElement.addEventListener('timeupdate', handleTimeUpdate);
+    audioElement.addEventListener('ended', updateTrackIndex);
     return () => {
-      audioElement.removeEventListener("timeupdate", handleTimeUpdate);
-      audioElement.removeEventListener("ended", updateTrackIndex);
+      audioElement.removeEventListener('timeupdate', handleTimeUpdate);
+      audioElement.removeEventListener('ended', updateTrackIndex);
     };
   }, [trackList]);
 
   useEffect(() => {
     if (audioRef.current === null) return;
 
-    const method = isPlaying ? "play" : "pause";
+    const method = isPlaying ? 'play' : 'pause';
     audioRef.current[method]();
   }, [isPlaying]);
 
@@ -102,9 +88,7 @@ function AudioPlayer() {
   }, [isMuted]);
 
   const playNextTrack = () => {
-    setTrackIndex(
-      (previousTrackIndex) => (previousTrackIndex + 1) % trackList.length
-    );
+    setTrackIndex(previousTrackIndex => (previousTrackIndex + 1) % trackList.length);
     if (!isPlaying) {
       setIsPlaying(true);
     }
@@ -119,8 +103,8 @@ function AudioPlayer() {
 
       <button
         type="button"
-        onClick={() => setIsPlaying((prevIsPlaying) => !prevIsPlaying)}
-        aria-label={isPlaying ? "중지" : "재생"}
+        onClick={() => setIsPlaying(prevIsPlaying => !prevIsPlaying)}
+        aria-label={isPlaying ? '중지' : '재생'}
       >
         {isPlaying ? <PauseIcon /> : <PlayIcon />}
       </button>
@@ -129,8 +113,8 @@ function AudioPlayer() {
       </button>
       <button
         type="button"
-        aria-label={isMuted ? "음소거 해제" : "음소거"}
-        onClick={() => setIsMuted((prevIsMuted) => !prevIsMuted)}
+        aria-label={isMuted ? '음소거 해제' : '음소거'}
+        onClick={() => setIsMuted(prevIsMuted => !prevIsMuted)}
       >
         {isMuted ? <SpeakerLoudIcon /> : <SpeakerOffIcon />}
       </button>
@@ -149,7 +133,7 @@ function AudioPlayer() {
 }
 
 const Wrapper = styled.figure`
-  ${flexRow("normal", "center")};
+  ${flexRow('normal', 'center')};
   margin: 0;
 
   figcaption {
@@ -162,7 +146,7 @@ const Audio = styled.audio`
 `;
 
 const PlayerBar = styled.div`
-  ${flexRow("normal", "center")};
+  ${flexRow('normal', 'center')};
   gap: ${({ theme }) => theme.spacers[8]};
   width: 100%;
 

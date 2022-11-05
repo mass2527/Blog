@@ -1,25 +1,16 @@
-import React from "react";
+import React from 'react';
 
-import { InferGetStaticPropsType } from "next";
+import { InferGetStaticPropsType } from 'next';
 
-import ContentCard from "@/components/ContentCard";
-import Page from "@/components/Page";
-import { Flex } from "@/layouts/Flex";
-import { bundleMDXWithOptions } from "@/utils/bundle";
-import {
-  getFormattedCategory,
-  snippetFiles,
-  SnippetFrontmatter,
-} from "@/utils/contents";
+import ContentCard from '@/components/ContentCard';
+import Page from '@/components/Page';
+import { Flex } from '@/layouts/Flex';
+import { bundleMDXWithOptions } from '@/utils/bundle';
+import { getFormattedCategory, snippetFiles, SnippetFrontmatter } from '@/utils/contents';
 
-function SnippetPage({
-  snippets,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+function SnippetPage({ snippets }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <Page
-      title="Snippet"
-      description="개별 문제에 대해 재사용 가능한 소스 코드"
-    >
+    <Page title="Snippet" description="개별 문제에 대해 재사용 가능한 소스 코드">
       <Flex as="ul" flexDirection="column" gap={32}>
         {snippets.map(({ frontmatter, slug }) => {
           return (
@@ -39,9 +30,8 @@ function SnippetPage({
 export async function getStaticProps() {
   const snippets = (
     await Promise.all(
-      snippetFiles.map(async (fileName) => {
-        const { frontmatter, slug } =
-          await bundleMDXWithOptions<SnippetFrontmatter>("snippet", fileName);
+      snippetFiles.map(async fileName => {
+        const { frontmatter, slug } = await bundleMDXWithOptions<SnippetFrontmatter>('snippet', fileName);
 
         return {
           frontmatter: {
@@ -54,8 +44,7 @@ export async function getStaticProps() {
     )
   ).sort(
     (current, next) =>
-      new Date(next.frontmatter.publishedAt).getTime() -
-      new Date(current.frontmatter.publishedAt).getTime()
+      new Date(next.frontmatter.publishedAt).getTime() - new Date(current.frontmatter.publishedAt).getTime()
   );
 
   return {

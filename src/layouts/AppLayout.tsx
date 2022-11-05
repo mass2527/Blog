@@ -1,19 +1,19 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import Link from "next/link";
+import Link from 'next/link';
 
-import AudioPlayer from "@/components/AudioPlayer";
-import { flexRow } from "@/styles/utils";
+import AudioPlayer from '@/components/AudioPlayer';
+import { flexRow } from '@/styles/utils';
 
-import { Flex } from "./Flex";
+import { Flex } from './Flex';
 
 const LINKS = [
-  { path: "/", name: "Home" },
-  { path: "/blog", name: "Blog" },
-  { path: "/personal", name: "Personal" },
-  { path: "/snippet", name: "Snippet" },
+  { path: '/', name: 'Home' },
+  { path: '/blog', name: 'Blog' },
+  { path: '/personal', name: 'Personal' },
+  { path: '/snippet', name: 'Snippet' },
 ];
 
 function AppLayout({ children }: { children: ReactNode }) {
@@ -51,7 +51,7 @@ const HeaderWrapper = styled.div`
 `;
 
 const Header = styled.header`
-  ${flexRow("space-between", "center")};
+  ${flexRow('space-between', 'center')};
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   width: 100%;
   margin: auto;
@@ -69,10 +69,7 @@ const Main = styled.main`
 
   display: grid;
   grid-template-columns:
-    1fr min(
-      ${({ theme }) => theme.sizes.maxWidth},
-      calc(100% - ${({ theme }) => theme.spacers[16]} * 2)
-    )
+    1fr min(${({ theme }) => theme.sizes.maxWidth}, calc(100% - ${({ theme }) => theme.spacers[16]} * 2))
     1fr;
   column-gap: ${({ theme }) => theme.spacers[16]};
 

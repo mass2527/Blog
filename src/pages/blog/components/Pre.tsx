@@ -1,9 +1,9 @@
-import styled from "styled-components";
-import { CheckIcon, ClipboardIcon } from "@radix-ui/react-icons";
+import styled from 'styled-components';
+import { CheckIcon, ClipboardIcon } from '@radix-ui/react-icons';
 
-import { ReactNode, useRef } from "react";
+import { ReactNode, useRef } from 'react';
 
-import { useClipboard } from "@/hooks";
+import { useClipboard } from '@/hooks';
 
 function Pre({ children }: { children?: ReactNode }) {
   const [isCopied, copy] = useClipboard();
@@ -12,23 +12,21 @@ function Pre({ children }: { children?: ReactNode }) {
   const copyToClipboard = () => {
     if (preRef.current === null) return;
 
-    const codeElement =
-      preRef.current.querySelector("code") ||
-      preRef.current.querySelector("div[code]");
+    const codeElement = preRef.current.querySelector('code') || preRef.current.querySelector('div[code]');
     if (codeElement === null) return;
 
-    const code = codeElement.innerText.replace(/\n{2}/g, "\n");
+    const code = codeElement.innerText.replace(/\n{2}/g, '\n');
     copy(code);
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: 'relative' }}>
       <StyledPre ref={preRef}>
         {children}
 
         <CopyButton
           type="button"
-          aria-label={isCopied ? "복사 완료" : "코드를 클립보드에 복사"}
+          aria-label={isCopied ? '복사 완료' : '코드를 클립보드에 복사'}
           onClick={copyToClipboard}
           isCopied={isCopied}
         >
@@ -124,21 +122,21 @@ const StyledPre = styled.pre`
     }
   }
 
-  .highlight-line[data-highlighted="false"],
-  .highlight-line[data-highlighted="false"] * {
+  .highlight-line[data-highlighted='false'],
+  .highlight-line[data-highlighted='false'] * {
     color: ${({ theme }) => theme.colors.mauve10};
   }
 
   .token.atapply .token:not(.rule):not(.important) {
-    color: "inherit";
+    color: 'inherit';
   }
 
   .language-shell .token:not(.comment) {
-    color: "inherit";
+    color: 'inherit';
   }
 
   .language-css .token.function {
-    color: "inherit";
+    color: 'inherit';
   }
 
   .token.deleted:not(.prefix),
@@ -161,7 +159,7 @@ const CopyButton = styled.button<{ isCopied: boolean }>`
   padding: 0;
   opacity: 0;
   border: none;
-  cursor: ${({ isCopied }) => isCopied && "not-allowed"};
+  cursor: ${({ isCopied }) => isCopied && 'not-allowed'};
 
   ${StyledPre}:hover & {
     opacity: 1;
@@ -169,14 +167,12 @@ const CopyButton = styled.button<{ isCopied: boolean }>`
   }
 
   &:hover {
-    background-color: ${({ isCopied, theme: { colors } }) =>
-      isCopied ? colors.whiteA5 : colors.whiteA4};
+    background-color: ${({ isCopied, theme: { colors } }) => (isCopied ? colors.whiteA5 : colors.whiteA4)};
   }
 
   &:focus {
     opacity: 1;
-    box-shadow: inset 0 0 0 1px ${({ theme }) => theme.colors.whiteA8},
-      0 0 0 1px ${({ theme }) => theme.colors.whiteA8};
+    box-shadow: inset 0 0 0 1px ${({ theme }) => theme.colors.whiteA8}, 0 0 0 1px ${({ theme }) => theme.colors.whiteA8};
   }
 `;
 

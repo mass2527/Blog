@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { useIsFirstRender } from "./useIsFirstRender";
+import { useIsFirstRender } from './useIsFirstRender';
 
 const getMatches = (mediaQueryString: string) =>
-  typeof window === "undefined"
-    ? false
-    : window.matchMedia(mediaQueryString).matches;
+  typeof window === 'undefined' ? false : window.matchMedia(mediaQueryString).matches;
 
 export function useMediaQuery(mediaQueryString: string) {
   const [matches, setMatches] = useState(() => getMatches(mediaQueryString));
@@ -21,10 +19,10 @@ export function useMediaQuery(mediaQueryString: string) {
       setMatches(event.matches);
     };
 
-    mediaQueryList.addEventListener("change", handleMediaQueryListChange);
+    mediaQueryList.addEventListener('change', handleMediaQueryListChange);
 
     return () => {
-      mediaQueryList.removeEventListener("change", handleMediaQueryListChange);
+      mediaQueryList.removeEventListener('change', handleMediaQueryListChange);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mediaQueryString]);
