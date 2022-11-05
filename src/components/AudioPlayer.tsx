@@ -25,7 +25,7 @@ function AudioPlayer() {
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const [trackList, setTrackList] = useState<string[]>([]);
-  const isFirst = useIsFirstRender();
+  const isFirstRender = useIsFirstRender();
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLProgressElement>(null);
 
@@ -36,6 +36,12 @@ function AudioPlayer() {
   const progressRate = audioRef.current?.duration
     ? currentTime / audioRef.current.duration
     : 0;
+
+  useEffect(() => {
+    if (audioRef.current === null || isFirstRender) return;
+
+    audioRef.current.play();
+  }, [trackIndex, isFirstRender]);
 
   useEffect(() => {
     function getTrackList() {
@@ -94,12 +100,6 @@ function AudioPlayer() {
     const volume = isMuted ? 0 : 1;
     audioRef.current.volume = volume;
   }, [isMuted]);
-
-  useEffect(() => {
-    if (audioRef.current === null || isFirst) return;
-
-    audioRef.current.play();
-  }, [trackIndex, isFirst]);
 
   const playNextTrack = () => {
     setTrackIndex(
