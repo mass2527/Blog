@@ -1,15 +1,15 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import { CSSProperties } from "react";
+import { CSSProperties } from 'react';
 
-import { spacers } from "@/styles/theme";
+import { spacers } from '@/styles/theme';
 
-import { Box } from "./Box";
+import { Box } from './Box';
 
 export const Flex = styled(Box)<{
-  flexDirection?: CSSProperties["flexDirection"];
-  justifyContent?: CSSProperties["justifyContent"];
-  alignItems?: CSSProperties["alignItems"];
+  flexDirection?: CSSProperties['flexDirection'];
+  justifyContent?: CSSProperties['justifyContent'];
+  alignItems?: CSSProperties['alignItems'];
   gap?: keyof typeof spacers;
 }>`
   display: flex;

@@ -1,6 +1,6 @@
-import rangeParser from "parse-numeric-range";
+import rangeParser from 'parse-numeric-range';
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 interface HighlightProps {
   id: string;
@@ -16,21 +16,19 @@ function Highlight({ id, index, ...props }: HighlightProps) {
     const codeBlock = document.getElementById(id);
     if (!codeBlock) return;
 
-    const allHighlightWords = codeBlock.querySelectorAll(".highlight-word");
-    const targetIndex = rangeParser(index).map((i) => i - 1);
+    const allHighlightWords = codeBlock.querySelectorAll('.highlight-word');
+    const targetIndex = rangeParser(index).map(i => i - 1);
     if (Math.max(...targetIndex) >= allHighlightWords.length) return;
 
-    const addClass = () =>
-      targetIndex.forEach((i) => allHighlightWords[i].classList.add("on"));
-    const removeClass = () =>
-      targetIndex.forEach((i) => allHighlightWords[i].classList.remove("on"));
+    const addClass = () => targetIndex.forEach(i => allHighlightWords[i].classList.add('on'));
+    const removeClass = () => targetIndex.forEach(i => allHighlightWords[i].classList.remove('on'));
 
-    trigger?.addEventListener("mouseenter", addClass);
-    trigger?.addEventListener("mouseleave", removeClass);
+    trigger?.addEventListener('mouseenter', addClass);
+    trigger?.addEventListener('mouseleave', removeClass);
 
     return () => {
-      trigger?.removeEventListener("mouseenter", addClass);
-      trigger?.removeEventListener("mouseleave", removeClass);
+      trigger?.removeEventListener('mouseenter', addClass);
+      trigger?.removeEventListener('mouseleave', removeClass);
     };
   }, [id, index]);
 

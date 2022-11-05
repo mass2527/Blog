@@ -1,11 +1,11 @@
-import type { InferGetStaticPropsType } from "next";
+import type { InferGetStaticPropsType } from 'next';
 
-import ContentCard from "@/components/ContentCard";
-import Page from "@/components/Page";
-import TimeInfo from "@/components/TimeInfo";
-import { Flex } from "@/layouts/Flex";
-import { bundleMDXWithOptions } from "@/utils/bundle";
-import { blogFiles, BlogFrontmatter } from "@/utils/contents";
+import ContentCard from '@/components/ContentCard';
+import Page from '@/components/Page';
+import TimeInfo from '@/components/TimeInfo';
+import { Flex } from '@/layouts/Flex';
+import { bundleMDXWithOptions } from '@/utils/bundle';
+import { blogFiles, BlogFrontmatter } from '@/utils/contents';
 
 const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
@@ -18,12 +18,7 @@ const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
               href={`/blog/${slug}`}
               title={frontmatter.title}
               description={frontmatter.summary}
-              footer={
-                <TimeInfo
-                  publishedAt={frontmatter.publishedAt}
-                  content={matter.content}
-                />
-              }
+              footer={<TimeInfo publishedAt={frontmatter.publishedAt} content={matter.content} />}
             />
           );
         })}
@@ -35,22 +30,17 @@ const Blog = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) => {
 export async function getStaticProps() {
   const blogs = (
     await Promise.all(
-      blogFiles.map(async (fileName) => {
-        const { frontmatter, slug, matter } =
-          await bundleMDXWithOptions<BlogFrontmatter>("blog", fileName);
+      blogFiles.map(async fileName => {
+        const { frontmatter, slug, matter } = await bundleMDXWithOptions<BlogFrontmatter>('blog', fileName);
 
         return { frontmatter, slug, matter };
       })
     )
   )
-    .filter(
-      ({ frontmatter }) =>
-        process.env.NODE_ENV === "development" || frontmatter.published
-    )
+    .filter(({ frontmatter }) => process.env.NODE_ENV === 'development' || frontmatter.published)
     .sort(
       (current, next) =>
-        new Date(next.frontmatter.publishedAt).getTime() -
-        new Date(current.frontmatter.publishedAt).getTime()
+        new Date(next.frontmatter.publishedAt).getTime() - new Date(current.frontmatter.publishedAt).getTime()
     );
 
   return {

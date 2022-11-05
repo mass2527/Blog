@@ -1,6 +1,6 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
 interface CodeProps {
   children?: ReactNode;
@@ -9,7 +9,7 @@ interface CodeProps {
 }
 
 function Code({ children, id, collapsible }: CodeProps) {
-  const isCollapsible = typeof collapsible !== "undefined";
+  const isCollapsible = typeof collapsible !== 'undefined';
   const content = <StyledCode id={id}>{children}</StyledCode>;
 
   if (isCollapsible) {

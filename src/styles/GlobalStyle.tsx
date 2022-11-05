@@ -1,15 +1,14 @@
-import { createGlobalStyle } from "styled-components";
-import normalize from "styled-normalize";
+import { createGlobalStyle } from 'styled-components';
+import normalize from 'styled-normalize';
 
-import { center } from "./utils";
+import { center } from './utils';
 
 const GlobalStyle = createGlobalStyle`
     ${normalize};
     
     html{
         line-height:1.5;
-        scroll-padding-top: ${({ theme: { sizes, spacers } }) =>
-          `calc(${sizes.headerHeight} + ${spacers[16]})`};
+        scroll-padding-top: ${({ theme: { sizes, spacers } }) => `calc(${sizes.headerHeight} + ${spacers[16]})`};
         background-color:${({ theme }) => theme.colors.mauve1};
         scroll-behavior: smooth;
     }

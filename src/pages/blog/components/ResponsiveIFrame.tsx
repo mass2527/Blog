@@ -1,12 +1,11 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import React, { IframeHTMLAttributes } from "react";
+import React, { IframeHTMLAttributes } from 'react';
 
-interface ResponsiveIFrameProps
-  extends IframeHTMLAttributes<HTMLIFrameElement> {}
+interface ResponsiveIFrameProps extends IframeHTMLAttributes<HTMLIFrameElement> {}
 
 function ResponsiveIFrame({
-  allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+  allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
   allowFullScreen = true,
   ...props
 }: ResponsiveIFrameProps) {

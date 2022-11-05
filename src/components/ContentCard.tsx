@@ -1,11 +1,11 @@
-import { css } from "styled-components";
+import { css } from 'styled-components';
 
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
-import Link from "next/link";
+import Link from 'next/link';
 
-import Card from "./Card";
-import { Heading, Text } from "./Typography";
+import Card from './Card';
+import { Heading, Text } from './Typography';
 
 function ContentCard({
   href,

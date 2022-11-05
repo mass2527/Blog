@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 interface RegisterLinkProps {
   id: string;
@@ -7,22 +7,22 @@ interface RegisterLinkProps {
 }
 
 function RegisterLink({ id, index, href }: RegisterLinkProps) {
-  const isExternal = href?.startsWith("http");
+  const isExternal = href?.startsWith('http');
 
   useEffect(() => {
     const codeBlock = document.getElementById(id);
     if (!codeBlock) return;
 
-    const allHighlightWords = codeBlock.querySelectorAll(".highlight-word");
+    const allHighlightWords = codeBlock.querySelectorAll('.highlight-word');
     const target = allHighlightWords[Number(index) - 1];
     if (!target) return;
 
     target.replaceWith(
-      Object.assign(document.createElement("a"), {
+      Object.assign(document.createElement('a'), {
         href,
         innerHTML: target.innerHTML,
         className: target.className,
-        ...(isExternal ? { target: "_blank", rel: "noopener" } : {}),
+        ...(isExternal ? { target: '_blank', rel: 'noopener' } : {}),
       })
     );
   }, [id, index, href, isExternal]);

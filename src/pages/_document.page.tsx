@@ -1,13 +1,7 @@
-import { ServerStyleSheet } from "styled-components";
-import { getSandpackCssText } from "@codesandbox/sandpack-react";
+import { ServerStyleSheet } from 'styled-components';
+import { getSandpackCssText } from '@codesandbox/sandpack-react';
 
-import Document, {
-  DocumentContext,
-  Head,
-  Html,
-  Main,
-  NextScript,
-} from "next/document";
+import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document';
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -17,8 +11,7 @@ export default class MyDocument extends Document {
     try {
       ctx.renderPage = () =>
         originalRenderPage({
-          enhanceApp: (App) => (props) =>
-            sheet.collectStyles(<App {...props} />),
+          enhanceApp: App => props => sheet.collectStyles(<App {...props} />),
         });
 
       const initialProps = await Document.getInitialProps(ctx);
@@ -36,28 +29,11 @@ export default class MyDocument extends Document {
       <Html>
         <Head>
           {/* https://sandpack.codesandbox.io/docs/getting-started/ssr#nextjs */}
-          <style
-            dangerouslySetInnerHTML={{ __html: getSandpackCssText() }}
-            id="sandpack"
-          />
+          <style dangerouslySetInnerHTML={{ __html: getSandpackCssText() }} id="sandpack" />
           {/* https://realfavicongenerator.net/ */}
-          <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="/apple-touch-icon.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="/favicon-32x32.png"
-          />
-          <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="/favicon-16x16.png"
-          />
+          <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
           <link rel="manifest" href="/site.webmanifest" />
           <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
           <meta name="msapplication-TileColor" content="#da532c" />

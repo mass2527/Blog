@@ -1,28 +1,20 @@
-import styled, { css } from "styled-components";
-import type {
-  SandpackFiles,
-  SandpackPredefinedTemplate,
-} from "@codesandbox/sandpack-react";
-import {
-  SandpackCodeEditor,
-  SandpackConsole,
-  SandpackPreview,
-  SandpackProvider,
-} from "@codesandbox/sandpack-react";
+import styled, { css } from 'styled-components';
+import type { SandpackFiles, SandpackPredefinedTemplate } from '@codesandbox/sandpack-react';
+import { SandpackCodeEditor, SandpackConsole, SandpackPreview, SandpackProvider } from '@codesandbox/sandpack-react';
 
-import { useState } from "react";
+import { useState } from 'react';
 
-import { Flex } from "@/layouts/Flex";
-import { darkTheme } from "@/styles/theme";
+import { Flex } from '@/layouts/Flex';
+import { darkTheme } from '@/styles/theme';
 
 const THEME = {
   colors: {
-    surface1: "transparent",
+    surface1: 'transparent',
     surface2: darkTheme.colors.mauve6,
-    surface3: "transparent",
+    surface3: 'transparent',
     clickable: darkTheme.colors.mauve11,
-    base: "#323232", // ??
-    disabled: "#C5C5C5", // ??
+    base: '#323232', // ??
+    disabled: '#C5C5C5', // ??
     hover: darkTheme.colors.mauve12,
     accent: darkTheme.colors.mauve12,
   },
@@ -30,7 +22,7 @@ const THEME = {
     plain: darkTheme.colors.mauve12,
     comment: {
       color: darkTheme.colors.mauve10,
-      fontStyle: "italic",
+      fontStyle: 'italic',
     },
     keyword: darkTheme.colors.blue11,
     tag: darkTheme.colors.blue11,
@@ -41,24 +33,18 @@ const THEME = {
     string: darkTheme.colors.cyan11,
   },
   font: {
-    body: "-apple-system, system-ui, sans-serif",
-    mono: "Söhne Mono, menlo, monospace",
-    size: "14px",
-    lineHeight: "21px",
+    body: '-apple-system, system-ui, sans-serif',
+    mono: 'Söhne Mono, menlo, monospace',
+    size: '14px',
+    lineHeight: '21px',
   },
 } as const;
 
-type ResultTab = "preview" | "console";
-const TAB_BUTTONS: ResultTab[] = ["preview", "console"];
+type ResultTab = 'preview' | 'console';
+const TAB_BUTTONS: ResultTab[] = ['preview', 'console'];
 
-function Sandpack({
-  template = "react",
-  files,
-}: {
-  template?: SandpackPredefinedTemplate;
-  files: SandpackFiles;
-}) {
-  const [resultTab, setResultTab] = useState<ResultTab>("preview");
+function Sandpack({ template = 'react', files }: { template?: SandpackPredefinedTemplate; files: SandpackFiles }) {
+  const [resultTab, setResultTab] = useState<ResultTab>('preview');
 
   return (
     <SandpackWrapper>
@@ -67,13 +53,8 @@ function Sandpack({
 
         <div>
           <ResultHeader alignItems="center">
-            {TAB_BUTTONS.map((name) => (
-              <TabButton
-                key={name}
-                type="button"
-                onClick={() => setResultTab(name)}
-                isActive={resultTab === name}
-              >
+            {TAB_BUTTONS.map(name => (
+              <TabButton key={name} type="button" onClick={() => setResultTab(name)} isActive={resultTab === name}>
                 {name}
               </TabButton>
             ))}
@@ -90,17 +71,17 @@ function Sandpack({
               <SandpackPreview
                 showRefreshButton
                 css={css`
-                  opacity: ${resultTab === "preview" ? 1 : 0};
+                  opacity: ${resultTab === 'preview' ? 1 : 0};
                 `}
               />
               <SandpackConsole
                 showHeader={false}
                 css={css`
-                  z-index: ${resultTab === "console" ? 3 : -1};
+                  z-index: ${resultTab === 'console' ? 3 : -1};
                   position: absolute;
                   inset: 0;
                   padding: ${({ theme }) => theme.spacers[8]};
-                  opacity: ${resultTab === "console" ? 1 : 0};
+                  opacity: ${resultTab === 'console' ? 1 : 0};
                 `}
               />
             </div>
@@ -130,8 +111,7 @@ const ResultHeader = styled(Flex)`
 `;
 
 const TabButton = styled.button<{ isActive: boolean }>`
-  color: ${({ isActive, theme: { colors } }) =>
-    isActive ? colors.mauve12 : colors.mauve11};
+  color: ${({ isActive, theme: { colors } }) => (isActive ? colors.mauve12 : colors.mauve11)};
   text-transform: capitalize;
 
   &:hover {
