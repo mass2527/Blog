@@ -7,6 +7,8 @@ import AppLayout from '@/layouts/AppLayout';
 import GlobalStyle from '@/styles/GlobalStyle';
 import { darkTheme } from '@/styles/theme';
 
+import 'toastify-js/src/toastify.css';
+
 function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={darkTheme}>
