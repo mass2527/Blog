@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { ButtonHTMLAttributes } from 'react';
 
 type ButtonSize = 'small' | 'medium' | 'large';
-type ButtonColor = 'crimson' | 'red' | 'cyan' | 'yellow' | 'blue' | 'mauve';
+type ButtonColor = 'crimson' | 'red' | 'cyan' | 'yellow' | 'blue' | 'mauve' | 'violet';
 type ButtonVariant = 'primary' | 'outline' | 'ghost';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -15,7 +15,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 function Button({
   type = 'button',
   size = 'medium',
-  color = 'crimson',
+  color = 'violet',
   variant = 'primary',
   children,
   ...props
