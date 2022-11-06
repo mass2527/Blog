@@ -120,7 +120,6 @@ function AudioPlayer() {
 
   return (
     <Wrapper>
-      <figcaption>Epidemic</figcaption>
       <Audio ref={audioRef} controls src={trackPath}>
         오디오 기능이 제공되지 않는 브라우저입니다.
       </Audio>

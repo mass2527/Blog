@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import Toastify from 'toastify-js';
-import { Link2Icon } from '@radix-ui/react-icons';
+import { Share1Icon } from '@radix-ui/react-icons';
 
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 
@@ -8,6 +8,7 @@ import Button from '@/components/Button';
 import SEO from '@/components/SEO';
 import TimeInfo from '@/components/TimeInfo';
 import { useClipboard } from '@/hooks';
+import { screenReaderOnly } from '@/styles/utils';
 import { bundleMDXWithOptions } from '@/utils/bundle';
 import { blogFiles, BlogFrontmatter, blogSlugs } from '@/utils/contents';
 
@@ -55,15 +56,35 @@ const BlogPost = ({ frontmatter, code, matter }: InferGetStaticPropsType<typeof 
         <h1>{frontmatter.title}</h1>
       </BlogHeader>
       <MDXContent code={code} />
-      <div>
+      <div
+        css={css`
+          position: fixed;
+          inset: auto ${({ theme }) => theme.spacers[16]} ${({ theme }) => theme.spacers[48]} auto;
+        `}
+      >
         <Button
           css={css`
             display: flex;
             gap: ${({ theme }) => theme.spacers[4]};
+
+            @media screen and (max-width: 1200px) {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+            }
           `}
           onClick={shareArticle}
         >
-          <Link2Icon aria-hidden /> 아티클 공유하기
+          <Share1Icon aria-hidden />
+          <span
+            css={`
+              @media screen and (max-width: 1200px) {
+                ${screenReaderOnly};
+              }
+            `}
+          >
+            아티클 공유하기
+          </span>
         </Button>
       </div>
     </>

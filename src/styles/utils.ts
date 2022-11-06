@@ -27,3 +27,12 @@ export function flexRow(justifyContent?: CSSProperties['justifyContent'], alignI
 export function flexColumn(justifyContent?: CSSProperties['justifyContent'], alignItems?: CSSProperties['alignItems']) {
   return flex('column', justifyContent, alignItems);
 }
+
+// https://web.dev/hiding-and-updating-content/
+export const screenReaderOnly = css`
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+`;
