@@ -4,7 +4,6 @@ import { PauseIcon, PlayIcon, SpeakerLoudIcon, SpeakerOffIcon, TrackNextIcon } f
 import React, { useEffect, useRef, useState } from 'react';
 
 import { Text } from '@/components/Typography';
-import { useIsFirstRender } from '@/hooks';
 import { flexRow } from '@/styles/utils';
 
 const formatAsMSS = (timeInSeconds: number) => {
@@ -19,7 +18,6 @@ function AudioPlayer() {
   const [isMuted, setIsMuted] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const [trackList, setTrackList] = useState<string[]>([]);
-  const isFirstRender = useIsFirstRender();
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLProgressElement>(null);
 
@@ -27,11 +25,7 @@ function AudioPlayer() {
 
   const progressRate = audioRef.current?.duration ? currentTime / audioRef.current.duration : 0;
 
-  useEffect(() => {
-    if (audioRef.current === null || isFirstRender) return;
-
-    audioRef.current.play();
-  }, [trackIndex, isFirstRender]);
+  const currentTrack = trackList[trackIndex];
 
   useEffect(() => {
     function getTrackList() {
@@ -54,6 +48,30 @@ function AudioPlayer() {
   }, []);
 
   useEffect(() => {
+    if (audioRef.current === null || !currentTrack) return;
+
+    const [title, artist] = currentTrack.split(' - ');
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title,
+      artist,
+      album: 'Epidemic Sound',
+    });
+
+    navigator.mediaSession.setActionHandler('play', () => {
+      setIsPlaying(true);
+    });
+    navigator.mediaSession.setActionHandler('pause', () => {
+      setIsPlaying(false);
+    });
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      setTrackIndex(previousTrackIndex => (previousTrackIndex + 1) % trackList.length);
+    });
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      setTrackIndex(previousTrackIndex => (previousTrackIndex - 1 + trackList.length) % trackList.length);
+    });
+  }, [trackList.length, currentTrack]);
+
+  useEffect(() => {
     if (audioRef.current === null) return;
 
     const audioElement = audioRef.current;
@@ -72,6 +90,12 @@ function AudioPlayer() {
       audioElement.removeEventListener('ended', updateTrackIndex);
     };
   }, [trackList]);
+
+  useEffect(() => {
+    if (audioRef.current === null || !isPlaying) return;
+
+    audioRef.current.play();
+  }, [trackIndex, isPlaying]);
 
   useEffect(() => {
     if (audioRef.current === null) return;
