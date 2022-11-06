@@ -51,24 +51,26 @@ function AudioPlayer() {
     if (audioRef.current === null || !currentTrack) return;
 
     const [title, artist] = currentTrack.split(' - ');
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title,
-      artist,
-      album: 'Epidemic Sound',
-    });
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title,
+        artist,
+        album: 'Epidemic Sound',
+      });
 
-    navigator.mediaSession.setActionHandler('play', () => {
-      setIsPlaying(true);
-    });
-    navigator.mediaSession.setActionHandler('pause', () => {
-      setIsPlaying(false);
-    });
-    navigator.mediaSession.setActionHandler('nexttrack', () => {
-      setTrackIndex(previousTrackIndex => (previousTrackIndex + 1) % trackList.length);
-    });
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-      setTrackIndex(previousTrackIndex => (previousTrackIndex - 1 + trackList.length) % trackList.length);
-    });
+      navigator.mediaSession.setActionHandler('play', () => {
+        setIsPlaying(true);
+      });
+      navigator.mediaSession.setActionHandler('pause', () => {
+        setIsPlaying(false);
+      });
+      navigator.mediaSession.setActionHandler('nexttrack', () => {
+        setTrackIndex(previousTrackIndex => (previousTrackIndex + 1) % trackList.length);
+      });
+      navigator.mediaSession.setActionHandler('previoustrack', () => {
+        setTrackIndex(previousTrackIndex => (previousTrackIndex - 1 + trackList.length) % trackList.length);
+      });
+    }
   }, [trackList.length, currentTrack]);
 
   useEffect(() => {
