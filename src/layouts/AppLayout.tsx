@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 
 import Link from 'next/link';
 
-import AudioPlayer from '@/components/AudioPlayer';
+// import AudioPlayer from '@/components/AudioPlayer';
 import { flexRow } from '@/styles/utils';
 
 import { Flex } from './Flex';
@@ -32,9 +32,7 @@ function AppLayout({ children }: { children: ReactNode }) {
       </HeaderWrapper>
       <Main>{children}</Main>
       <Flex>
-        <Footer>
-          <AudioPlayer />
-        </Footer>
+        <Footer>{/* <AudioPlayer /> */}</Footer>
       </Flex>
     </>
   );
