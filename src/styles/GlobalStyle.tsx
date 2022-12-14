@@ -65,6 +65,10 @@ const GlobalStyle = createGlobalStyle`
             cursor:not-allowed;
         }
     }
+
+    figure{
+        margin:0;
+    }
 `;
 
 export default GlobalStyle;

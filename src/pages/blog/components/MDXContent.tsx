@@ -1,8 +1,6 @@
 import { getMDXComponent } from 'mdx-bundler/client';
 import styled from 'styled-components';
 
-import React from 'react';
-
 import Sandpack from '@/components/Sandpack';
 
 import Anchor from './Anchor';
@@ -16,6 +14,7 @@ import Pre from './Pre';
 import Preview from './Preview';
 import RegisterLink from './RegisterLink';
 import ResponsiveIFrame from './ResponsiveIFrame';
+import ResponsiveImage from './ResponsiveImage';
 
 function MDXContent({ code }: { code: string }) {
   const MDXComponent = getMDXComponent(code);
@@ -36,6 +35,7 @@ function MDXContent({ code }: { code: string }) {
           hr: HorizontalLine,
           Sandpack,
           Author,
+          img: ResponsiveImage,
         }}
       />
     </MDXComponentWrapper>

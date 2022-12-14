@@ -2,10 +2,12 @@ import fs from 'fs';
 import { bundleMDX } from 'mdx-bundler';
 import path from 'path';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeImgSize from 'rehype-img-size';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import remarkToc from 'remark-toc';
+import remarkUnwrapImages from 'remark-unwrap-images';
 
 import { getContentPath, removeMDXFileExtension } from './path';
 import rehypeHighlightCode from './rehype-highlight-code';
@@ -31,6 +33,7 @@ export const bundleMDXWithOptions = async <T extends Frontmatter>(
         ...(options.remarkPlugins ?? []),
         [remarkGfm], // Support GFM (autolink literals, footnotes, strikethrough, tables, tasklists)
         [remarkToc, { tight: false }], // Generate a table of contents
+        [remarkUnwrapImages],
       ];
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
@@ -50,7 +53,7 @@ export const bundleMDXWithOptions = async <T extends Frontmatter>(
             ],
           },
         ],
-        // [rehypeImgSize, { dir: "public" }],
+        [rehypeImgSize as any, { dir: 'public' }],
       ];
 
       return options;
