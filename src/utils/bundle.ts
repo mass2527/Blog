@@ -53,7 +53,7 @@ export const bundleMDXWithOptions = async <T extends Frontmatter>(
             ],
           },
         ],
-        [rehypeImgSize, { dir: 'public' }],
+        [rehypeImgSize as any, { dir: 'public' }],
       ];
 
       return options;
