@@ -1,0 +1,158 @@
+---
+title: "Yarn Workspaces 기능 알아보기"
+category: Software Architecture
+summary: yarn이 제공하는 workspace 기능이 왜 등장하게 되었는지, 어떤 문제를 해결해 주는지 알아봅니다.
+published: true
+publishedAt: "2022-12-14"
+---
+
+yarn이 제공하는 workspaces 기능을 소개하기 앞서 어떤 과정을 통해 등장하게 되었는지 알아보겠습니다.
+
+## 멀티레포
+
+어느 날 모듈화된 패키지 A를 개발하고 레포지토리 A에 이를 저장했습니다.
+A의 개발이 끝난 후 패키지 B를 개발하게 되었고 새로운 레포지토리 B를 만들어 이를 저장했습니다.
+이와 같이 각각의 모듈화된 패키지를 개별 리포지토리에서 관리하는 방식을 **멀티레포**라고 합니다.
+
+개발 전에는 미처 몰랐지만 막상 패키지 A와 B를 모두 개발하고 나니 공통된 패키지 C가 있었습니다.
+그래서 두 패키지를 일관성 있게 관리하려면 패키지 C에 새로운 버전이 나올 때마다 패키지 A와 B에서 최신버전의 패키지 C를 npm으로 부터 다운받아 사용하도록 업데이트해야 하는 문제가 발생합니다.
+또한 새로운 패키지를 생성할 때마다 독립적인 개발, 린트, 테스트, 빌드, 게시, 배포 파이프라인를 다시 반복해서 구축해야 하는 문제점을 발견하게 됩니다.
+
+![각각의 모듈화된 패키지를 개별 리포지토리에서 관리하는 방식을 멀티레포라고 한다.](/static/images/Workspaces-in-yarn/multi-repo.png)
+
+## 모노레포
+
+많은 사람들이 이러한 문제에 공감하고 해결 방법을 생각한 끝에
+하나의 레포지토리에 두 개 이상의 서로 의존성을 갖는 모듈화된 패키지를 관리하는 방식인 **모노레포**라는 접근 방식이 새롭게 등장하게 됩니다.
+
+이에 따라 공통으로 사용되는 패키지를 업데이트하고 테스트하는 일이 훨씬 쉬워졌으며
+패키지가 추가될 때마다 독립적인 개발, 린트, 테스트, 빌드, 게시, 배포 파이프라인를 다시 반복해서 구축해야 하는 문제가 해결되었습니다.
+또한 의존하는 패키지를 npm에 등록하지 않아도 다른 패키지에서 사용할 수 있게 되었습니다.
+
+![하나의 레포지토리에 서로 의존성을 갖는 두 개 이상의 모듈화된 패키지를 관리하는 방식을 모노레포라고 한다.](/static/images/Workspaces-in-yarn/mono-repo-without-workspaces.png)
+
+## Lerna
+
+모노레포가 등장함에 따라 하나의 레포지토리에서 여러 패키지들을 관리하게 되면서 생기는 많은 불편함이 있었고 이를 해결하기 위해
+여러 패키지를 관리하는데 최적화된 툴인 [Lerna](https://lerna.js.org/)가 등장하게 됩니다.
+
+Lerna를 이용하여 패키지를 설치하면 내부적으로 [Yarn](https://engineering.fb.com/2016/10/11/web/yarn-a-new-package-manager-for-javascript/) 또는 npm CLI를 사용하여
+각각의 패키지에 들어가 `yarn/npm install`을 호출하고 패키지가 서로를 참조하는 경우에 [symlinks](https://classic.yarnpkg.com/lang/en/docs/cli/link/)를 생성해 줍니다.
+
+하지만 이 당시의 Lerna도 내부적으로 Yarn과 같은 패키지 매니저를 사용하고 있었기 때문에 효과적으로 node_modules을 관리하는 데에는 한계가 있었습니다.
+결국 불편함이라는 문제는 해결할 수 있었지만 같은 패키지가 여러 패키지에서 사용되는 경우에는 여러 번 다운로드 되는 문제가 있었습니다.
+
+## Yarn Workspaces의 등장
+
+이러한 이슈들을 보면서 패키지 매니저 개발자들은 Yarn 자체에서 이러한 문제를 해결해야겠다고 생각하게 되었고 Yarn Workspaces라는 기능을 개발하게 됩니다.
+
+Yarn Workspaces는 하나의 레포지토리에서 여러 패키지들을 편리하고 효율적으로 관리할 수 있게 해주는 기능입니다.
+최상단의 package.json에 workspaces를 정의하고 `yarn install`을 실행하게 되면 최상단의 패키지, 그리고 workspaces에 정의된 패키지들을 설치하게 됩니다.
+또한 패키지가 중복되는 경우 호이스팅을 통해 최상위의 node_modules에 설치하여 중복 설치를 방지합니다.
+
+![Yarn Workspaces 기능이 생김에 따라 중복되는 의존성을 효율적으로 관리할 수 있게 되었다.](/static/images/Workspaces-in-yarn/mono-repo.png)
+
+## Yarn Workspaces 사용해보기
+
+이제는 yarn workspaces 기능을 활용하여 다음과 같은 구조를 갖는 모노레포를 구성해 보겠습니다.
+(*yarn 1.22.19*)
+
+### 최상단 package.json 생성
+
+```json
+| jest/
+| ---- package.json
+| ---- packages/
+| -------- jest-matcher-utils/
+| ------------ package.json
+| -------- jest-diff/
+| ------------ package.json
+...
+```
+
+우선 jest라는 이름으로 패키지를 생성하고 `yarn init -y` 명령어를 실행하여 *package.json*을 생성한 후 다음과 같이 작성합니다.
+
+- root의 경우 외부로 노출되지 않아야 하므로 private을 true로 설정합니다.
+- packages 폴더에 있는 패키지들을 workspaces로 지정합니다.
+
+```json line=6-9
+{
+  "name": "jest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "chalk": "^2.0.1"
+  }
+}
+```
+
+### package 폴더 하위 package.json 생성
+
+다음은 packages 폴더를 만들고 그 안에 *jest-matcher-utils*와 *jest-diff*라는 패키지를 생성하고 각각 *package.json*을 작성합니다.
+
+```json line=6-9
+{
+  "name": "jest-matcher-utils",
+  "version": "20.0.3",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "pretty-format": "^20.0.3"
+  }
+}
+```
+
+```json line=6-11
+{
+  "name": "jest-diff",
+  "version": "20.0.3",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^1.1.3",
+    "diff": "^3.2.0",
+    "jest-matcher-utils": "^20.0.3",
+    "pretty-format": "^20.0.3"
+  }
+}
+```
+
+### 결과
+
+```json
+| jest/
+| ---- node_modules/
+| -------- chalk/
+| -------- diff/
+| -------- pretty-format/
+| -------- jest-matcher-utils/  (symlink) -> ../packages/jest-matcher-utils
+| ---- package.json
+| ---- packages/
+| -------- jest-matcher-utils/
+| ------------ node_modules/
+| ---------------- chalk/
+| ------------ package.json
+| -------- jest-diff/
+| ------------ node_modules/
+| ---------------- chalk/
+| ------------ package.json
+...
+```
+
+1. 우선 *pretty-format*, *diff*같은 패키지와 jest-matcher-utils에 대한 symlinks는 최상단 node_modules 폴더로 호이스팅됨으로써 설치 사이즈를 줄이고 빠르게 설치됩니다.
+
+2. *jest-matcher-utils*와 *jest-diff*는 공통적으로 *chalk*(^1.1.3)라는 의존성을 갖고 있고
+최상단에서도 버전은 다르지만 *chalk*(^2.0.1)라는 의존성을 갖고 있습니다.
+이 경우 최상단 node_modules에는 *chalk*(^2.0.1)가 설치되며 *jest-matcher-utils*와 *jest-diff* 각각의 node_modules에는 *chalk*(^1.1.3)가 설치됩니다.
+
+
+## Reference
+- [introducing-workspaces](https://classic.yarnpkg.com/blog/2017/08/02/introducing-workspaces/)
+- [모던 프론트엔드 프로젝트 구성 기법 - 모노레포 개념 편](https://d2.naver.com/helloworld/0923884)
+
