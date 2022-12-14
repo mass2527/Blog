@@ -21,7 +21,12 @@ function ResponsiveImage({
   }
 
   return (
-    <figure>
+    <figure
+      css={`
+        display: grid;
+        place-items: center;
+      `}
+    >
       <Image
         src={src}
         alt={alt}
@@ -34,8 +39,9 @@ function ResponsiveImage({
 
       <figcaption
         css={css`
-          padding: 0 ${({ theme }) => theme.spacers[8]};
           ${flexRow('normal', 'center')}
+          padding: 0 ${({ theme }) => theme.spacers[8]};
+          margin-top: ${({ theme }) => theme.spacers[8]};
         `}
       >
         <Text as="span" fontSize={14} color="mauve11">
