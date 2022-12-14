@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import React, { ReactNode } from 'react';
 
@@ -9,11 +9,16 @@ import { flexRow } from '@/styles/utils';
 
 import { Flex } from './Flex';
 
-const LINKS = [
+const MENU_LINKS = [
   { path: '/', name: 'Home' },
   { path: '/blog', name: 'Blog' },
   { path: '/personal', name: 'Personal' },
   { path: '/snippet', name: 'Snippet' },
+];
+
+const EXTERNAL_LINKS = [
+  { path: 'https://github.com/mass2527', name: 'Github' },
+  { path: 'https://www.linkedin.com/in/%EB%8F%99%ED%98%B8-%EA%B9%80-733227200/', name: 'LinkedIn' },
 ];
 
 function AppLayout({ children }: { children: ReactNode }) {
@@ -22,7 +27,7 @@ function AppLayout({ children }: { children: ReactNode }) {
       <HeaderWrapper>
         <Header>
           <Links>
-            {LINKS.map(({ path, name }) => (
+            {MENU_LINKS.map(({ path, name }) => (
               <Link key={name} href={path}>
                 <a>{name}</a>
               </Link>
@@ -32,7 +37,15 @@ function AppLayout({ children }: { children: ReactNode }) {
       </HeaderWrapper>
       <Main>{children}</Main>
       <Flex>
-        <Footer>{/* <AudioPlayer /> */}</Footer>
+        <Footer>
+          {/* <AudioPlayer /> */}
+
+          {EXTERNAL_LINKS.map(({ name, path }) => (
+            <a key={name} href={path} target="_blank" rel="noreferrer">
+              {name}
+            </a>
+          ))}
+        </Footer>
       </Flex>
     </>
   );
@@ -77,11 +90,14 @@ const Main = styled.main`
 `;
 
 const Footer = styled.footer`
+  ${flexRow()};
+  gap: ${({ theme }) => theme.spacers[8]};
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   width: 100%;
+  border-top: 1px solid ${({ theme }) => theme.colors.mauve6};
   margin: auto;
   padding: ${({ theme }) => theme.spacers[24]};
-  font-size: ${({ theme }) => theme.fontSizes[12]};
+  font-size: ${({ theme }) => theme.fontSizes[14]};
 `;
 
 export default AppLayout;
