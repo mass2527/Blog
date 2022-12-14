@@ -1,0 +1,51 @@
+import { css } from 'styled-components';
+import { TriangleUpIcon } from '@radix-ui/react-icons';
+
+import Image, { ImageProps } from 'next/image';
+
+import { Text } from '@/components/Typography';
+import { flexRow } from '@/styles/utils';
+
+function ResponsiveImage({
+  src,
+  alt,
+  width,
+  height,
+}: {
+  src?: ImageProps['src'];
+  alt?: ImageProps['alt'];
+  width?: ImageProps['width'];
+  height?: ImageProps['height'];
+}) {
+  if (!src || !alt) {
+    throw new Error('ResponsiveImage: src 또는 alt props가 입력되지 않았습니다.');
+  }
+
+  return (
+    <figure>
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        css={css`
+          border-radius: ${({ theme }) => theme.radiuses[6]};
+        `}
+      />
+
+      <figcaption
+        css={css`
+          padding: 0 ${({ theme }) => theme.spacers[8]};
+          ${flexRow('normal', 'center')}
+        `}
+      >
+        <TriangleUpIcon />
+        <Text as="span" fontSize={14} color="mauve11">
+          {alt}
+        </Text>
+      </figcaption>
+    </figure>
+  );
+}
+
+export default ResponsiveImage;
