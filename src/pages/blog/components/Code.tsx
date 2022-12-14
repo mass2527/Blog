@@ -20,7 +20,8 @@ function Code({ children, id, collapsible }: CodeProps) {
 }
 
 const StyledCode = styled.code`
-  p > & {
+  p > &,
+  li > & {
     font-family: Söhne Mono, menlo, monospace;
     padding: 0px 3px 2px;
     background-color: ${({ theme }) => theme.colors.violet3};
