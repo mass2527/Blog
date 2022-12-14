@@ -18,7 +18,7 @@ A의 개발이 끝난 후 패키지 B를 개발하게 되었고 새로운 레포
 그래서 두 패키지를 일관성 있게 관리하려면 패키지 C에 새로운 버전이 나올 때마다 패키지 A와 B에서 최신버전의 패키지 C를 npm으로 부터 다운받아 사용하도록 업데이트해야 하는 문제가 발생합니다.
 또한 새로운 패키지를 생성할 때마다 독립적인 개발, 린트, 테스트, 빌드, 게시, 배포 파이프라인를 다시 반복해서 구축해야 하는 문제점을 발견하게 됩니다.
 
-![각각의 모듈화된 패키지를 개별 리포지토리에서 관리하는 방식을 멀티레포라고 한다.](/static/images/Workspaces-in-yarn/multi-repo.png)
+![각각의 모듈화된 패키지를 개별 리포지토리에서 관리하는 방식을 멀티레포라고 한다.](/static/images/workspaces-in-yarn/multi-repo.png)
 
 ## 모노레포
 
@@ -29,7 +29,7 @@ A의 개발이 끝난 후 패키지 B를 개발하게 되었고 새로운 레포
 패키지가 추가될 때마다 독립적인 개발, 린트, 테스트, 빌드, 게시, 배포 파이프라인를 다시 반복해서 구축해야 하는 문제가 해결되었습니다.
 또한 의존하는 패키지를 npm에 등록하지 않아도 다른 패키지에서 사용할 수 있게 되었습니다.
 
-![하나의 레포지토리에 서로 의존성을 갖는 두 개 이상의 모듈화된 패키지를 관리하는 방식을 모노레포라고 한다.](/static/images/Workspaces-in-yarn/mono-repo-without-workspaces.png)
+![하나의 레포지토리에 서로 의존성을 갖는 두 개 이상의 모듈화된 패키지를 관리하는 방식을 모노레포라고 한다.](/static/images/workspaces-in-yarn/mono-repo-without-workspaces.png)
 
 ## Lerna
 
@@ -50,7 +50,7 @@ Yarn Workspaces는 하나의 레포지토리에서 여러 패키지들을 편리
 최상단의 package.json에 workspaces를 정의하고 `yarn install`을 실행하게 되면 최상단의 패키지, 그리고 workspaces에 정의된 패키지들을 설치하게 됩니다.
 또한 패키지가 중복되는 경우 호이스팅을 통해 최상위의 node_modules에 설치하여 중복 설치를 방지합니다.
 
-![Yarn Workspaces 기능이 생김에 따라 중복되는 의존성을 효율적으로 관리할 수 있게 되었다.](/static/images/Workspaces-in-yarn/mono-repo.png)
+![Yarn Workspaces 기능이 생김에 따라 중복되는 의존성을 효율적으로 관리할 수 있게 되었다.](/static/images/workspaces-in-yarn/mono-repo.png)
 
 ## Yarn Workspaces 사용해보기
 
