@@ -1,5 +1,4 @@
 import { css } from 'styled-components';
-import { TriangleUpIcon } from '@radix-ui/react-icons';
 
 import Image, { ImageProps } from 'next/image';
 
@@ -39,7 +38,6 @@ function ResponsiveImage({
           ${flexRow('normal', 'center')}
         `}
       >
-        <TriangleUpIcon />
         <Text as="span" fontSize={14} color="mauve11">
           {alt}
         </Text>
