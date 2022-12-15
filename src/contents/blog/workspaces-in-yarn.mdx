@@ -12,13 +12,13 @@ yarn이 제공하는 workspaces 기능을 소개하기 앞서 어떤 과정을 �
 
 어느 날 모듈화된 패키지 A를 개발하고 레포지토리 A에 이를 저장했습니다.
 A의 개발이 끝난 후 패키지 B를 개발하게 되었고 새로운 레포지토리 B를 만들어 이를 저장했습니다.
-이와 같이 각각의 모듈화된 패키지를 개별 리포지토리에서 관리하는 방식을 **멀티레포**라고 합니다.
+이와 같이 각각의 모듈화된 패키지를 개별 레포지토리에서 관리하는 방식을 **멀티레포**라고 합니다.
 
 개발 전에는 미처 몰랐지만 막상 패키지 A와 B를 모두 개발하고 나니 공통된 패키지 C가 있었습니다.
 그래서 두 패키지를 일관성 있게 관리하려면 패키지 C에 새로운 버전이 나올 때마다 패키지 A와 B에서 최신버전의 패키지 C를 npm으로 부터 다운받아 사용하도록 업데이트해야 하는 문제가 발생합니다.
 또한 새로운 패키지를 생성할 때마다 독립적인 개발, 린트, 테스트, 빌드, 게시, 배포 파이프라인를 다시 반복해서 구축해야 하는 문제점을 발견하게 됩니다.
 
-![각각의 모듈화된 패키지를 개별 리포지토리에서 관리하는 방식을 멀티레포라고 한다.](/static/images/workspaces-in-yarn/multi-repo.png)
+![각각의 모듈화된 패키지를 개별 레포지토리에서 관리하는 방식을 멀티레포라고 한다.](/static/images/workspaces-in-yarn/multi-repo.png)
 
 ## 모노레포
 
@@ -57,8 +57,6 @@ Yarn Workspaces는 하나의 레포지토리에서 여러 패키지들을 편리
 이제는 yarn workspaces 기능을 활용하여 다음과 같은 구조를 갖는 모노레포를 구성해 보겠습니다.
 (*yarn 1.22.19*)
 
-### 최상단 package.json 생성
-
 ```json
 | jest/
 | ---- package.json
@@ -69,6 +67,8 @@ Yarn Workspaces는 하나의 레포지토리에서 여러 패키지들을 편리
 | ------------ package.json
 ...
 ```
+
+### 최상단 package.json 생성
 
 우선 jest라는 이름으로 패키지를 생성하고 `yarn init -y` 명령어를 실행하여 *package.json*을 생성한 후 다음과 같이 작성합니다.
 
@@ -125,6 +125,12 @@ Yarn Workspaces는 하나의 레포지토리에서 여러 패키지들을 편리
 
 ### 결과
 
+1. 우선 *pretty-format*, *diff*같은 패키지와 jest-matcher-utils에 대한 symlinks는 최상단 node_modules 폴더로 호이스팅됨으로써 설치 사이즈를 줄이고 빠르게 설치됩니다.
+
+2. *jest-matcher-utils*와 *jest-diff*는 공통적으로 *chalk*(^1.1.3)라는 의존성을 갖고 있고
+최상단에서도 버전은 다르지만 *chalk*(^2.0.1)라는 의존성을 갖고 있습니다.
+이 경우 최상단 node_modules에는 *chalk*(^2.0.1)가 설치되며 *jest-matcher-utils*와 *jest-diff* 각각의 node_modules에는 *chalk*(^1.1.3)가 설치됩니다.
+
 ```json
 | jest/
 | ---- node_modules/
@@ -144,13 +150,6 @@ Yarn Workspaces는 하나의 레포지토리에서 여러 패키지들을 편리
 | ------------ package.json
 ...
 ```
-
-1. 우선 *pretty-format*, *diff*같은 패키지와 jest-matcher-utils에 대한 symlinks는 최상단 node_modules 폴더로 호이스팅됨으로써 설치 사이즈를 줄이고 빠르게 설치됩니다.
-
-2. *jest-matcher-utils*와 *jest-diff*는 공통적으로 *chalk*(^1.1.3)라는 의존성을 갖고 있고
-최상단에서도 버전은 다르지만 *chalk*(^2.0.1)라는 의존성을 갖고 있습니다.
-이 경우 최상단 node_modules에는 *chalk*(^2.0.1)가 설치되며 *jest-matcher-utils*와 *jest-diff* 각각의 node_modules에는 *chalk*(^1.1.3)가 설치됩니다.
-
 
 ## Reference
 - [introducing-workspaces](https://classic.yarnpkg.com/blog/2017/08/02/introducing-workspaces/)
