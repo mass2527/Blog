@@ -7,6 +7,7 @@ import Anchor from './Anchor';
 import Author from './Author';
 import BlockQuote from './BlockQuote';
 import Code from './Code';
+import Comments from './Comments';
 import Highlight from './Highlight';
 import HorizontalLine from './HorizontalLine';
 import Mark from './Mark';
@@ -38,6 +39,7 @@ function MDXContent({ code }: { code: string }) {
           img: ResponsiveImage,
         }}
       />
+      <Comments />
     </MDXComponentWrapper>
   );
 }
