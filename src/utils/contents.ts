@@ -13,12 +13,13 @@ export interface BlogFrontmatter extends Frontmatter {
   published: boolean;
 }
 
-// snippet
-const snippetPath = getContentPath('snippet');
-export const snippetFiles = fs.readdirSync(snippetPath);
+// project
+const projectPath = getContentPath('project');
+export const projectFiles = fs.readdirSync(projectPath);
 export const getFormattedCategory = (category: string) => category.toLowerCase().replace(/\s/g, '-');
 
-export interface SnippetFrontmatter extends Frontmatter {
+export interface ProjectFrontmatter extends Frontmatter {
   description: string;
   lastUpdated: boolean;
+  category: string;
 }

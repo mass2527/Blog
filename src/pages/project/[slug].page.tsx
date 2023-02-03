@@ -7,11 +7,11 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import SEO from '@/components/SEO';
 import { Heading } from '@/components/Typography';
 import { bundleMDXWithOptions } from '@/utils/bundle';
-import { getFormattedCategory, snippetFiles, SnippetFrontmatter } from '@/utils/contents';
+import { projectFiles, ProjectFrontmatter } from '@/utils/contents';
 
 import MDXContent from '../blog/components/MDXContent';
 
-function SnippetDetailPage({ frontmatter, code }: InferGetStaticPropsType<typeof getStaticProps>) {
+function ProjectDetailPage({ frontmatter, code }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
       <SEO title={frontmatter.title} description={frontmatter.description} />
@@ -22,7 +22,7 @@ function SnippetDetailPage({ frontmatter, code }: InferGetStaticPropsType<typeof
           `}
         >
           <Heading as="h1" textAlign="center" fontSize={16} color="crimson11" fontWeight={500}>
-            SNIPPET
+            PROJECT
           </Heading>
           <Heading
             textAlign="center"
@@ -40,19 +40,16 @@ function SnippetDetailPage({ frontmatter, code }: InferGetStaticPropsType<typeof
 }
 
 export async function getStaticPaths() {
-  const snippets = await Promise.all(
-    snippetFiles.map(async fileName => {
-      const { frontmatter, slug } = await bundleMDXWithOptions<SnippetFrontmatter>('snippet', fileName);
+  const projects = await Promise.all(
+    projectFiles.map(async fileName => {
+      const { frontmatter, slug } = await bundleMDXWithOptions<ProjectFrontmatter>('project', fileName);
 
       return { frontmatter, slug };
     })
   );
-  const paths = snippets.map(({ frontmatter, slug }) => {
-    const { category } = frontmatter;
-    const formattedCategory = getFormattedCategory(category);
-
+  const paths = projects.map(({ slug }) => {
     return {
-      params: { slugs: [formattedCategory, slug] },
+      params: { slug },
     };
   });
 
@@ -62,15 +59,14 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: GetStaticPropsContext<{ slugs: string[] }>) {
-  const slugs = params?.slugs ?? [];
-  const snippetFile = snippetFiles.find(fileName => fileName.includes(slugs[1]))!;
+export async function getStaticProps({ params }: GetStaticPropsContext<{ slug: string }>) {
+  const projectFile = projectFiles.find(fileName => fileName.includes(params?.slug!))!;
 
-  const { frontmatter, code, matter } = await bundleMDXWithOptions<SnippetFrontmatter>('snippet', snippetFile);
+  const { frontmatter, code, matter } = await bundleMDXWithOptions<ProjectFrontmatter>('project', projectFile);
 
   return {
     props: { frontmatter, code, matter },
   };
 }
 
-export default SnippetDetailPage;
+export default ProjectDetailPage;

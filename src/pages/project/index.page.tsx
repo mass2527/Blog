@@ -6,18 +6,19 @@ import ContentCard from '@/components/ContentCard';
 import Page from '@/components/Page';
 import { Flex } from '@/layouts/Flex';
 import { bundleMDXWithOptions } from '@/utils/bundle';
-import { getFormattedCategory, snippetFiles, SnippetFrontmatter } from '@/utils/contents';
+import { projectFiles, ProjectFrontmatter } from '@/utils/contents';
 
-function SnippetPage({ snippets }: InferGetStaticPropsType<typeof getStaticProps>) {
+function ProjectPage({ projects }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <Page title="Snippet" description="개별 문제에 대해 재사용 가능한 소스 코드">
+    <Page title="Project" description="프로젝트 저장소">
       <Flex as="ul" flexDirection="column" gap={32}>
-        {snippets.map(({ frontmatter, slug }) => {
+        {projects.map(({ frontmatter, slug }) => {
           return (
             <ContentCard
               key={frontmatter.title}
-              href={`/snippet/${frontmatter.category}/${slug}`}
+              href={`/project/${slug}`}
               title={frontmatter.title}
+              categories={frontmatter.category.split(',')}
               description={frontmatter.description}
             />
           );
@@ -28,16 +29,13 @@ function SnippetPage({ snippets }: InferGetStaticPropsType<typeof getStaticProps
 }
 
 export async function getStaticProps() {
-  const snippets = (
+  const projects = (
     await Promise.all(
-      snippetFiles.map(async fileName => {
-        const { frontmatter, slug } = await bundleMDXWithOptions<SnippetFrontmatter>('snippet', fileName);
+      projectFiles.map(async fileName => {
+        const { frontmatter, slug } = await bundleMDXWithOptions<ProjectFrontmatter>('project', fileName);
 
         return {
-          frontmatter: {
-            ...frontmatter,
-            category: getFormattedCategory(frontmatter.category),
-          },
+          frontmatter,
           slug,
         };
       })
@@ -49,9 +47,9 @@ export async function getStaticProps() {
 
   return {
     props: {
-      snippets,
+      projects,
     },
   };
 }
 
-export default SnippetPage;
+export default ProjectPage;

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 import React, { ReactNode } from 'react';
 
@@ -13,7 +13,7 @@ const MENU_LINKS = [
   { path: '/', name: 'Home' },
   { path: '/blog', name: 'Blog' },
   { path: '/personal', name: 'Personal' },
-  { path: '/snippet', name: 'Snippet' },
+  { path: '/project', name: 'Project' },
 ];
 
 const EXTERNAL_LINKS = [
