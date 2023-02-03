@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 
 import { bundleMDXWithOptions } from '@/utils/bundle';
-import { blogFiles, BlogFrontmatter, getFormattedCategory, snippetFiles, SnippetFrontmatter } from '@/utils/contents';
+import { blogFiles, BlogFrontmatter, projectFiles, ProjectFrontmatter } from '@/utils/contents';
 
 function generateSiteMap(slugs: string[]) {
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -30,27 +30,21 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
       return slug;
     })
   );
-  const snippets = await Promise.all(
-    snippetFiles.map(async fileName => {
-      const { frontmatter, slug } = await bundleMDXWithOptions<SnippetFrontmatter>('snippet', fileName);
+  const projects = await Promise.all(
+    projectFiles.map(async fileName => {
+      const { frontmatter, slug } = await bundleMDXWithOptions<ProjectFrontmatter>('project', fileName);
 
       return { frontmatter, slug };
     })
   );
-  const snippetSlugs = snippets.map(({ frontmatter, slug }) => {
-    const { category } = frontmatter;
-    const formattedCategory = getFormattedCategory(category);
-
-    return `${formattedCategory}/${slug}`;
-  });
 
   const allPageSlugs = [
     ...blogSlugs.map(slug => `blog/${slug}`),
-    ...snippetSlugs.map(slug => `snippet/${slug}`),
+    ...projects.map(({ slug }) => `project/${slug}`),
     '',
     'blog',
     'personal',
-    'snippet',
+    'project',
   ];
 
   const sitemap = generateSiteMap(allPageSlugs);
