@@ -1,5 +1,6 @@
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
+import { Analytics } from '@vercel/analytics/react';
 
 import type { AppProps } from 'next/app';
 
@@ -15,6 +16,7 @@ function App({ Component, pageProps }: AppProps) {
       <GlobalStyle />
       <AppLayout>
         <Component {...pageProps} />
+        <Analytics />
       </AppLayout>
     </ThemeProvider>
   );
