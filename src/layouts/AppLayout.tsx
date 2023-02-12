@@ -1,8 +1,9 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import React, { ReactNode } from 'react';
 
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 // import AudioPlayer from '@/components/AudioPlayer';
 import { flexRow } from '@/styles/utils';
@@ -21,17 +22,37 @@ const EXTERNAL_LINKS = [
   { path: 'https://www.linkedin.com/in/%EB%8F%99%ED%98%B8-%EA%B9%80-733227200/', name: 'LinkedIn' },
 ];
 
+const expand = keyframes`
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+`;
+
 function AppLayout({ children }: { children: ReactNode }) {
+  const { pathname } = useRouter();
+
   return (
     <>
       <HeaderWrapper>
         <Header>
           <Links>
-            {MENU_LINKS.map(({ path, name }) => (
-              <Link key={name} href={path}>
-                <a>{name}</a>
-              </Link>
-            ))}
+            {MENU_LINKS.map(({ path, name }) => {
+              let isActive: boolean;
+              if (pathname === '/') {
+                isActive = pathname === path;
+              } else {
+                isActive = path !== '/' && pathname.startsWith(path);
+              }
+
+              return (
+                <Link key={name} href={path}>
+                  <Anchor isActive={isActive}>{name}</Anchor>
+                </Link>
+              );
+            })}
           </Links>
         </Header>
       </HeaderWrapper>
@@ -73,6 +94,21 @@ const Header = styled.header`
 const Links = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacers[16]};
+`;
+
+const Anchor = styled.a<{ isActive: boolean }>`
+  position: relative;
+  color: ${({ theme, isActive }) => (isActive ? theme.colors.mauve12 : 'undefined')};
+
+  &::after {
+    content: '';
+    display: ${({ isActive }) => (isActive ? 'block' : 'none')};
+    position: absolute;
+    width: 100%;
+    background-color: ${({ theme }) => theme.colors.mauve12};
+    height: 1px;
+    animation: ${expand} 0.3s ease-in;
+  }
 `;
 
 const Main = styled.main`
