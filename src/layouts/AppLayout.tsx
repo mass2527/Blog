@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 import React, { ReactNode } from 'react';
 
@@ -21,15 +21,6 @@ const EXTERNAL_LINKS = [
   { path: 'https://github.com/mass2527', name: 'Github' },
   { path: 'https://www.linkedin.com/in/%EB%8F%99%ED%98%B8-%EA%B9%80-733227200/', name: 'LinkedIn' },
 ];
-
-const expand = keyframes`
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-`;
 
 function AppLayout({ children }: { children: ReactNode }) {
   const { pathname } = useRouter();
@@ -99,16 +90,6 @@ const Links = styled.div`
 const Anchor = styled.a<{ isActive: boolean }>`
   position: relative;
   color: ${({ theme, isActive }) => (isActive ? theme.colors.mauve12 : 'undefined')};
-
-  &::after {
-    content: '';
-    display: ${({ isActive }) => (isActive ? 'block' : 'none')};
-    position: absolute;
-    width: 100%;
-    background-color: ${({ theme }) => theme.colors.mauve12};
-    height: 1px;
-    animation: ${expand} 0.3s ease-in;
-  }
 `;
 
 const Main = styled.main`
