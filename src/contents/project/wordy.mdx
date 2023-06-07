@@ -2,22 +2,10 @@
 title: "Wordy - 영어 단어 마우스 툴팁 번역 & 미국/영국 발음 정보"
 description: 영어 단어에 마우스를 올리면 뜻, 발음 및 발음기호에 대한 번역 정보를 툴팁을 통해 제공해 줍니다.
 category: 크롬 익스텐션
-lastUpdated: "2023-02-03"
+lastUpdated: "2023-06-07"
 publishedAt: "2023-02-03"
 ---
 
 ![단축키 (맥: Cmd, 윈도우: Ctrl)를 누른 상태에서 영어 단어에 마우스를 올리면 뜻과 발음 정보를 알려줍니다.](/static/images/wordy/wordy.gif)
-
-## 동기
-
-영어 문서, 블로그를 읽으면서 영어 단어를 검색하는 일이 많아서 비슷한 기능을 가진 크롬 익스텐션을 사용해왔었는데
-단축키를 눌렀을 때만 발음 정보와 함께 단어의 의미를 확인하고 싶어서 직접 제작하였습니다.
-
-## 프로세스
-
-1. mousemove 이벤트의 헨들러에 debounce를 걸어줍니다.
-2. 헨들러가 동작하면 마우스가 가르키고있는 단어를 가져옵니다.
-3. 크롤링을 통해 영어의 뜻과 발음 정보를 가져옵니다.
-4. 마우스의 위치 및 여유 공간을 계산한 후 툴팁을 통하여 정보를 보여줍니다.
 
 [웹 스토어](https://chrome.google.com/webstore/detail/wordy-%EC%98%81%EC%96%B4-%EB%8B%A8%EC%96%B4-%EB%A7%88%EC%9A%B0%EC%8A%A4-%ED%88%B4%ED%8C%81-%EB%B2%88%EC%97%AD-%EB%AF%B8%EA%B5%AD%EC%98%81/mklfpioabebeengggdpanllkjjcpjoja?hl=ko&authuser=0)
