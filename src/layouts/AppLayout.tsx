@@ -11,9 +11,7 @@ import { flexRow } from '@/styles/utils';
 import { Flex } from './Flex';
 
 const MENU_LINKS = [
-  { path: '/', name: 'Home' },
   { path: '/blog', name: 'Blog' },
-  { path: '/personal', name: 'Personal' },
   { path: '/project', name: 'Project' },
 ];
 
