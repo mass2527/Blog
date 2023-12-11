@@ -1,0 +1,300 @@
+---
+title: "TypeScript로 간단한 Zod 라이브러리 구현하기 - 1"
+category: Typescript, Zod
+summary: Zod 라이브러리의 핵심인 ZodType과 ZodString 클래스를 간단히 구현해 봅니다.
+published: true
+publishedAt: "2023-12-11"
+---
+
+## Zod 기본 동작 확인하기
+
+[Basic usage](https://zod.dev/?id=basic-usage)를 보면 Zod는 다음과 같이 스키마를 생성하고
+`parse` 또는 `safeParse` 메서드를 사용하여 올바른 input이 들어왔는지 검증한다.
+
+```typescript
+import { z } from "zod";
+
+// creating a schema for strings
+const mySchema = z.string();
+
+// parsing
+mySchema.parse("tuna"); // => "tuna"
+mySchema.parse(12); // => throws ZodError
+
+// "safe" parsing (doesn't throw error if validation fails)
+mySchema.safeParse("tuna"); // => { success: true; data: "tuna" }
+mySchema.safeParse(12); // => { success: false; error: ZodError }
+
+```
+
+## ZodType 클래스 생성하기
+
+일단 `parse`, `safeParse`와 같은 공통 메서드는 부모 클래스(`ZodType`)에서 구현하고
+`ZodString`은 이를 상속하여 구현해 보자.
+`parse` 메서드의 경우 내부적으로 `safeParse` 메서드를 이용하여 구현되어 있기 때문에 `safeParse`만 구현해 보겠다.
+`safeParse`가 받는 인자는 검증하고 싶은 데이터이고 어떤 데이터 타입인지 알 수 없으므로 다음과 같이 정의할 수 있다.
+
+```tsx
+class ZodType {
+  safeParse(data: unknown) {}
+}
+```
+
+이제 코드를 작성하기 전에 로직을 주석으로 작성해 보자.
+
+```tsx
+class ZodType {
+  safeParse(data: unknown) {
+    // 검증이 성공했다면
+    // return { success: true, data };
+    // 검증이 실패했다면
+    // return { success: false, error: new Error("검증 실패") };
+  }
+}
+```
+
+검증이 성공했는지 확인하는 로직은 특정 타입(string인지, number인지...)에 따라 다를 텐데 이 로직을 `ZodType` 클래스에서 어떻게 구현할 수 있을까?
+[추상 메서드](https://yamoo9.gitbook.io/typescript/classes/abstract-class) 활용하면 이를 구현할 수 있다. 추상 메서드는 정의만 있을 뿐 몸체는 구현되어 있지 않다. 몸체는 해당 추상 클래스를 상속받은 클래스에서 구현하면 된다.
+즉, ZodType을 추상 클래스로 만들고(추상 메서드는 추상 클래스에서만 사용할 수 있다.) `_parse`를 추상 메서드로 만들어 정의만 작성한 후, 몸체는 추후 `ZodType`을 상속받은 `ZodString`에서 구현하면 된다.
+
+그러면 검증 성공 여부를 확인하는 로직을 `_parse`라는 내부 추상 메서드에서 하도록 하고 정의를 작성해 보자.
+(클래스 내부에서만 사용되는 프로퍼티 또는 메서드임을 나타내기 위해 관습적으로 변수명 앞에 _를 붙이곤 한다.)
+
+```tsx
+abstract class ZodType {
+  abstract _parse() {}
+
+  // 생략
+}
+```
+
+어떤 인자를 받고 어떤 값을 리턴해야 할까?
+우선 데이터를 검증해야 하므로 data를 인자로 받고
+
+- 검증이 성공했다면 성공했다는 것을 알려주고 해당 데이터를 반환한다.
+- 검증이 실패했다면 실패했다는 것을 알려주고 왜 실패했는지를 반환한다.
+
+추상 메서드에서는 정의만 작성하면 되므로 다음과 같이 작성할 수 있다.
+
+```tsx
+abstract class ZodType {
+  abstract _parse(
+    data: unknown
+  ): { isValid: true; data: unknown } | { isValid: false; reason?: string };
+
+  safeParse(data: unknown) {
+    // 검증이 성공했다면
+    // return { success: true, data };
+    // 검증이 실패했다면
+    // return { success: false, error: new Error("검증 실패") };
+  }
+}
+```
+
+이제 해당 정의를 바탕으로 주석을 코드로 변경해 보자.
+
+```tsx
+abstract class ZodType {
+  abstract _parse(
+    data: unknown
+  ): { isValid: true; data: unknown } | { isValid: false; reason?: string };
+
+  safeParse(data: unknown) {
+    const result = this._parse(data);
+
+    if (result.isValid) {
+      return { success: true, data: result.data };
+    } else {
+      return { success: false, error: new Error(result.reason ?? "검증 실패") };
+    }
+  }
+}
+```
+
+## ZodString 클래스 생성하기
+
+이제 `ZodType`을 상속받은 `ZodString` 클래스를 만들고 추상 메서드 `_parse` 를 구현해 보자.
+
+```tsx
+class ZodString extends ZodType {
+  _parse(
+    data: unknown
+  ):
+    | { isValid: true; data: unknown }
+    | { isValid: false; reason?: string } {
+    if (typeof data === "string") {
+      return {
+        isValid: true,
+        data,
+      };
+    } else {
+      return {
+        isValid: false,
+        reason: `${data}는 string이 아닙니다.`,
+      };
+    }
+  }
+}
+```
+
+이제 string을 검증할 수 있게 되었으니 결과를 확인해 보자.
+
+```tsx
+const mySchema = new ZodString();
+
+// 올바른 데이터가 들어왔을 경우
+const result = mySchema.safeParse("1");
+console.info(result); // { success: true, data: '1' }
+
+// 올바르지 않은 데이터가 들어왔을 경우
+const result = mySchema.safeParse(1);
+console.info(result); // { success: false, error: Error: 1는 string이 아닙니다. ... }
+```
+
+위와 같이 주어진 데이터가 string 인지 아닌지를 잘 검증하고 있는 것을 확인할 수 있다.
+
+## safeParse 메서드의 타입 문제 해결하기
+
+### 타입이 좁혀지지 않는 이슈
+
+현재는 `result.success: true`인 경우에도 타입이 좁혀지지 않고 있다. 
+이러면 컴파일 타임에 어떤 필드가 있는지 정확하게 확인할 수 없기 때문에 개발자가 실수할 가능성이 커진다.
+컴파일 타임에 미리 방지할 수 있는 버그를 런타임이 되어서야 발견하는 일을 방지하기 위해 해당 코드를 개선해 보자.
+
+![result.success: true인 경우에는 error가 없음에도 불구하고 error 필드를 제안해 준다.](/static/images/implementing-zod-using-typescript-1/1.png)
+ 
+<br />
+
+이전에는 `safeParse`의 리턴 타입을 명시하지 않았기 때문에 타입스크립트가 자동으로 추론해 주고 있었고 그로 인해 리턴 타입은 우리의 의도와는 다른 타입이 되었다.
+
+![`success`가 `true`임에도 불구하고 `error` 필드가 있다고 나온다.](/static/images/implementing-zod-using-typescript-1/2.png)
+
+<br />
+
+[discriminated union](https://www.typescriptlang.org/docs/handbook/unions-and-intersections.html#discriminating-unions)을 활용하기 위해 다음과 같이 변경해주자.
+
+```tsx
+abstract class ZodType {
+  // 생략
+
+  safeParse(
+    data: unknown
+  ): // success라는 공통 필드를 리터럴 타입(true 또는 false)으로 작성해주고
+     // 각각의 경우 어떠한 필드와 타입이 반환하는지 작성해준다.
+  { success: true; data: unknown } | { success: false; error: Error } {
+   // 생략
+  }
+}
+```
+
+그러면 다음과 같이 타입이 좁혀지지 않는 이슈를 해결할 수 있다.
+
+![이제는 타입스크립트가 `success`: `true`일 경우 `data` 필드만 들어온다는 것을 알기 때문에 `error`는 제안되지 않는다.](/static/images/implementing-zod-using-typescript-1/3.png)
+
+### data의 타입이 올바르게 추론되지 않는 이슈
+
+하지만 아직 해결해야 할 문제가 남아있다.
+
+`“1”`을 입력하였고 성공 시 해당 데이터를 그대로 반환해 주므로 `result.data` 는 `string` 타입으로 추론되어야 하지만 `unknown` 타입으로 추론되고 있다.
+
+![string 타입인 result.data가 unknown 타입으로 잘못 추론되고 있다.](/static/images/implementing-zod-using-typescript-1/4.png)
+
+<br/>
+
+그 이유는 당연하게도 성공했을 시 `data` 필드를 반환하고 이 필드는 `unknown` 타입이라고 위에서 선언해 주었기 때문이다. 조금 더 구체적인 타입을 반환하려면 어떻게 타이핑을 해야 할까?
+
+```tsx
+safeParse(
+    data: unknown
+  ): { success: true; data: unknown } | { success: false; error: Error }{
+	//
+}
+```
+
+`ZodType` 클래스에서는 반환하는 `data`가 어떤 타입인지 알 수 없다.
+하지만 `ZodString` 클래스에서는 반환하는 `data`가 `string` 임을 알고 있다. 
+그러면 `ZodString` 클래스를 생성할 때 `ZodType` 에게 반환하는 값을 알려주면 될 것 같다.
+
+```tsx
+// Output이라는 이름으로 타입 파라미터를 선언하고 반환하는 data가 Ouput 타입임을 알려준다.
+abstract class ZodType<Output> {
+  abstract _parse(
+    data: unknown
+  ): { isValid: true; data: Output } | { isValid: false; reason?: string };
+
+  safeParse(
+    data: unknown
+  ): { success: true; data: Output } | { success: false; error: Error } {
+    // 생략
+  }
+}
+
+// ZodString 클래스는 반환하는 값이 string 타입임을 알고있다. 따라서 타입 인자 string을 넘겨준다.
+class ZodString extends ZodType<string> {
+  _parse(
+    data: unknown
+  ):
+    | { isValid: true; data: string }
+    | { isValid: false; reason?: string | undefined } {
+    // 생략
+  }
+}
+```
+
+이러면 `data`가 `unknown`으로 추론되는 문제도 해결되었다. 
+
+![data가 string으로 올바르게 추론된다.](/static/images/implementing-zod-using-typescript-1/5.png)
+
+<br/ >
+
+이번 글의 마지막으로 [z.infer](https://zod.dev/?id=type-inference)처럼 스키마로부터 타입스크립트 타입을 추출할 수 있도록 도와주는 유틸리티 타입을 구현해 보자.
+
+```tsx
+import { z } from "zod";
+
+const mySchema = z.string();
+
+type MySchemaType = z.infer<typeof mySchema>
+// ^? string
+```
+
+타입 파라미터 `T`는 `ZodType`을 확장한다는 것을 이용하면 다음과 같이 `Output` 타입을 추출할 수 있다. 
+
+```tsx
+type Infer<T extends ZodType<unknown>> = Extract<
+  ReturnType<T["_parse"]>,
+  { isValid: true }
+>["data"];
+```
+
+실제 Zod는 훨씬 복잡도가 높기 때문에 위와 같이 구현되어 있지 않고 `ZodType` 클래스에 `_output` 이라는 `readonly` 프로퍼티를 만들고 이 프로퍼티의 타입을 `Output` 으로 설정해 준다. 특이한 점은 해당 프로퍼티는 타입을 저장하고 읽기 위해서만 사용하고 실제로 값을 저장하지는 않는다.
+
+```tsx
+abstract class ZodType<Output> {
+  // 타입을 Output으로 입력해주었지만 실제로 생성자에서 값을 할당하지는 않는다.
+  // 따라서 다음과 같은 타입스크립트 에러가 발생한다.
+  // Property '_output' has no initializer and is not definitely assigned in the constructor.
+  readonly _output: Output;
+  
+  // 생략
+}
+```
+
+코드 작성자가 의도적으로 타입만 저장하기 위해 작성한 코드이기 때문에 [non-null 단언 사용자](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator)를 통해 해당 프로퍼티는 `null`이 아님을 알려준다.
+
+```tsx
+abstract class ZodType<Output> {
+  // 타입스크립트는 해당 프로퍼티가 null이 아니라고 생각하기 때문에 생성자에서 값을 할당해주지 않아도 에러가 발생하지 않는다.
+  readonly _output!: Output;
+
+  // 생략
+}
+```
+
+이러면 아까 만들었단 Infer 타입을 다음과 같이 간단하게 변경할 수 있다.
+(해당 프로퍼티는 실제로는 어떠한 값도 할당되어 있지 않기 때문에 타입을 얻기 위해서만 사용해야 한다.)
+
+```tsx
+type Infer<T extends ZodType<unknown>> = T['_output'];
+```
+
