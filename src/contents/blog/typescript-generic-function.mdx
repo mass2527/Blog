@@ -1,0 +1,151 @@
+---
+title: "TypeScript와 제네릭 함수"
+category: Typescript
+summary: TypeScript로 input을 그대로 리턴하는 함수를 만들며 제네릭 함수에 대해 이해해 봅니다.
+published: true
+publishedAt: "2023-12-15"
+---
+
+TypeScript로 `input`을 그대로 반환하는 함수를 만든다면 어떻게 구현할 수 있을까?
+
+## 타입 파라미터 없이 구현해보기
+
+### unknown 사용해보기
+
+`input`에는 어떠한 타입이 들어올지 모르기 때문에 `unknown` 타입으로 선언해 주었다고 하자.
+그러면 다음과 같이 작성할 수 있다.
+
+```typescript
+function returnWhatIPassIn(input: unknown) {
+  return input;
+}
+
+const result = returnWhatIPassIn("hello");
+// ^? unknown
+```
+
+이렇게 작성하면 `input`의 타입은 `unknown`이고 이 함수는 `input`을 그대로 리턴해주고 있음으로 리턴 타입도 `unknown` 타입으로 추론된다.
+그러면 리턴된 값을 `result`라는 변수에 할당했을 때 `result` 또한 `unknown` 타입으로 추론되기 때문에
+타입스크립트의 이점을 활용할 수 없다.
+
+### any 사용해보기
+
+`input`의 타입을 `any`로 선언한다고 해도 `result`가 `any`로 추론되는 것 이외에는 바뀌는 것이 없다.
+
+```typescript
+function returnWhatIPassIn(input: any) {
+  return input;
+}
+
+const result = returnWhatIPassIn("hello");
+// ^? any
+```
+
+## 타입 파라미터 사용해서 구현해보기
+
+### 타입 파라미터를 제대로 활용하지 못 한 경우
+
+이번에는 타입 파라미터를 사용하여 함수를 다시 작성해 보자.
+`T`라는 타입 파라미터를 선언하고 함수가 리턴하는 타입을 `T`라고 선언해 주었다.
+
+> 타입 파라미터를 1개 이상 선언하여 만든 함수를 제네릭 함수라고 한다.
+
+```typescript
+function returnWhatIPassIn<T>(input: any): T {
+  return input;
+}
+
+const result = returnWhatIPassIn("hello");
+// ???
+```
+
+이렇게 작성했을 때 변수 `result`의 타입은 어떤 타입으로 추론될까?
+
+코드를 살펴보면 타입 파라미터 `T`를 선언하고 이를 리턴 타입으로 사용하였지만 어떠한 타입 인자도 넘겨주고 있지 않다.
+따라서 이럴 경우에 타입스크립트는 `T`의 타입을 `unknown` 타입으로 추론하므로 변수 `result` 또한 `unknown` 타입으로 추론된다.
+
+```typescript
+function returnWhatIPassIn<T>(input: any): T {
+  return input;
+}
+
+const result = returnWhatIPassIn("hello");
+// ^? unknown
+```
+
+이번에는 타입 파라미터에 타입 인자를 전달해 보자.
+리턴 타입을 `"hello"` 라는 `string` 리터럴 타입으로 선언해주기 위해서 타입 파라미터 T에 타입 인자 `"hello"`를 전달해 주자.
+
+```typescript
+function returnWhatIPassIn<T>(input: any): T {
+  return input;
+}
+const result = returnWhatIPassIn<"hello">("hello");
+// ^? "hello"
+```
+
+그러면 타입 파라미터 `T`에 타입 인자 `"hello"`를 전달해 주었기 때문에 `T`의 타입은 `"hello"`라는 `string` 리터럴 타입이 되었고
+이 함수는 이를 리턴 타입으로 선언해두었기 때문에 리턴 타입 또한 `"hello"` 타입이 된다.
+따라서 변수 `result`의 타입을 확인해 보면 올바르게 추론이 된 것을 확인할 수 있다.
+
+### 문제 파악하기
+
+하지만 아직 아쉬운 점이 있다. 이런 방식으로 함수를 사용한다면 
+1. 함수를 호출할 때마다 항상 타입 인자를 전달해 줘야 하고
+2. 현재 `input`의 타입을 `any`로 선언해 주었기 때문에 `input`에는 어떠한 값도 들어갈 수 있다.
+
+2번에 대해 조금 더 설명하자면 타입 인자에 `"hello"`를 전달해 주더라도 `input`의 타입은 `any`이기 때문에 
+`"hello world"`와 같은 다른 값을 전달해 줄 수 있고 이 때도 `result`는 `"hello"`로 추론된다.
+전달해 주는 타입 인자와 `input`의 인자를 신경 써서 동기화시켜 주어야야하고 실수를 했을 때 어떠한 경고도 받을 수 없으므로
+이렇게 선언된 함수를 사용하는 사람의 입장에서는 실수를 할 가능성이 크다.
+
+```typescript
+const result = returnWhatIPassIn<"hello">("hello world");
+// ^? "hello"
+```
+
+이러한 문제가 발생한 이유는 타입 파라미터 `T`의 타입과 `input`의 타입이 다를 수 있도록 타입이 선언되어 있었기 때문이다.
+즉, 두 타입 사이에 어떠한 연결도 되어있지 않았기 때문이다. 이 함수에서 두 타입은 항상 같은 타입이어야만 하는데도 말이다.
+이 두 타입을 연결시킨다면 이 문제를 해결할 수 있지 않을까?
+
+### 타입 파라미터를 제대로 활용한 경우
+
+다음과 같이 함수를 재작성해 보았다. 타입 파라미터 `T`를 선언하고 타입 인자가 입력되었을 때 해당 타입은 항상 `input`의 타입과 같아야 하므로
+`input`의 타입을 `T`로 선언하였다. 그리고 `input`을 그대로 리턴하기 때문에 리턴 타입은 선언하지 않아도 `T`로 추론될 것이다.
+
+```typescript
+function returnWhatIPassIn<T>(input: T) {
+  return input;
+}
+```
+
+이렇게 했을 때의 장점은 타입 인자 `"hello"`를 전달해 주었을 때 타입 파라미터 `T`의 타입은 `"hello"`가 되고 이러면 `input`의 타입도 `"hello"`가 되기 때문에
+`"hello"`라는 인자만을 전달해 줄 수 있다.
+
+```typescript
+const result = returnWhatIPassIn<"hello">("hello world");
+// "hello"를 전달해 주지 않았기 때문에 타입스크립트 에러가 발생한다.
+// `input`의 타입을 `any`로 했을 때와는 다르게 실수를 미리 방지할 수 있다.
+```
+
+사실은 타입 인자를 전달해 줄 필요도 없다. 타입 파라미터 `T`를 선언하고 `input`의 타입을 `T`로 선언해두었기 때문에
+타입 인자를 전달해 주지 않았을 경우 타입스크립트가 `input`으로 전달된 인자로부터 `T`의 타입을 추론해 주기 때문이다. 
+
+```typescript
+const result = returnWhatIPassIn("hello");
+// ^? "hello"
+```
+
+위와 같이 함수를 호출하면 타입 인자를 입력하지 않았으므로 타입스크립트가 `input`으로 전달된 인자 `"hello"`를 확인하고
+이로부터 타입 파라미터 `T`의 타입을 추론한다. `T`의 타입은 `"hello"`라는 `string` 리터럴 타입이 되었고
+이 함수의 `input`을 그대로 리턴하므로 `"hello"`가 리턴 타입으로 추론된다. 결과적으로 `result`라는 변수는 `"hello"` 타입으로 추론된다.
+
+## 요약
+
+타입 파라미터를 선언하여 만든 제네릭 함수를 잘 활용한다면 타입 인자를 전달해 주지 않더라도
+런타임 인자로부터 타입 파라미터의 타입이 추론되게 만들 수 있기 때문에 입력에 따라 다르게 추론되어야 하는 함수를 만들어야 할 경우 유용하게 사용할 수 있다.
+
+## 레퍼런스
+
+https://www.totaltypescript.com/mental-model-for-typescript-generics
+https://www.totaltypescript.com/no-such-thing-as-a-generic
