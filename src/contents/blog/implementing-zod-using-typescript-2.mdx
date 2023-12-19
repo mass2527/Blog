@@ -21,7 +21,7 @@ const minFive = z.string().min(5, "5글자 이상이어야 합니다.");
 minFive.parse(input); // input.length < 5 => 에러 발생
 ```
 
-메서드 체이닝을 통해 두 가지 이상이 검증을 추가하는 것도 가능하다.
+메서드 체이닝을 통해 두 가지 이상을 검증을 추가하는 것도 가능하다.
 
 ```ts
 import { z } from 'zod';
@@ -142,6 +142,10 @@ class ZodString extends ZodType<string> {
 이 `checks`를 기반으로 새로운 `ZodString`이 생성된다.
 
 ```ts
+type ZodStringCheck =
+  | { kind: "min"; value: number; message?: string }
+  | { kind: "max"; value: number; message?: string };
+
 class ZodString extends ZodType<string> {
   checks: ZodStringCheck[];
 
@@ -176,8 +180,7 @@ const mySchema = new ZodString(); // Expected 1 arguments, but got 0.
 
 이유는 생성자에서 `checks`를 받도록 하였고 이는 반드시 입력되어야 하도록 했기 때문이다.
 
-해당 API를 사용하는 개발자에게 이러한 구현 사항을 숙지하고 빈 배열을 입력하도록 할 수 없기 때문에
-`create`라는 static 메서드를 만들어서 이를 해결한다.
+세부 구현 사항을 몰라도 편하게 인스턴스를 생성할 수 있도록 `create`라는 static 메서드를 생성해 보자.
 
 ```ts
 class ZodString extends ZodType<string> {
