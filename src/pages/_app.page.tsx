@@ -1,4 +1,3 @@
-import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import { Analytics } from '@vercel/analytics/react';
 
@@ -22,14 +21,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-function AppShell(props: AppProps) {
-  return (
-    <>
-      <RecoilRoot>
-        <App {...props} />
-      </RecoilRoot>
-    </>
-  );
-}
-
-export default AppShell;
+export default App;
