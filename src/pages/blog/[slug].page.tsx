@@ -95,7 +95,7 @@ const BlogHeader = styled.div`
   padding: ${({ theme }) => theme.spacers[24]} 0 ${({ theme }) => theme.spacers[48]};
 
   h1 {
-    font-size: ${({ theme }) => theme.fontSizes[64]};
+    font-size: ${({ theme }) => theme.fontSizes[48]};
     max-width: ${({ theme }) => theme.sizes.maxWidth};
     margin-top: ${({ theme }) => theme.spacers[32]};
     margin-bottom: 0;

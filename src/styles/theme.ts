@@ -63,7 +63,7 @@ export const fontSizes = {
   20: '20px',
   24: '24px',
   32: '32px',
-  64: '64px',
+  48: '48px',
 } as const;
 
 const commonTheme = {

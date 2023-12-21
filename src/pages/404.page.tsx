@@ -11,7 +11,7 @@ export default function Custom404() {
   return (
     <Wrapper>
       <div>
-        <Heading as="h1" fontSize={64}>
+        <Heading as="h1" fontSize={48}>
           404
         </Heading>
         <Text textAlign="center" color="mauve11">
