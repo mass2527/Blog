@@ -3,7 +3,7 @@ import { CheckIcon, ClipboardIcon } from '@radix-ui/react-icons';
 
 import { ReactNode, useRef } from 'react';
 
-import { useClipboard } from '@/hooks';
+import { useClipboard } from '@/hooks/useClipboard';
 
 function Pre({ children }: { children?: ReactNode }) {
   const [isCopied, copy] = useClipboard();

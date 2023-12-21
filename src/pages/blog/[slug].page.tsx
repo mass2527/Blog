@@ -7,7 +7,7 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 import Button from '@/components/Button';
 import SEO from '@/components/SEO';
 import TimeInfo from '@/components/TimeInfo';
-import { useClipboard } from '@/hooks';
+import { useClipboard } from '@/hooks/useClipboard';
 import { screenReaderOnly } from '@/styles/utils';
 import { bundleMDXWithOptions } from '@/utils/bundle';
 import { blogFiles, BlogFrontmatter, blogSlugs } from '@/utils/contents';
