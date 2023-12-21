@@ -48,8 +48,6 @@ function AppLayout({ children }: { children: ReactNode }) {
       <Main>{children}</Main>
       <Flex>
         <Footer>
-          {/* <AudioPlayer /> */}
-
           {EXTERNAL_LINKS.map(({ name, path }) => (
             <a key={name} href={path} target="_blank" rel="noreferrer">
               {name}
