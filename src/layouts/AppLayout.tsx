@@ -107,7 +107,6 @@ const Footer = styled.footer`
   gap: ${({ theme }) => theme.spacers[8]};
   max-width: ${({ theme }) => theme.sizes.maxWidth};
   width: 100%;
-  border-top: 1px solid ${({ theme }) => theme.colors.mauve6};
   margin: auto;
   padding: ${({ theme }) => theme.spacers[24]};
   font-size: ${({ theme }) => theme.fontSizes[14]};
