@@ -26,7 +26,7 @@ export default class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html lang="ko">
         <Head>
           {/* https://sandpack.codesandbox.io/docs/getting-started/ssr#nextjs */}
           <style dangerouslySetInnerHTML={{ __html: getSandpackCssText() }} id="sandpack" />
