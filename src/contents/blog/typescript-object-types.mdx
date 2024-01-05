@@ -1,0 +1,139 @@
+---
+title: "TypeScript에서의 {} vs Object vs object"
+category: Typescript
+summary: TypeScript에서의 {}, Object, object로 타입을 선언하는 방법과 각각의 차이점을 알아봅니다.
+published: true
+publishedAt: "2024-01-05"
+---
+
+이 글에서는 TypeScript에서 `{}`, `Object`, `object`를 이용하여 타입을 선언했을 때 어떠한 차이가 있는지 알아보겠습니다.
+
+## `{}` 타입
+
+`{}`으로 타입을 선언했을 경우 외형만으로는 비어있는 객체라고 오해하기 쉽지만 사실은 그렇지 않습니다.
+TypeScript에서 `{}`는 any non-nullish value를 의미합니다. 즉, `undefined` 와 `null`을 제외한 모든 타입은 `{}`에 할당 가능합니다.
+
+```ts
+// `undefined` 와 `null`은 할당 불가능
+const test1: {} = undefined; // Type `undefined` is not assignable to type `{}`.
+const test2: {} = null; // Type `null` is not assignable to type `{}`
+
+// `undefined` 와 `null`을 제외한 모든 primitive values 할당 가능
+const test3: {} = true;
+const test4: {} = 0;
+const test5: {} = BigInt(0);
+const test6: {} = "hello";
+const test7: {} = Symbol();
+
+// 모든 object values 할당 가능
+const test8: {} = () => {};
+const test9: {} = new Date();
+const test10: {} = new Set();
+const test11: {} = new Map();
+// ... 나머지 object values 생략
+```
+
+> JavaScript values는 크게 2가지 유형(primitive values, object values)으로 나눌 수 있습니다.
+> primitive values에는 `undefined`, `null`, `boolean`, `number`, `bigint`, `string`, `symbol` 타입의 값들이 포함됩니다.
+> object values에는 primitive values를 제외한 모든 값들이 포함됩니다.
+
+이러한 사실을 이용해서 TypeScript가 기본적으로 제공해 주는 유틸리티 타입인 `NonNullable`은 다음과 같이 선언되어 있습니다.
+
+```ts
+type NonNullable<T> = T & {};
+```
+
+주어진 타입 `T`와 `null`, `undefined`를 제외한 모든 타입의 공통 타입이므로 `T`에서 `undefined`와 `null`이 제거된 타입이 반환되는 것입니다.
+
+하지만 `{}`는 직관적이지 않고 이 사실을 모르는 사람의 입장에서 봤을 때 가독성이 좋지 않기 때문에 eslint에서는 `{}` 대신 `NonNullable<unknown>`을 사용하는 것을 권장하기도 합니다.
+
+## `Object` 타입
+
+`Object`도 `{}`로 타입을 선언하는 것과 동일하다고 보면 됩니다. 이 경우에도 `{}`와 마찬가지로 `undefined`, `null`을 제외한 모든 값이 할당 가능합니다.
+
+```ts
+// `undefined` 와 `null`은 할당 불가능
+const test1: Object = undefined; // Type `undefined` is not assignable to type `Object`.
+const test2: Object = null; // Type `null` is not assignable to type `Object`
+
+// `undefined` 와 `null`을 제외한 모든 primitive values 할당 가능
+const test3: Object = true;
+const test4: Object = 0;
+const test5: Object = BigInt(0);
+const test6: Object = "hello";
+const test7: Object = Symbol();
+
+// 모든 object values 할당 가능
+const test8: Object = () => {};
+const test9: Object = new Date();
+const test10: Object = new Set();
+const test11: Object = new Map();
+// ... 나머지 object values 생략
+```
+
+## `object` 타입
+
+이번에는 `object`로 타입을 선언하는 경우를 알아보겠습니다. 위와는 다르게 `Object`가 아닌 `object`입니다.
+
+위에서 JavaScript values는 primitive values와 object values로 나누어진다는 것을 간략하게 설명했었습니다.
+`object`로 타입을 선언했을 경우 모든 object values는 할당이 가능하다고 생각하면 됩니다.
+
+```ts
+// 모든 primitive values는 할당 불가능
+const test1: object = undefined; // Type `undefined` is not assignable to type `object`.
+const test2: object = null; // Type `null` is not assignable to type `object`.
+const test3: object = true; // // Type `boolean` is not assignable to type `object`.
+const test4: object = 0; // Type `number` is not assignable to type `object`.
+const test5: object = BigInt(0); // Type `bigint` is not assignable to type `object`.
+const test6: object = "hello"; // Type `string` is not assignable to type `object`.
+const test7: object = Symbol(); // Type `symbol` is not assignable to type `object`.
+
+// 모든 object values는 할당 가능
+const test8: object = () => {};
+const test9: object = new Date();
+const test10: object = new Set();
+const test11: object = new Map();
+```
+
+만약 `object` 타입이 object values를 의미하는 것이 아니라 "순수 JavaScript 객체"를 의미하는 것으로 오해한다면 적합한 타입 선언을 하지 못할 수도 있습니다.
+
+> "순수 JavaScript 객체"는 `{ age: 20 }`와 같이 흔히 중괄호를 이용하여 생성하는 값을 표현하기 위해 사용하겠습니다.
+
+예를 들어 어떠한 "순수 JavaScript 객체"도 허용하는 함수를 만들다고 했을 때 위와 같은 사실을 모른다면 다음과 같이 타입을 선언하게 될 것입니다.
+
+```ts
+function doSomething(obj: object) {
+  //
+}
+```
+
+그러면 object values만 넣어준다면 에러가 발생하지 않기 때문에 예상하지 못한 버그가 런타임에 발견될 수 있습니다. 
+
+```ts
+doSomething(() => {});
+doSomething(new Date());
+doSomething(new Set());
+doSomething(new Map());
+```
+
+그렇기 때문에 "순수 JavaScript 객체"만 허용하고 싶은 경우 `object`를 사용하지 않고 `Record`를 이용해서 다음과 같이 타입을 선언할 수 있습니다.
+
+```ts
+function doSomething(obj: Record<string, unknown>) {
+  //
+}
+```
+
+또한 비어있는 객체만 허용하고 싶은 경우에는 `never`을 활용할 수 있습니다. 
+
+```ts
+const emptyObject: Record<string, never> = {};
+```
+
+## 결론 
+
+이렇게 해서 오늘은 `{}`, `Object`, `object`를 이용해서 타입을 선언했을 때 어떤 것이 다른 지 알아봤습니다. 
+
+- `{}` 타입: `undefined`, `null`을 제외한 모든 값이 할당 가능하다.
+- `Object` 타입: `{}` 타입과 동일하다.
+- `object` 타입: primitive values를 제외한 모든 값이 할당 가능하다.
