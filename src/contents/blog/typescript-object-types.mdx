@@ -11,31 +11,31 @@ publishedAt: "2024-01-05"
 ## `{}` 타입
 
 `{}`으로 타입을 선언했을 경우 외형만으로는 비어있는 객체라고 오해하기 쉽지만 사실은 그렇지 않습니다.
-TypeScript에서 `{}`는 any non-nullish value를 의미합니다. 즉, `undefined` 와 `null`을 제외한 모든 타입은 `{}`에 할당 가능합니다.
+TypeScript에서 `{}`는 any non-nullish value를 의미합니다. 즉, `undefined` 와 `null`을 제외한 모든 타입은 `{}` 타입에 할당 가능합니다.
 
 ```ts
 // `undefined` 와 `null`은 할당 불가능
 const test1: {} = undefined; // Type `undefined` is not assignable to type `{}`.
 const test2: {} = null; // Type `null` is not assignable to type `{}`
 
-// `undefined` 와 `null`을 제외한 모든 primitive values 할당 가능
+// `undefined` 와 `null`을 제외한 모든 원시값 할당 가능
 const test3: {} = true;
 const test4: {} = 0;
 const test5: {} = BigInt(0);
 const test6: {} = "hello";
 const test7: {} = Symbol();
 
-// 모든 object values 할당 가능
+// 모든 객체값 할당 가능
 const test8: {} = () => {};
 const test9: {} = new Date();
 const test10: {} = new Set();
 const test11: {} = new Map();
-// ... 나머지 object values 생략
+// ... 나머지 객체값 생략
 ```
 
-> JavaScript values는 크게 2가지 유형(primitive values, object values)으로 나눌 수 있습니다.
-> primitive values에는 `undefined`, `null`, `boolean`, `number`, `bigint`, `string`, `symbol` 타입의 값들이 포함됩니다.
-> object values에는 primitive values를 제외한 모든 값들이 포함됩니다.
+> JavaScript에는 크게 원시값과 객체값이 있습니다..
+> 원시값에는 `undefined`, `null`, `boolean`, `number`, `bigint`, `string`, `symbol` 타입의 값들이 포함됩니다.
+> 객체값에는 원시값을 제외한 모든 값들이 포함됩니다.
 
 이러한 사실을 이용해서 TypeScript가 기본적으로 제공해 주는 유틸리티 타입인 `NonNullable`은 다음과 같이 선언되어 있습니다.
 
@@ -52,34 +52,34 @@ type NonNullable<T> = T & {};
 `Object`도 `{}`로 타입을 선언하는 것과 동일하다고 보면 됩니다. 이 경우에도 `{}`와 마찬가지로 `undefined`, `null`을 제외한 모든 값이 할당 가능합니다.
 
 ```ts
-// `undefined` 와 `null`은 할당 불가능
+// `undefined` 와 `null` 할당 불가능
 const test1: Object = undefined; // Type `undefined` is not assignable to type `Object`.
 const test2: Object = null; // Type `null` is not assignable to type `Object`
 
-// `undefined` 와 `null`을 제외한 모든 primitive values 할당 가능
+// `undefined` 와 `null`을 제외한 모든 원시값 할당 가능
 const test3: Object = true;
 const test4: Object = 0;
 const test5: Object = BigInt(0);
 const test6: Object = "hello";
 const test7: Object = Symbol();
 
-// 모든 object values 할당 가능
+// 모든 객체값 할당 가능
 const test8: Object = () => {};
 const test9: Object = new Date();
 const test10: Object = new Set();
 const test11: Object = new Map();
-// ... 나머지 object values 생략
+// ... 나머지 객체값 생략
 ```
 
 ## `object` 타입
 
 이번에는 `object`로 타입을 선언하는 경우를 알아보겠습니다. 위와는 다르게 `Object`가 아닌 `object`입니다.
 
-위에서 JavaScript values는 primitive values와 object values로 나누어진다는 것을 간략하게 설명했었습니다.
-`object`로 타입을 선언했을 경우 모든 object values는 할당이 가능하다고 생각하면 됩니다.
+위에서 JavaScript values는 원시값과 객체값으로 나누어진다는 것을 간략하게 설명했었습니다.
+`object`로 타입을 선언했을 경우 모든 객체값이 할당이 가능하다고 생각하면 됩니다.
 
 ```ts
-// 모든 primitive values는 할당 불가능
+// 모든 원시값 할당 불가능
 const test1: object = undefined; // Type `undefined` is not assignable to type `object`.
 const test2: object = null; // Type `null` is not assignable to type `object`.
 const test3: object = true; // // Type `boolean` is not assignable to type `object`.
@@ -88,14 +88,14 @@ const test5: object = BigInt(0); // Type `bigint` is not assignable to type `obj
 const test6: object = "hello"; // Type `string` is not assignable to type `object`.
 const test7: object = Symbol(); // Type `symbol` is not assignable to type `object`.
 
-// 모든 object values는 할당 가능
+// 모든 객체값 할당 가능
 const test8: object = () => {};
 const test9: object = new Date();
 const test10: object = new Set();
 const test11: object = new Map();
 ```
 
-만약 `object` 타입이 object values를 의미하는 것이 아니라 "순수 JavaScript 객체"를 의미하는 것으로 오해한다면 적합한 타입 선언을 하지 못할 수도 있습니다.
+만약 `object` 타입이 객체값을 의미하는 것이 아니라 "순수 JavaScript 객체"를 의미하는 것으로 오해한다면 적합한 타입 선언을 하지 못할 수도 있습니다.
 
 > "순수 JavaScript 객체"는 `{ age: 20 }`와 같이 흔히 중괄호를 이용하여 생성하는 값을 표현하기 위해 사용하겠습니다.
 
@@ -107,7 +107,7 @@ function doSomething(obj: object) {
 }
 ```
 
-그러면 object values만 넣어준다면 에러가 발생하지 않기 때문에 예상하지 못한 버그가 런타임에 발견될 수 있습니다. 
+그러면 다음과 같은 객체값을 입력해도 에러가 발생하지 않기 때문에 예상하지 못한 버그가 런타임에 발견될 수 있습니다. 
 
 ```ts
 doSomething(() => {});
@@ -136,4 +136,4 @@ const emptyObject: Record<string, never> = {};
 
 - `{}` 타입: `undefined`, `null`을 제외한 모든 값이 할당 가능하다.
 - `Object` 타입: `{}` 타입과 동일하다.
-- `object` 타입: primitive values를 제외한 모든 값이 할당 가능하다.
+- `object` 타입: 원시값을 제외한 모든 값이 할당 가능하다.
