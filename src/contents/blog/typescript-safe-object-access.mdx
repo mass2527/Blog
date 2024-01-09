@@ -1,0 +1,434 @@
+---
+title: "TypeScript로 안전하게 객체 속성에 접근하기: getByPath 함수 구현과 타입 추론"
+category: Typescript
+summary: 이 글은 JavaScript로 시작하여 TypeScript를 활용하여 객체 속성에 안전하게 접근하는 getByPath 함수를 구현하는 방법과, 타입 추론 및 성능 최적화에 대한 내용을 다룹니다.
+published: true
+publishedAt: "2024-01-09"
+---
+
+이 글에서는 다음과 같이 객체와 path가 주어졌을 때 해당 path의 값을 반환하는 `getByPath` 함수를 TypeScript를 활용하여 구현해 보겠습니다.
+
+```ts
+const person = {
+  name: {
+    firstName: "Dongho",
+    lastName: "Kim",
+  },
+  gender: "male",
+};
+
+const result = getByPath(person, "name.lastName");
+// "Kim"
+```
+
+## JavaScript로 구현
+
+우선 타입은 생각하지 않고 JavaScript로 기능만 구현해 보겠습니다. 
+
+주어진 `path`를 `split` 메서드를 이용하여 `property`로 이루어진 배열로 만들 수 있습니다.
+따라서 `properties`로 반복문을 돌리면 원하는 객체의 값을 깊이에 상관없이 가져올 수 있습니다.
+
+```js
+function getByPath(object, path) {
+  const properties = path.split(".");
+
+  let result = object;
+  for (const property of properties) {
+    result = result[property];
+  }
+  return result;
+}
+```
+
+생각했던 대로 동작은 하지만 JavaScript로 작성했기 때문에 타입적 이점은 얻을 수 없습니다.
+
+```js
+const result = getByPath(person, "name.lastName");
+// "Kim"
+
+// 1. 잘못된 인자를 전달하는 것을 방지할 수 없다.
+const result = getByPath("hello", "name.lastName") // 객체 대신 다른 값 전달 가능
+const result = getByPath(person, "name.lastNaem") // `path`에 올바르지 않은 인자 전달 가능
+
+// 2. 반환되는 타입을 알 수 없다.
+const result = getByPath(person, "name.lastName");
+// ^? any
+```
+
+## TypeScript로 다시 작성
+
+이제 적합한 인자만 전달할 수 있고 반환되는 타입도 올바르게 추론되도록
+위 함수를 TypeScript를 이용하여 다시 작성해 보겠습니다.
+
+우선 `object` 파라미터의 경우 key의 타입은 `string`이고 value의 타입은 어떤 타입일지 모르기 때문에 `Record<string, unknown>`으로 선언할 수 있습니다.
+또한 `path`의 경우 `string`으로 선언할 수 있습니다.
+
+```ts
+function getByPath(object: Record<string, unknown>, path: string) {
+  const properties = path.split(".");
+
+  let result: any = object; // result는 어떤 값이 올지 모르기 때문에 any로 선언해 줍니다.
+  for (const property of properties) {
+    result = result[property];
+  }
+  return result;
+}
+```
+
+위와 같이 타입을 선언하면 잘못된 타입의 인자가 전달되는 것을 방지할 수 있습니다. 
+
+```ts
+const result = getByPath("hello", "name.lastName")
+// 첫 번째 인자에 `Record<string, unknown>` 타입이 아닌 값 전달 시 TypeScript 에러 발생
+
+const result = getByPath(person, 123)
+// 두 번째 인자에 `string` 타입이 아닌 값 전달 시 TypeScript 에러 발생
+```
+
+하지만 오타를 내서 올바르지 않은 값이 `path`의 인자로 전달됐을 때는 에러가 발생하고 있지 않습니다.
+
+```ts
+const result = getByPath(person, "name.lastNaem") // TypeScript 에러 발생 X
+```
+
+이 부분을 해결하기 위해서는 2가지가 수행되어야 합니다.
+
+1. `getByPath` 함수의 첫번째 인자로 전달받은 값의 타입을 추론한다.
+2. 추론된 타입으로부터 `path`의 타입을 계산한다.
+
+### 전달받은 인자로부터 타입 추론
+
+다음과 같이 타입 파라미터 `T`를 선언하고 `Record<string, unknown>`에 할당 가능한 타입만 전달받을 수 있도록 제약 사항을 둡니다.
+그리고 파라미터 `object`의 타입을 `T`로 선언해 줍니다. 그러면 함수를 호출할 때 타입 인자를 전달해 주지 않더라도 TypeScript가 `object`의 인자로 전달된 값으로부터 타입 `T`를 추론해 줍니다. 
+
+```ts
+function getByPath<T extends Record<string, unknown>>(object: T, path: string) {
+  const properties = path.split(".");
+
+  let result: any = object;
+  for (const property of properties) {
+    result = result[property];
+  }
+  return result;
+}
+
+// getByPath(person, "name.firstName")를 호출했을 때 추론된 `T`의 타입은 다음과 같습니다.
+// {
+//     name: {
+//         firstName: string;
+//         lastName: string;
+//     };
+//     gender: string;
+// }
+```
+
+### `path` 타입 계산
+
+`person`이 첫 번째 인자로 전달되었을 때 추론되길 원하는 `path`의 타입은 다음과 같습니다.
+
+```ts
+type Path = "name" | "name.firstName" | "name.lastName" | "gender";
+```
+
+추론된 타입 `T`로부터 `path`의 타입을 계산하기 위한 아이디어는 다음과 같습니다.
+
+모든 키/값을 순회하면서
+- 값의 타입이 `Record<string, unknown>`에 할당 가능한 경우 => 키의 타입을 반환 + 재귀 실행
+- 값의 타입이 `Record<string, unknown>`에 할당 가능하지 않은 경우 => 키의 타입을 반환
+
+이제 이 아이디어를 기반으로 추론된 타입 `T`로 부터 `path`의 타입을 계산하는 유틸리티 타입 `PropertyPath`를 구현해 보겠습니다. 
+
+1. 타입 파라미터 T에는 `Record<string, unknown>`에 할당 가능한 타입만 인자로 전달받을 수 있도록 제약사항을 둡니다.
+
+```ts
+type PropertyPath<T extends Record<string, unknown>> = T;
+```
+
+2. 모든 키/값을 순회할 수 있도록 `T`를 리팩토링합니다.
+
+```ts
+type PropertyPath<T extends Record<string, unknown>> = {
+  [K in keyof T]: T[K];
+};
+```
+
+3. 목표는 객체 타입을 반환하는 것이 아닌 유니언 타입을 반환하는 것입니다.
+따라서, 즉시 객체의 키 타입으로 접근하여 값의 타입으로 이루어진 유니언을 반환하도록 합니다.
+
+```ts
+type PropertyPath<T extends Record<string, unknown>> = {
+  [K in keyof T]: T[K];
+}[keyof T];
+
+// person
+// ^? 
+// {
+//     name: {
+//         firstName: string;
+//         lastName: string;
+//     };
+//     gender: string;
+// }
+
+// type Result = PropertyPath<typeof person>
+// ^? { firstName: string; lastName: string; } | string
+```
+
+여기까지 했을 때 다음과 같이 객체의 값의 타입으로 이루어진 유니언이 반환됩니다.
+즉, `T[K]`로 이루어진 유니언 타입이 반환되므로 지금부터 `T[K]` 부분을 적절히 변경하면 될 것입니다. 
+
+4. 값의 타입이 객체인 경우 일단 임시로 "???"을 반환하고 아닌 경우 키의 타입을 반환합니다.
+
+```ts
+type PropertyPath<T extends Record<string, unknown>> = {
+  [K in keyof T]: T[K] extends Record<string, unknown> ? "???" : K;
+}[keyof T];
+
+// person
+// ^? 
+// {
+//     name: {
+//         firstName: string;
+//         lastName: string;
+//     };
+//     gender: string;
+// }
+
+// `name`의 값의 타입은 Record<string, unknown>에 할당 가능하기 때문에 "???"이 반환되고
+// `gender`의 값의 타입은 Record<string, unknown>에 할당 가능하지 않기 때문에 "gender"(K)가 반환됩니다.
+// type Result = PropertyPath<typeof person>;
+// ^? "???" | "gender"
+```
+
+5. 목표는 `"???"` 대신에 `"name" | "name.firstName" | "name.lastName"` 을 반환하도록 하는 것입니다.
+일단 `K` 또는 `"???"`을 반환하도록 하면 목표에 조금 더 다가갈 수 있습니다. 
+
+```ts
+type PropertyPath<T extends Record<string, unknown>> = {
+  [K in keyof T]: T[K] extends Record<string, unknown> ? K | "???" : K;
+}[keyof T];
+
+// type Result = PropertyPath<typeof person>;
+// ^? "???" | "name" | "gender"
+```
+
+6. 재귀와 템플릿 리터럴 타입을 활용하여 `"???"` 대신 `"name.firstName" | "name.lastName"`이 반환되도록 변경해 줍니다.
+
+```ts
+type PropertyPath<T extends Record<string, unknown>> = {
+  [K in keyof T]: T[K] extends Record<string, unknown>
+    ? K | `${K}.${PropertyPath<T[K]>}`
+    : K;
+}[keyof T];
+
+type Result = PropertyPath<typeof person>;
+// ^? "name" | "gender" | "name.firstName" | "name.lastName"
+```
+
+7. 6번까지 작성했다면 "Type 'K' is not assignable to type 'string | number | bigint | boolean | null | undefined'." 라는 TypeScript 에러가 발생합니다.
+이는 타입 `K`가 `string | number | symbol`로 추론되며 `symbol` 타입으로는 템플릿 리터럴 타입을 작성할 수 없기 때문입니다. 
+
+> 키값의 타입이 `string | number | symbol`인 경우에도 JavaScript는 객체를 인덱싱할 때 `string`으로 변환하기 때문에 `Record<string, unknown>`에 할당 가능합니다. 이러한 이유로 타입 `K`가 `string | number | symbol`로 추론됩니다.
+
+이는 `string` 타입과 인터섹션 타입을 활용하여 다음과 같이 해결할 수 있습니다.
+
+```ts
+type PropertyPath<T extends Record<string, unknown>> = {
+  [K in keyof T & string]: T[K] extends Record<string, unknown>
+    ? K | `${K}.${PropertyPath<T[K]>}`
+    : K;
+}[keyof T & string];
+```
+
+이제 유틸리티 타입 `PropertyPath`을 활용하여 `getByPath` 함수의 타입을 선언해 주면
+`path`의 타입을 정확하게 추론되므로 잘못된 인자를 전달할 경우 TypeScript 에러가 발생합니다. 
+
+```ts
+function getByPath<T extends Record<string, unknown>>(
+  object: T,
+  path: PropertyPath<T>
+) {
+  const properties = path.split(".");
+
+  let result: any = object;
+  for (const property of properties) {
+    result = result[property];
+  }
+  return result;
+}
+
+getByPath(person,"name.firstNaem") // TypeScript 에러 발생
+```
+
+### 반환 타입 선언
+
+아직 반환되는 타입은 `any`로 추론되고 있기 때문에 이를 개선해 보겠습니다.
+
+```ts
+const result = getByPath(person, "name.firstName");
+// ^? any
+```
+
+`getByPath` 함수의 반환 타입을 계산해주는 유틸리티 타입을 `GetByPathReturn`이라는 이름으로 만들어줍니다.
+반환 타입을 계산하기 위해서는 `object`, `path`에 어떠한 인자가 전달되었는지 알아야 합니다. 따라서 2가지 타입을 전달받아야합니다.
+이 2가지 타입을 각각 `T`, `U`라는 타입 파라미터를 만들어서 전달받도록 해줍니다.
+
+```ts
+type GetByPathReturn<T extends Record<string, unknown>, U extends PropertyPath<T>> = "???"
+```
+
+타입 `U`가 단일 속성을 포함하고 있는지 여러 속성을 포함하고 있는지에 따라 다른 타입을 반환하면 될 것이고
+이는 타입 `infer`와 `.`을 이용하여 구현할 수 있습니다.
+
+여러 속성을 포함하고 있다면 일단 "???"을 반환하고 단일 속성일 경우 `T[U]`을 통해 값의 타입을 반환해 줍니다.
+
+```ts
+type GetByPathReturn<
+  T extends Record<string, unknown>,
+  U extends PropertyPath<T>
+> = U extends `${infer TProperty}.${infer TRestPropertyPath}` ? "???" : T[U];
+```
+
+이제 재귀를 이용하여 `path`가 여러 속성을 포함할 경우를 처리해 줍니다.
+
+```ts
+type GetByPathReturn<
+  T extends Record<string, unknown>,
+  U extends PropertyPath<T>
+> = U extends `${infer TProperty}.${infer TRestPropertyPath}`
+  ? GetByPathReturn<T[TProperty], TRestPropertyPath>
+  : T[U];
+```
+
+위까지 했다면 "type `T[TProperty]` does not satisfy the constraint `Record<string, unknown>`"라는 TypeScript 에러가 발생합니다.
+
+`PropertyPath<T>`에 의해서 `path`에는 값의 타입이 `Record<string, unknown>`을 만족시키는 경우에는 .을 통해 중첩된 속성을 입력할 수 있습니다.
+따라서 `T[TProperty]`는 항상 `Record<string, unknown>`에 할당 가능합니다. 하지만 TypeScript는 이 사실을 모르기 때문에 발생하는 에러이므로 다음과 같이 처리해줄 수 있습니다.
+
+```ts
+type GetByPathReturn<
+  T extends Record<string, unknown>,
+  U extends PropertyPath<T>
+> = U extends `${infer TProperty}.${infer TRestPropertyPath}`
+  ? T[TProperty] extends Record<string, unknown>
+    ? GetByPathReturn<T[TProperty], TRestPropertyPath>
+    : never // T[TProperty]는 항상 Record<string, unknown>에 할당 가능하기 때문에 never에 도달하는 경우는 없습니다. 
+  : T[U];
+```
+
+이제 `GetByPathReturn` 타입을 이용하여 `getByPath` 함수가 반환하는 타입을 선언해 주면
+다음과 같이 반환된 값의 타입이 올바르게 추론됩니다.
+
+```ts
+function getByPath<
+  T extends Record<string, unknown>,
+  U extends PropertyPath<T>
+>(object: T, path: U): GetByPathReturn<T, U> {
+  const properties = path.split(".");
+
+  let result: any = object;
+  for (const property of properties) {
+    result = result[property];
+  }
+  return result;
+}
+
+const result = getByPath(person, "name");
+// ^? { firstName: string; lastName: string; }
+```
+
+## 성능 개선
+
+재귀를 사용하는 타입의 경우 성능에 부정적인 영향을 줄 수 있습니다.
+예를 들어 타입 검사 시간이 늘어나거나 IDE가 제공하는 자동 완성 기능이 지나치게 느려질 수 있습니다.
+따라서 적절한 수만큼만 재귀가 일어나도록 변경하는 방법을 사용할 수 있습니다.
+
+적절한 수만큼만 재귀가 일어나도록 하는 방법은 매우 간단합니다.
+우선 숫자를 입력했을 때 입력받은 숫자보다 1만큼 작은 수를 반환하도록 튜플 타입을 선언합니다.
+
+```ts
+type Prev = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+```
+
+이러면 입력 및 반환 타입은 다음과 같습니다.
+
+```ts
+type Result = Prev[2];
+// ^? 1
+
+type Result = Prev[1];
+// ^? 0
+
+type Result = Prev[0];
+// ^? -1
+```
+
+이제 타입이 `-1`일 경우 반복을 그만하고 아닐 경우 반복을 하도록 작성하면 됩니다.
+
+```ts
+// U의 기본값이 9이므로 10번만 실행되고 초과 시 never를 반환합니다.
+type PropertyPath<
+  T extends Record<string, unknown>,
+  U extends Prev[number] = 9
+> = U extends -1
+  ? never
+  : {
+      [K in keyof T & string]: T[K] extends Record<string, unknown>
+        ? K | `${K}.${PropertyPath<T[K], Prev[U]>}` // 여기서 Prev[U]를 통해 1 작은 값을 두 번째 인자로 전달해줍니다. 
+        : K;
+    }[keyof T & string];
+```
+
+`GetByPathReturn` 타입도 같은 방법으로 변경할 수 있습니다.
+
+```ts
+type GetByPathReturn<
+  T extends Record<string, unknown>,
+  U extends PropertyPath<T>,
+  V extends Prev[number] = 9
+> = V extends -1
+  ? never
+  : U extends `${infer TProperty}.${infer TRestPropertyPath}`
+  ? T[TProperty] extends Record<string, unknown>
+    ? GetByPathReturn<T[TProperty], TRestPropertyPath, Prev[V]>
+    : never
+  : T[U];
+```
+
+또는 다음과 같이 배열을 이용하여 구현할 수도 있습니다. 
+이렇게 구현했을 경우 `Prev` 타입을 일일이 구현할 필요도 없고 extends 뒤에 나오는 숫자만큼만 실행되기 때문에 이해하기 쉽습니다.
+
+```ts
+type PropertyPath<
+  T extends Record<string, unknown>,
+  U extends unknown[] = []
+> = U["length"] extends 10
+  ? never
+  : {
+      [K in keyof T & string]: T[K] extends Record<string, unknown>
+        ? K | `${K}.${PropertyPath<T[K], [...U, unknown]>}`
+        : K;
+    }[keyof T & string];
+
+// U["length"] extends 0일 경우 => 실행되지 않음
+type Result = PropertyPath<{ a: { b: { c: "d" } } }>;
+// ^? never
+
+// U["length"] extends 1일 경우 => 1번 실행
+type Result = PropertyPath<{ a: { b: { c: "d" } } }>;
+// ^? "a"
+
+// U["length"] extends 2일 경우 => 2번 실행
+type Result = PropertyPath<{ a: { b: { c: "d" } } }>;
+// ^? "a" | "a.b"
+
+// U["length"] extends 3일 경우 => 3번 실행
+type Result = PropertyPath<{ a: { b: { c: "d" } } }>;
+// ^? "a" | "a.b" | "a.b.c"
+```
+
+객체가 10번이 넘게 중첩되는 경우는 흔하지 않으므로 10번 정도만 실행하도록 타협을 하면 성능도 챙길 수 있고 불필요하게 코드를 반복해서 작성할 필요도 없게 됩니다.
+만약 더 많은 중첩이 있는 경우 extends 뒤의 숫자만 적절히 변경해주면 됩니다.
+
+실제로 재귀를 활용하는 타입으로 인해 성능 문제를 겪은 적이 있었고 이러한 방법을 통해 해결한 경험이 있습니다.
+혹시 갑자기 타입 검사 또는 자동 완성 기능이 느려졌다면 재귀를 활용하는 타입에 문제가 있는 것은 아닌지 확인해 보는 것도 좋을 것 같습니다.
