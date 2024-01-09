@@ -29,10 +29,10 @@ const result = getByPath(person, "name.lastName");
 따라서 `properties`로 반복문을 돌리면 원하는 객체의 값을 깊이에 상관없이 가져올 수 있습니다.
 
 ```js
-function getByPath(object, path) {
+function getByPath(obj, path) {
   const properties = path.split(".");
 
-  let result = object;
+  let result = obj;
   for (const property of properties) {
     result = result[property];
   }
@@ -60,14 +60,14 @@ const result = getByPath(person, "name.lastName");
 이제 적합한 인자만 전달할 수 있고 반환되는 타입도 올바르게 추론되도록
 위 함수를 TypeScript를 이용하여 다시 작성해 보겠습니다.
 
-우선 `object` 파라미터의 경우 key의 타입은 `string`이고 value의 타입은 어떤 타입일지 모르기 때문에 `Record<string, unknown>`으로 선언할 수 있습니다.
+우선 `obj` 파라미터의 경우 key의 타입은 `string`이고 value의 타입은 어떤 타입일지 모르기 때문에 `Record<string, unknown>`으로 선언할 수 있습니다.
 또한 `path`의 경우 `string`으로 선언할 수 있습니다.
 
 ```ts
-function getByPath(object: Record<string, unknown>, path: string) {
+function getByPath(obj: Record<string, unknown>, path: string) {
   const properties = path.split(".");
 
-  let result: any = object; // result는 어떤 값이 올지 모르기 때문에 any로 선언해 줍니다.
+  let result: any = obj; // result는 어떤 값이 올지 모르기 때문에 any로 선언해 줍니다.
   for (const property of properties) {
     result = result[property];
   }
@@ -99,13 +99,13 @@ const result = getByPath(person, "name.lastNaem") // TypeScript 에러 발생 X
 ### 전달받은 인자로부터 타입 추론
 
 다음과 같이 타입 파라미터 `T`를 선언하고 `Record<string, unknown>`에 할당 가능한 타입만 전달받을 수 있도록 제약 사항을 둡니다.
-그리고 파라미터 `object`의 타입을 `T`로 선언해 줍니다. 그러면 함수를 호출할 때 타입 인자를 전달해 주지 않더라도 TypeScript가 `object`의 인자로 전달된 값으로부터 타입 `T`를 추론해 줍니다. 
+그리고 파라미터 `obj`의 타입을 `T`로 선언해 줍니다. 그러면 함수를 호출할 때 타입 인자를 전달해 주지 않더라도 TypeScript가 `obj`의 인자로 전달된 값으로부터 타입 `T`를 추론해 줍니다. 
 
 ```ts
-function getByPath<T extends Record<string, unknown>>(object: T, path: string) {
+function getByPath<T extends Record<string, unknown>>(obj: T, path: string) {
   const properties = path.split(".");
 
-  let result: any = object;
+  let result: any = obj;
   for (const property of properties) {
     result = result[property];
   }
@@ -245,12 +245,12 @@ type PropertyPath<T extends Record<string, unknown>> = {
 
 ```ts
 function getByPath<T extends Record<string, unknown>>(
-  object: T,
+  obj: T,
   path: PropertyPath<T>
 ) {
   const properties = path.split(".");
 
-  let result: any = object;
+  let result: any = obj;
   for (const property of properties) {
     result = result[property];
   }
@@ -270,7 +270,7 @@ const result = getByPath(person, "name.firstName");
 ```
 
 `getByPath` 함수의 반환 타입을 계산해주는 유틸리티 타입을 `GetByPathReturn`이라는 이름으로 만들어줍니다.
-반환 타입을 계산하기 위해서는 `object`, `path`에 어떠한 인자가 전달되었는지 알아야 합니다. 따라서 2가지 타입을 전달받아야합니다.
+반환 타입을 계산하기 위해서는 `obj`, `path`에 어떠한 인자가 전달되었는지 알아야 합니다. 따라서 2가지 타입을 전달받아야합니다.
 이 2가지 타입을 각각 `T`, `U`라는 타입 파라미터를 만들어서 전달받도록 해줍니다.
 
 ```ts
@@ -323,10 +323,10 @@ type GetByPathReturn<
 function getByPath<
   T extends Record<string, unknown>,
   U extends PropertyPath<T>
->(object: T, path: U): GetByPathReturn<T, U> {
+>(obj: T, path: U): GetByPathReturn<T, U> {
   const properties = path.split(".");
 
-  let result: any = object;
+  let result: any = obj;
   for (const property of properties) {
     result = result[property];
   }
