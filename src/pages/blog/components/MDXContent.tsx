@@ -73,6 +73,16 @@ const MDXComponentWrapper = styled.div`
   ol > li {
     list-style: decimal;
   }
+
+  table {
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    border: 1px solid ${({ theme }) => theme.colors.whiteA9};
+    padding: ${({ theme }) => theme.spacers[8]};
+  }
 `;
 
 export default MDXContent;
